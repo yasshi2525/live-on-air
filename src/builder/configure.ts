@@ -23,6 +23,14 @@ class RecordConfigure<K extends string, V> {
     this.entry[key] = value
   }
 
+  putAll (entry: Partial<Record<K, V>>) {
+    for (const key of Object.keys(entry) as K[]) {
+      if (entry[key]) {
+        this.put(key, entry[key])
+      }
+    }
+  }
+
   clear (): void {
     const keys = Object.keys(this.entry) as K[]
     for (const key of keys) {
@@ -88,12 +96,20 @@ export class Configure<K extends string, V> {
     this.current.put(key, value)
   }
 
+  putAll (entry: Partial<Record<K, V>>) {
+    this.current.putAll(entry)
+  }
+
   getDefault (key: K): V {
     return this._default.get(key)
   }
 
   putDefault (key: K, value: V): void {
     this._default.put(key, value)
+  }
+
+  putAllDefault (entry: Partial<Record<K, V>>) {
+    this._default.putAll(entry)
   }
 
   clear () {

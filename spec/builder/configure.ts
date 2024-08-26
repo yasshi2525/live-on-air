@@ -25,12 +25,26 @@ describe('Configure', () => {
     expect(config.getDefault('foo')).toEqual('bar')
     expect(config.get('foo')).toEqual('override')
   })
+  it('まとめて値が設定できる。変更がない値はそのまま', () => {
+    const config = new Configure<string, string>('none', {}, { foo: 'bar' })
+    expect(config.get('foo')).toEqual('bar')
+    config.putAll({ hogeK: 'hogeV' })
+    expect(config.get('hogeK')).toEqual('hogeV')
+    expect(config.get('foo')).toEqual('bar')
+  })
   it('デフォルト値を設定すると、デフォルトのデフォルト値を返さなくなる', () => {
     const config = new Configure('none')
     expect(config.get('foo')).toEqual('none')
     config.putDefault('foo', 'hoge')
     expect(config.getDefault('foo')).toEqual('hoge')
     expect(config.get('foo')).toEqual('hoge')
+  })
+  it('まとめてデフォルト値が設定できる。変更がない値はそのまま', () => {
+    const config = new Configure<string, string>('none', { foo: 'bar' })
+    expect(config.getDefault('foo')).toEqual('bar')
+    config.putAllDefault({ hogeK: 'hogeV' })
+    expect(config.getDefault('hogeK')).toEqual('hogeV')
+    expect(config.getDefault('foo')).toEqual('bar')
   })
   it('設定する値は必須', () => {
     const config = new Configure<string, string | null>('none')
