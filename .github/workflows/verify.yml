@@ -9,19 +9,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
+      - uses: actions/cache@v4
+        id: cache-restore
         with:
-          node-version: '20'
-          cache: npm
+          path: node_modules
+          key: dependencies-${{ hashFiles('package-lock.json') }}
       - run: npm ci
+        if: steps.cache-restore.outputs.cache-hit != 'true'
   lint:
     runs-on: ubuntu-latest
     needs: setup
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
+      - uses: actions/cache@v4
         with:
-          node-version: '20'
-          cache: npm
+          path: node_modules
+          key: dependencies-${{ hashFiles('package-lock.json') }}
       - run: ls -la node_modules/.bin
       - run: npm run lint:check
   test:
@@ -32,7 +36,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
+      - uses: actions/cache@v4
         with:
-          node-version: '20'
-          cache: npm
+          path: node_modules
+          key: dependencies-${{ hashFiles('package-lock.json') }}
       - run: npm test
