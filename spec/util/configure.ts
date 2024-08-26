@@ -1,4 +1,4 @@
-import { Configure } from '../../src/builder/configure'
+import { Configure } from '../../src/util/configure'
 
 describe('Configure', () => {
   it('デフォルトのデフォルト値は必須', () => {
@@ -53,6 +53,12 @@ describe('Configure', () => {
   it('設定するデフォルト値は必須', () => {
     const config = new Configure<string, string | null>('none')
     expect(() => config.putDefault('foo', null)).toThrow()
+  })
+  it('デフォルトのデフォルト値は必須', () => {
+    const config = new Configure<string, string | null>('none')
+    expect(() => {
+      config.default = null
+    }).toThrow()
   })
   it('設定した値を消去するとデフォルト値を返す', () => {
     const config = new Configure('none', { foo: 'bar' }, { foo: 'override' })
