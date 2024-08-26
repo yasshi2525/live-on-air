@@ -5,6 +5,17 @@ export class RecordConfigure<K extends string, V> {
     this.entry = { ...entry }
   }
 
+  keys (): K[] {
+    return Object.keys(this.entry) as K[]
+  }
+
+  entries (): Record<K, V> {
+    return this.keys().reduce((prev, current) => {
+      prev[current] = this.get(current)
+      return prev
+    }, {} as Record<K, V>)
+  }
+
   has (key: K): boolean {
     return key in this.entry
   }
