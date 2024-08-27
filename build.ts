@@ -5,4 +5,4 @@ if (fs.existsSync('lib')) {
   fs.rmSync('lib', { recursive: true })
 }
 execSync('tsc')
-fs.cpSync('image', 'lib/image')
+fs.cpSync('image', 'lib/image', { recursive: true })
