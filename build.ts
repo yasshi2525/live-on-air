@@ -6,3 +6,6 @@ if (fs.existsSync('lib')) {
 }
 execSync('tsc')
 fs.cpSync('image', 'lib/image', { recursive: true })
+fs.writeFileSync('akashic-lib.json', JSON.stringify({}))
+execSync('akashic scan asset')
+fs.renameSync('akashic-lib.json', 'lib/akashic-lib.json')
