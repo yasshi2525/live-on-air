@@ -18,8 +18,9 @@
   "author": "yasshi2525",
   "license": "MIT",
   "devDependencies": {
-    "@akashic/akashic-engine": "^3.18.2",
+    "@akashic/akashic-cli": "^2.17.18",
     "@types/jest": "^29.5.12",
+    "@types/node": "^20.16.1",
     "@yasshi2525/jest-environment-akashic": "^0.1.1",
     "@yasshi2525/pixi-image-packer": "^0.3.5",
     "cross-env": "^7.0.3",
@@ -35,5 +36,8 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.2.0"
+  },
+  "dependencies": {
+    "@akashic/akashic-engine": "^3.18.2"
   }
 }
