@@ -5,12 +5,12 @@ export class RecordConfigure<K extends string, V> {
     this.entry = { ...entry }
   }
 
-  keys (): K[] {
-    return Object.keys(this.entry) as K[]
+  keys (mandatory?: readonly K[]): K[] {
+    return [...new Set([...Object.keys(this.entry) as K[], ...mandatory ?? []]).keys()]
   }
 
-  entries (): Record<K, V> {
-    return this.keys().reduce((prev, current) => {
+  entries (mandatory?: readonly K[]): Record<K, V> {
+    return this.keys(mandatory).reduce((prev, current) => {
       prev[current] = this.get(current)
       return prev
     }, {} as Record<K, V>)

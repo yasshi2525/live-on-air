@@ -18,15 +18,15 @@ export class Configure<K extends string, V> {
     this._default.default = value
   }
 
-  keys (): K[] {
+  keys (mandatory?: K[]): K[] {
     return [...new Set<K>([
-      ...this._default.keys(),
-      ...this.current.keys()
+      ...this._default.keys(mandatory),
+      ...this.current.keys(mandatory)
     ]).keys()]
   }
 
-  entries (): Record<K, V> {
-    return { ...this._default.entries(), ...this.current.entries() }
+  entries (mandatory?: readonly K[]): Record<K, V> {
+    return { ...this._default.entries(mandatory), ...this.current.entries() }
   }
 
   get (key: K): V {
