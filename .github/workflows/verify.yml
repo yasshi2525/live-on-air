@@ -51,7 +51,13 @@ jobs:
         with:
           path: /home/runner/.cache/puppeteer
           key: dependencies-${{ hashFiles('package-lock.json') }}
+      - uses: actions/cache@v4
+        id: image-cache-restore
+        with:
+          path: image
+          key: image-${{ hashFiles('resource/image/**') }}
       - run: npm run build:image
+        if: steps.image-cache-restore.outputs.cache-hit != 'true'
   test:
     runs-on: ubuntu-latest
     needs:
@@ -65,4 +71,8 @@ jobs:
         with:
           path: node_modules
           key: dependencies-${{ hashFiles('package-lock.json') }}
+      - uses: actions/cache@v4
+        with:
+          path: image
+          key: image-${{ hashFiles('resource/image/**') }}
       - run: npm test
