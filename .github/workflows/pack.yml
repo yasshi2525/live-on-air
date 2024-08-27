@@ -36,6 +36,7 @@ jobs:
       - run: npm pack
       - run: echo "VERSION=$(cat package.json | jq '.version' | tr -d '"')" >> $GITHUB_ENV
       - run: echo "TIMESTAMP=$(TZ='Asia/Tokyo' date "+%Y%m%d-%H%M%S")" >> $GITHUB_ENV
+      - run: tar -xzf yasshi2525-live-on-air-${{ env.VERSION }}.tgz
       - uses: actions/upload-artifact@v4
         with:
           name: yasshi2525-live-on-air-${{ env.VERSION }}-${{ env.TIMESTAMP }}
