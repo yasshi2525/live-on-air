@@ -95,4 +95,12 @@ describe('Configure', () => {
     expect(config.keys()).toEqual(['foo', 'hogeK'])
     expect(config.entries()).toEqual({ foo: 'override', hogeK: 'hogeV' })
   })
+  it('指定した要素名を含むキー一覧が出力される', () => {
+    const config = new Configure('none')
+    expect(config.keys(['explicit'])).toEqual(['explicit'])
+  })
+  it('指定した要素名を含むエントリ一覧が出力される', () => {
+    const config = new Configure('none')
+    expect(config.entries(['explicit'])).toEqual({ explicit: 'none' })
+  })
 })
