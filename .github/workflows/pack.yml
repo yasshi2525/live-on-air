@@ -1,0 +1,42 @@
+name: pack
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - uses: actions/cache@v4
+        id: node-cache-restore
+        with:
+          path: node_modules
+          key: dependencies-${{ hashFiles('package-lock.json') }}
+      - run: npm ci
+        if: steps.node-cache-restore.outputs.cache-hit != 'true'
+      - uses: actions/cache@v4
+        id: chrome-cache-restore
+        with:
+          path: /home/runner/.cache/puppeteer
+          key: dependencies-${{ hashFiles('package-lock.json') }}
+      - run: node node_modules/puppeteer/install.js
+        if: steps.chrome-cache-restore.outputs.cache-hit != 'true'
+      - uses: actions/cache@v4
+        id: image-cache-restore
+        with:
+          path: image
+          key: image-${{ hashFiles('resource/image/**') }}
+      - run: npm run build:image
+        if: steps.image-cache-restore.outputs.cache-hit != 'true'
+      - run: npm run build
+      - run: npm pack
+      - run: echo "VERSION=$(cat package.json | jq '.version' | tr -d '"')" >> $GITHUB_ENV
+      - run: echo "TIMESTAMP=$(TZ='Asia/Tokyo' date "+%Y%m%d-%H%M%S")" >> $GITHUB_ENV
+      - uses: actions/upload-artifact@v4
+        with:
+          name: yasshi2525-live-on-air-${{ env.VERSION }}-${{ env.TIMESTAMP }}
+          path: package

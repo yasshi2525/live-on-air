@@ -1,7 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "types": ["jest"]
+    "types": ["jest", "@yasshi2525/jest-environment-akashic-global"]
   },
   "include": ["**/*.ts"]
 }

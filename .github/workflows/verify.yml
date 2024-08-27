@@ -10,12 +10,19 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
       - uses: actions/cache@v4
-        id: cache-restore
+        id: node-cache-restore
         with:
           path: node_modules
           key: dependencies-${{ hashFiles('package-lock.json') }}
       - run: npm ci
-        if: steps.cache-restore.outputs.cache-hit != 'true'
+        if: steps.node-cache-restore.outputs.cache-hit != 'true'
+      - uses: actions/cache@v4
+        id: chrome-cache-restore
+        with:
+          path: /home/runner/.cache/puppeteer
+          key: dependencies-${{ hashFiles('package-lock.json') }}
+      - run: node node_modules/puppeteer/install.js
+        if: steps.chrome-cache-restore.outputs.cache-hit != 'true'
   lint:
     runs-on: ubuntu-latest
     needs: setup
@@ -27,7 +34,7 @@ jobs:
           path: node_modules
           key: dependencies-${{ hashFiles('package-lock.json') }}
       - run: npm run lint:check
-  test:
+  build:
     runs-on: ubuntu-latest
     needs:
       - setup
@@ -39,4 +46,33 @@ jobs:
         with:
           path: node_modules
           key: dependencies-${{ hashFiles('package-lock.json') }}
+      - uses: actions/cache@v4
+        id: chrome-cache-restore
+        with:
+          path: /home/runner/.cache/puppeteer
+          key: dependencies-${{ hashFiles('package-lock.json') }}
+      - uses: actions/cache@v4
+        id: image-cache-restore
+        with:
+          path: image
+          key: image-${{ hashFiles('resource/image/**') }}
+      - run: npm run build:image
+        if: steps.image-cache-restore.outputs.cache-hit != 'true'
+  test:
+    runs-on: ubuntu-latest
+    needs:
+      - setup
+      - lint
+      - build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: dependencies-${{ hashFiles('package-lock.json') }}
+      - uses: actions/cache@v4
+        with:
+          path: image
+          key: image-${{ hashFiles('resource/image/**') }}
       - run: npm test

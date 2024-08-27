@@ -1,8 +1,3 @@
-/**
- * For a detailed explanation regarding each configuration property, visit:
- * https://jestjs.io/docs/configuration
- */
-
 import type { Config } from 'jest'
 
 const config: Config = {
@@ -11,7 +6,16 @@ const config: Config = {
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
   testMatch: ['<rootDir>/spec/**/*.ts'],
-  transform: { '^.+.tsx?$': 'ts-jest' }
+  testPathIgnorePatterns: ['__setup'],
+  transform: {
+    '^.+.tsx?$': [
+      'ts-jest', { tsconfig: '<rootDir>/spec/tsconfig.json' }
+    ]
+  },
+  testEnvironment: '@yasshi2525/jest-environment-akashic',
+  globalSetup: '<rootDir>/spec/__setup/setup.ts',
+  globalTeardown: '<rootDir>/spec/__setup/teardown.ts',
+  setupFilesAfterEnv: ['<rootDir>/spec/__setup/mock.ts']
 }
 
 export default config
