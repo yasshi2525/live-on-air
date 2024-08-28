@@ -22,14 +22,14 @@ export class RecordConfigure<K extends string, V> {
 
   get (key: K): V {
     if (!this.entry[key]) {
-      throw new Error(`Unknown key "${key}" in group config`)
+      throw new Error(`存在しないキー "${key}" の値を取得しようとしました. 正しいキー名を指定してください`)
     }
     return this.entry[key]
   }
 
   put (key: K, value: V): void {
     if (!value) {
-      throw new Error(`Value of key "${key}" must be set`)
+      throw new Error(`値がセットされていません. キー "${key}" に対する値を設定してください`)
     }
     this.entry[key] = value
   }

@@ -41,7 +41,8 @@ export class SpotImpl implements Spot {
 
   deployOn (field: Field): void {
     if (this._field && this._field !== field) {
-      throw new Error('could not deploy on target field because this spot is already deployed on other field')
+      throw new Error('このspotはすでに異なるfieldに配置されているので、指定のfieldに配置できません.' +
+        ' spotは複数のfieldに配置できないので、fieldごとにspotを作成してください')
     }
 
     this._field = field
