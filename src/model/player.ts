@@ -36,7 +36,8 @@ export class PlayerImpl implements Player {
 
   standOn (field: Field): void {
     if (this._field && this._field !== field) {
-      throw new Error('could not stand on target field because this player has already stood on other field')
+      throw new Error('このplayerはすでに異なるfieldに配置されているので、指定のfieldに配置できません.' +
+        ' playerはただ一人である必要があり、fieldには複数のplayerを配置できません')
     }
 
     this._field = field

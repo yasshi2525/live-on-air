@@ -50,10 +50,12 @@ export class FieldImpl implements Field {
 
   addPlayer (player: Player): void {
     if (this._player && this._player !== player) {
-      throw new Error('could not add player to this field because other player was already added to it')
+      throw new Error('このfieldにはすでに異なるplayerが配置されているので、指定のplayerを配置できません.' +
+        ' playerはただ一人である必要があり、fieldには複数のplayerを配置できません')
     }
     if (player.field && player.field !== this) {
-      throw new Error('could not add player because this player has already stood on other field')
+      throw new Error('指定のplayerはすでに異なるfieldに配置されているので、このfieldに配置できません.' +
+        ' playerはただ一人である必要があり、playerは複数のfieldに配置できません')
     }
 
     this._player = player
@@ -65,7 +67,8 @@ export class FieldImpl implements Field {
 
   addSpot (spot: Spot): void {
     if (spot.field && spot.field !== this) {
-      throw new Error('could not add spot because this spot is already deployed on other field')
+      throw new Error('指定のspotはすでに異なるfieldに配置されているので、このfieldに配置できません.' +
+        ' spotは複数のfieldに配置できないので、fieldごとにspotを作成してください')
     }
 
     this._spots.add(spot)

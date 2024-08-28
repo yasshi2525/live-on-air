@@ -3,7 +3,7 @@ import { RecordConfigure } from './configureRecord'
 export class RecordWithDefaultConfigure<K extends string, V> extends RecordConfigure<K, V> {
   constructor (private _default: V, entry: Partial<Record<K, V>>) {
     if (!_default) {
-      throw new Error('default value must be set')
+      throw new Error(`存在しない値 "${_default}" をデフォルト値に設定しようとしました. デフォルト値は存在する必要があります`)
     }
     super(entry)
   }
@@ -14,13 +14,12 @@ export class RecordWithDefaultConfigure<K extends string, V> extends RecordConfi
 
   set default (value: V) {
     if (!value) {
-      throw new Error('default value must be set')
+      throw new Error(`存在しない値 "${value}" をデフォルト値に設定しようとしました. デフォルト値は存在する必要があります`)
     }
     this._default = value
   }
 
-  override has (key: K): boolean {
-    console.warn(`default config always has value of key ${key}`)
+  override has (): boolean {
     return true
   }
 
