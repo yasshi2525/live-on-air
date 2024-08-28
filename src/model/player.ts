@@ -42,7 +42,7 @@ export class PlayerImpl implements Player {
     this._field = field
     this._location = { x: 0, y: 0 }
 
-    if (!field.players.some(p => p !== this)) {
+    if (!field.player) {
       field.addPlayer(this)
     }
   }

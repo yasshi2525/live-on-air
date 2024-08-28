@@ -1,6 +1,5 @@
 import { Field, FieldImpl } from '../../src/model/field'
-import { Spot } from '../../src/model/spot'
-import { SpotBuilder } from '../../src'
+import { SpotBuilder, Spot } from '../../src'
 import { Player, PlayerImpl } from '../../src/model/player'
 
 describe('field', () => {
@@ -44,7 +43,7 @@ describe('field', () => {
   it('プレイヤーが自身に登録できる', () => {
     const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
     field.addPlayer(player)
-    expect(field.players).toContain(player)
+    expect(field.player).toBe(player)
     expect(player.field).toBe(field)
   })
 
@@ -52,8 +51,18 @@ describe('field', () => {
     const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
     field.addPlayer(player)
     field.addPlayer(player)
-    expect(field.players).toContain(player)
+    expect(field.player).toBe(player)
     expect(player.field).toBe(field)
+  })
+
+  it('Playerは二人以上(player2)登録できない', () => {
+    const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
+    const otherPlayer = new PlayerImpl()
+    field.addPlayer(player)
+    expect(() => field.addPlayer(otherPlayer)).toThrow()
+    expect(field.player).toBe(player)
+    expect(player.field).toBe(field)
+    expect(otherPlayer.field).not.toBeDefined()
   })
 
   it('異なるFieldに属するplayerの登録は受け付けない', () => {
@@ -61,7 +70,7 @@ describe('field', () => {
     const otherField: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
     otherField.addPlayer(player)
     expect(() => field.addPlayer(player)).toThrow()
-    expect(otherField.players).toContain(player)
+    expect(otherField.player).toBe(player)
     expect(player.field).toBe(otherField)
   })
 })
