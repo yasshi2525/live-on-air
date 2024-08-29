@@ -3,7 +3,7 @@ import type { Config } from 'jest'
 const config: Config = {
   clearMocks: true,
   collectCoverage: true,
-  coverageDirectory: 'coverage',
+  coverageDirectory: 'tmp/coverage',
   coverageProvider: 'babel',
   testMatch: ['<rootDir>/spec/**/*.ts'],
   testPathIgnorePatterns: ['__setup'],
