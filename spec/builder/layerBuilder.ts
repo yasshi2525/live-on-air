@@ -1,5 +1,25 @@
 import { LayerBuilder } from '../../src/builder/layerBuilder'
-import { LayerType } from '../../src/builder/layerConfig'
+import { LayerType, layerTypes } from '../../src/builder/layerConfig'
+import { image } from '../../src/util/loader'
+import { Layer } from '../../src/model/layer'
+
+const insertDebugView = (layer: Layer) => {
+  for (const typ of layerTypes) {
+    layer[typ].append(new g.FilledRect({
+      scene,
+      width: layer[typ].width,
+      height: layer[typ].height,
+      cssColor: '#888888',
+      opacity: 0.25
+    }))
+    layer[typ].append(new g.Sprite({
+      scene,
+      src: image(scene, `image/layer.${typ}.label.png`),
+      x: layer[typ].width / 2,
+      anchorX: 0.5
+    }))
+  }
+}
 
 describe('LayerBuilder', () => {
   it('デフォルトの設定で構築できる', () => {
@@ -9,6 +29,8 @@ describe('LayerBuilder', () => {
       expect(layer[typ]).toBeInstanceOf(g.E)
     }
     expect(scene.children).toEqual([layer.field])
+
+    insertDebugView(layer)
     gameContext.step()
     screenshot('layer-builder.default.png')
   })
@@ -18,6 +40,8 @@ describe('LayerBuilder', () => {
       .field({ x: 100, y: 100, width: 500, height: 500 })
       .build()
     expect(layer.field).toMatchObject({ x: 100, y: 100, width: 500, height: 500 })
+
+    insertDebugView(layer)
     gameContext.step()
     screenshot('layer-builder.custom.png')
   })
