@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "build": "ts-node build.ts",
-    "build:image": "cross-env NODE_OPTIONS=--no-experimental-fetch pixi-image-packer-cli resource/image/index.ts -o image -f resource/font --sync",
+    "build:image": "cross-env NODE_OPTIONS=--no-experimental-fetch pixi-image-packer-cli resource/image/index.ts -o image --sync",
     "lint:check": "eslint --ignore-pattern lib .",
     "lint": "eslint --ignore-pattern lib --fix .",
     "test": "jest"
