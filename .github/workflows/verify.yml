@@ -81,6 +81,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: yasshi2525-live-on-air-test-result-${{ env.VERSION }}-${{ env.TIMESTAMP }}
-          path:
-            - coverage
-            - tmp/screenshot
+          path: tmp
