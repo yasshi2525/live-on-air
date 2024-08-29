@@ -2,4 +2,6 @@ coverage
 /image
 lib
 node_modules
+tmp
+akashic-lib.json
 game.json
