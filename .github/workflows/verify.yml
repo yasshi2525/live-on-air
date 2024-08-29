@@ -21,7 +21,7 @@ jobs:
         with:
           path: /home/runner/.cache/puppeteer
           key: dependencies-${{ hashFiles('package-lock.json') }}
-      - run: node node_modules/puppeteer/install.js
+      - run: node node_modules/puppeteer/install.mjs
         if: steps.chrome-cache-restore.outputs.cache-hit != 'true'
   lint:
     runs-on: ubuntu-latest
