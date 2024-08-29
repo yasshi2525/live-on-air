@@ -37,6 +37,18 @@ export interface Field {
    * @param spot 配置するスポット
    */
   addSpot(spot: Spot): void
+
+  /**
+   * 指定した Spot 以外を Player が目的地に選択できないようにします.
+   *
+   * @param spot 目的地に設定する Spot
+   */
+  disableSpotExcept(spot: Spot): void
+
+  /**
+   * 指定した Spot 以外を  Player が目的地として選択できるようにします.
+   */
+  enableSpotExcept(spot: Spot): void
 }
 
 export class FieldImpl implements Field {
@@ -75,6 +87,18 @@ export class FieldImpl implements Field {
 
     if (!spot.field) {
       spot.deployOn(this)
+    }
+  }
+
+  disableSpotExcept (spot: Spot): void {
+    for (const s of [...this._spots].filter(sp => sp !== spot)) {
+      s.disable()
+    }
+  }
+
+  enableSpotExcept (spot: Spot): void {
+    for (const s of [...this._spots].filter(sp => sp !== spot)) {
+      s.enable()
     }
   }
 

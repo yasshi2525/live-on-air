@@ -4,11 +4,13 @@ import { Player, PlayerImpl } from '../../src/model/player'
 
 describe('field', () => {
   let spot1: Spot
+  let spot2: Spot
   let player: Player
 
   beforeEach(() => {
     spot1 = new SpotBuilder(scene).build()
-    player = new PlayerImpl()
+    spot2 = new SpotBuilder(scene).build()
+    player = new PlayerImpl(1)
   })
 
   it('サイズを設定できる', () => {
@@ -57,7 +59,7 @@ describe('field', () => {
 
   it('Playerは二人以上(player2)登録できない', () => {
     const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
-    const otherPlayer = new PlayerImpl()
+    const otherPlayer = new PlayerImpl(1)
     field.addPlayer(player)
     expect(() => field.addPlayer(otherPlayer)).toThrow()
     expect(field.player).toBe(player)
@@ -72,5 +74,29 @@ describe('field', () => {
     expect(() => field.addPlayer(player)).toThrow()
     expect(otherField.player).toBe(player)
     expect(player.field).toBe(otherField)
+  })
+
+  it('特定のSpot(spot1)以外のSpot(spot2)を目的地として設定できないようになる', () => {
+    const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
+    field.addSpot(spot1)
+    field.addSpot(spot2)
+    expect(spot1.status).toEqual('enabled')
+    expect(spot2.status).toEqual('enabled')
+    field.disableSpotExcept(spot1)
+    expect(spot1.status).toEqual('enabled')
+    expect(spot2.status).toEqual('disabled')
+  })
+
+  it('特定のSpot(spot1)以外のSpot(spot2)が訪問可能になる', () => {
+    const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
+    field.addSpot(spot1)
+    field.addSpot(spot2)
+    field.addPlayer(player)
+    player.departTo(spot1)
+    expect(spot1.status).toEqual('target')
+    expect(spot2.status).toEqual('disabled')
+    field.enableSpotExcept(spot1)
+    expect(spot1.status).toEqual('target')
+    expect(spot2.status).toEqual('enabled')
   })
 })
