@@ -4,7 +4,7 @@ const config: Config = {
   clearMocks: true,
   collectCoverage: true,
   coverageDirectory: 'coverage',
-  coverageProvider: 'v8',
+  coverageProvider: 'babel',
   testMatch: ['<rootDir>/spec/**/*.ts'],
   testPathIgnorePatterns: ['__setup'],
   transform: {
