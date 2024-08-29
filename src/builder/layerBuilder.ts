@@ -1,5 +1,5 @@
 import { Configure } from '../util/configure'
-import { LayerType } from './layerConfig'
+import { LayerType, layerTypes } from './layerConfig'
 import { Layer, LayerImpl } from '../model/layer'
 
 /**
@@ -31,6 +31,6 @@ export class LayerBuilder {
    * 設定されたレイアウト情報をもとに各レイヤを作成し、sceneに登録します
    */
   build (): Layer {
-    return new LayerImpl(this.scene, { field: this.config.get('field') })
+    return new LayerImpl(this.scene, this.config.entries(layerTypes))
   }
 }
