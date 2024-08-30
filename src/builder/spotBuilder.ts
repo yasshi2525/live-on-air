@@ -23,7 +23,7 @@ export class SpotBuilder implements SpotConfigure {
 
   private readonly imgConfig: Configure<SpotImageTypes, g.ImageAsset>
 
-  constructor (scene: g.Scene) {
+  constructor (private readonly scene: g.Scene) {
     this.imgConfig = new Configure<SpotImageTypes, g.ImageAsset>(image(scene, 'image/spot.default.png'))
     this.default = new DefaultSpotConfigureImpl(this.imgConfig._default)
     this.current = new SpotConfigureImpl(this.imgConfig.current)
@@ -52,6 +52,6 @@ export class SpotBuilder implements SpotConfigure {
   }
 
   build (): Spot {
-    return new SpotImpl(this.images)
+    return new SpotImpl(this.scene, this.images)
   }
 }

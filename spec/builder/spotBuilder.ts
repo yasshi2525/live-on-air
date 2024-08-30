@@ -60,5 +60,7 @@ describe('spotBuilder', () => {
     for (const typ of spotImageTypes) {
       expect(spot.assets[typ].path).toEqual('./image/spot.default.png')
     }
+    expect(spot.view).toBeInstanceOf(g.Sprite)
+    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/spot.default.png')
   })
 })
