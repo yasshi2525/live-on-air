@@ -21,6 +21,8 @@ export class RecordConfigure<K extends string, V> {
   }
 
   get (key: K): V {
+    // 本クラスを内部メンバとして持つ Configure は事前に存在チェックをしているので非到達
+    // istanbul ignore if
     if (!this.entry[key]) {
       throw new Error(`存在しないキー "${key}" の値を取得しようとしました. 正しいキー名を指定してください`)
     }
