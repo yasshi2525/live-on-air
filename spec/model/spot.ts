@@ -1,6 +1,5 @@
 import { Field, FieldImpl } from '../../src/model/field'
-import { SpotBuilder } from '../../src'
-import { Player, PlayerImpl } from '../../src/model/player'
+import { PlayerBuilder, Player, SpotBuilder } from '../../src'
 
 describe('Spot', () => {
   let sb: SpotBuilder
@@ -12,7 +11,7 @@ describe('Spot', () => {
     sb = new SpotBuilder(scene)
     field1 = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
     field2 = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
-    player = new PlayerImpl(1)
+    player = new PlayerBuilder(scene).build()
     player.standOn(field1)
   })
 
