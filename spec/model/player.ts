@@ -1,5 +1,4 @@
-import { Field, FieldImpl } from '../../src/model/field'
-import { PlayerBuilder, Spot, SpotBuilder } from '../../src'
+import { FieldBuilder, Field, PlayerBuilder, Spot, SpotBuilder } from '../../src'
 
 describe('Player', () => {
   let field1: Field
@@ -9,8 +8,8 @@ describe('Player', () => {
   let spot2: Spot
 
   beforeEach(() => {
-    field1 = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
-    field2 = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
+    field1 = new FieldBuilder().build()
+    field2 = new FieldBuilder().build()
     sb = new SpotBuilder(scene)
     spot1 = sb.build()
     spot2 = sb.build()
