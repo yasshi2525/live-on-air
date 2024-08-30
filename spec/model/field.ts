@@ -1,6 +1,5 @@
 import { Field, FieldImpl } from '../../src/model/field'
-import { SpotBuilder, Spot } from '../../src'
-import { Player, PlayerImpl } from '../../src/model/player'
+import { SpotBuilder, Spot, PlayerBuilder, Player } from '../../src'
 
 describe('field', () => {
   let spot1: Spot
@@ -10,7 +9,7 @@ describe('field', () => {
   beforeEach(() => {
     spot1 = new SpotBuilder(scene).build()
     spot2 = new SpotBuilder(scene).build()
-    player = new PlayerImpl(1)
+    player = new PlayerBuilder(scene).build()
   })
 
   it('サイズを設定できる', () => {
@@ -59,7 +58,7 @@ describe('field', () => {
 
   it('Playerは二人以上(player2)登録できない', () => {
     const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
-    const otherPlayer = new PlayerImpl(1)
+    const otherPlayer = new PlayerBuilder(scene).build()
     field.addPlayer(player)
     expect(() => field.addPlayer(otherPlayer)).toThrow()
     expect(field.player).toBe(player)
