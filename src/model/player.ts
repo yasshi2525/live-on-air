@@ -31,9 +31,9 @@ export interface Player {
   readonly location?: Readonly<g.CommonOffset>
 
   /**
-   * 現在描画されているスポットのエンティティ.
+   * 現在描画されているプレイヤーのエンティティ.
    */
-  readonly view?: g.E
+  readonly view: g.E
 
   /**
    * プレイヤーが所属するマップ.
