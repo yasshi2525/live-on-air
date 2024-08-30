@@ -1,32 +1,32 @@
-import { Field, FieldImpl } from '../../src/model/field'
-import { SpotBuilder, Spot } from '../../src'
-import { Player, PlayerImpl } from '../../src/model/player'
+import { SpotBuilder, Spot, PlayerBuilder, Player, Field, FieldBuilder } from '../../src'
+import { FieldImpl } from '../../src/model/field'
 
 describe('field', () => {
   let spot1: Spot
   let spot2: Spot
   let player: Player
+  let layer1: g.E
+  let layer2: g.E
 
   beforeEach(() => {
     spot1 = new SpotBuilder(scene).build()
     spot2 = new SpotBuilder(scene).build()
-    player = new PlayerImpl(1)
-  })
-
-  it('サイズを設定できる', () => {
-    const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
-    expect(field.area).toEqual({ x: 10, y: 10, width: 500, height: 300 })
+    player = new PlayerBuilder(scene).build()
+    layer1 = new g.E({ scene, parent: scene, x: 10, y: 10, width: 500, height: 300 })
+    layer2 = new g.E({ scene, parent: scene, x: 520, y: 20, width: 600, height: 600 })
+    layer1.append(new g.FilledRect({ scene, width: layer1.width, height: layer1.height, cssColor: '#ffaaaa', opacity: 0.25 }))
+    layer2.append(new g.FilledRect({ scene, width: layer2.width, height: layer2.height, cssColor: '#aaffaa', opacity: 0.25 }))
   })
 
   it('スポットが自身に登録できる', () => {
-    const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
+    const field: Field = new FieldBuilder().build()
     field.addSpot(spot1)
     expect(field.spots).toContain(spot1)
     expect(spot1.field).toBe(field)
   })
 
   it('同じSpotが二回登録を試みても警告だけで何もしない', () => {
-    const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
+    const field: Field = new FieldBuilder().build()
     field.addSpot(spot1)
     field.addSpot(spot1)
     expect(field.spots).toContain(spot1)
@@ -34,8 +34,8 @@ describe('field', () => {
   })
 
   it('異なるFieldに属するspotの登録は受け付けない', () => {
-    const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
-    const otherField: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
+    const field: Field = new FieldBuilder().build()
+    const otherField: Field = new FieldBuilder().build()
     otherField.addSpot(spot1)
     expect(() => field.addSpot(spot1)).toThrow()
     expect(otherField.spots).toContain(spot1)
@@ -43,14 +43,14 @@ describe('field', () => {
   })
 
   it('プレイヤーが自身に登録できる', () => {
-    const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
+    const field: Field = new FieldBuilder().build()
     field.addPlayer(player)
     expect(field.player).toBe(player)
     expect(player.field).toBe(field)
   })
 
   it('同じPlayerが二回登録を試みても警告だけで何もしない', () => {
-    const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
+    const field: Field = new FieldBuilder().build()
     field.addPlayer(player)
     field.addPlayer(player)
     expect(field.player).toBe(player)
@@ -58,8 +58,8 @@ describe('field', () => {
   })
 
   it('Playerは二人以上(player2)登録できない', () => {
-    const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
-    const otherPlayer = new PlayerImpl(1)
+    const field: Field = new FieldBuilder().build()
+    const otherPlayer = new PlayerBuilder(scene).build()
     field.addPlayer(player)
     expect(() => field.addPlayer(otherPlayer)).toThrow()
     expect(field.player).toBe(player)
@@ -68,8 +68,8 @@ describe('field', () => {
   })
 
   it('異なるFieldに属するplayerの登録は受け付けない', () => {
-    const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
-    const otherField: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
+    const field: Field = new FieldBuilder().build()
+    const otherField: Field = new FieldBuilder().build()
     otherField.addPlayer(player)
     expect(() => field.addPlayer(player)).toThrow()
     expect(otherField.player).toBe(player)
@@ -77,7 +77,7 @@ describe('field', () => {
   })
 
   it('特定のSpot(spot1)以外のSpot(spot2)を目的地として設定できないようになる', () => {
-    const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
+    const field: Field = new FieldBuilder().build()
     field.addSpot(spot1)
     field.addSpot(spot2)
     expect(spot1.status).toEqual('enabled')
@@ -88,7 +88,7 @@ describe('field', () => {
   })
 
   it('特定のSpot(spot1)以外のSpot(spot2)が訪問可能になる', () => {
-    const field: Field = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
+    const field: Field = new FieldBuilder().build()
     field.addSpot(spot1)
     field.addSpot(spot2)
     field.addPlayer(player)
@@ -98,5 +98,67 @@ describe('field', () => {
     field.enableSpotExcept(spot1)
     expect(spot1.status).toEqual('target')
     expect(spot2.status).toEqual('enabled')
+  })
+
+  it('g.Eを登録すると今まで登録されたspot,playerが画面に描画される', () => {
+    const field: Field = new FieldImpl()
+    field.addSpot(spot1)
+    field.addSpot(spot2)
+    field.addPlayer(player)
+    expect(field.view).not.toBeDefined()
+    expect(field.area).not.toBeDefined()
+    gameContext.step()
+    screenshot('field.view.initial.png')
+    field.view = layer1
+    expect(spot1.view.parent).toBe(layer1)
+    expect(spot2.view.parent).toBe(layer1)
+    expect(player.view.parent).toBe(layer1)
+    expect(field.area).toEqual({ x: 10, y: 10, width: 500, height: 300 })
+    gameContext.step()
+    screenshot('field.view.follow.png')
+  })
+
+  it('先にg.Eを登録してからspot,playerを登録しても描画される', () => {
+    const field: Field = new FieldImpl()
+    field.view = layer1
+    field.addSpot(spot1)
+    field.addSpot(spot2)
+    field.addPlayer(player)
+    expect(spot1.view.parent).toBe(layer1)
+    expect(spot2.view.parent).toBe(layer1)
+    expect(player.view.parent).toBe(layer1)
+    expect(field.area).toEqual({ x: 10, y: 10, width: 500, height: 300 })
+    gameContext.step()
+    screenshot('field.view.register.png')
+  })
+
+  it('viewを差し替えるとspot,playerは差し替え後の方に所属する', () => {
+    const field: Field = new FieldImpl()
+    field.addSpot(spot1)
+    field.addSpot(spot2)
+    field.addPlayer(player)
+    field.view = layer1
+    field.view = layer2
+    expect(spot1.view.parent).toBe(layer2)
+    expect(spot2.view.parent).toBe(layer2)
+    expect(player.view.parent).toBe(layer2)
+    expect(field.area).toEqual({ x: 520, y: 20, width: 600, height: 600 })
+    gameContext.step()
+    screenshot('field.view.change.png')
+  })
+
+  it('viewが削除されるとspot,playerも孤立する', () => {
+    const field: Field = new FieldImpl()
+    field.addSpot(spot1)
+    field.addSpot(spot2)
+    field.addPlayer(player)
+    field.view = layer1
+    field.view = undefined
+    expect(spot1.view.parent).not.toBeDefined()
+    expect(spot2.view.parent).not.toBeDefined()
+    expect(player.view.parent).not.toBeDefined()
+    expect(field.area).not.toBeDefined()
+    gameContext.step()
+    screenshot('field.view.remove.png')
   })
 })

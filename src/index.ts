@@ -1,3 +1,5 @@
+export { FieldBuilder } from './builder/fieldBuilder'
+export { PlayerBuilder } from './builder/playerBuilder'
 export { SpotBuilder } from './builder/spotBuilder'
 export { SpotImageConfig } from './builder/spotConfig'
 export { SpotConfigure } from './builder/spotConfigure'

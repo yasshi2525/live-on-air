@@ -22,6 +22,11 @@ export interface Spot {
   readonly location?: Readonly<g.CommonOffset>
 
   /**
+   * 現在描画されているスポットのエンティティ.
+   */
+  readonly view: g.E
+
+  /**
    * 各場面における画像アセット一覧を取得します
    */
   assets: Readonly<SpotImageConfig>
@@ -70,12 +75,15 @@ export interface Spot {
 }
 
 export class SpotImpl implements Spot {
+  private readonly _view: g.E
   private _field?: Field
   private _location?: g.CommonOffset
   private _status: SpotStatus = 'non-deployed'
 
   // eslint-disable-next-line no-useless-constructor
-  constructor (public assets: Readonly<SpotImageConfig>) {}
+  constructor (scene: g.Scene, public assets: Readonly<SpotImageConfig>) {
+    this._view = new g.Sprite({ scene, src: assets.normal })
+  }
 
   deployOn (field: Field): void {
     if (this._field && this._field !== field) {
@@ -142,6 +150,10 @@ export class SpotImpl implements Spot {
 
   get field (): Field | undefined {
     return this._field
+  }
+
+  get view (): g.E {
+    return this._view
   }
 
   get location (): Readonly<g.CommonOffset> | undefined {

@@ -1,6 +1,4 @@
-import { Field, FieldImpl } from '../../src/model/field'
-import { SpotBuilder } from '../../src'
-import { Player, PlayerImpl } from '../../src/model/player'
+import { PlayerBuilder, Field, Player, SpotBuilder, FieldBuilder } from '../../src'
 
 describe('Spot', () => {
   let sb: SpotBuilder
@@ -10,9 +8,9 @@ describe('Spot', () => {
 
   beforeEach(() => {
     sb = new SpotBuilder(scene)
-    field1 = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
-    field2 = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
-    player = new PlayerImpl(1)
+    field1 = new FieldBuilder().build()
+    field2 = new FieldBuilder().build()
+    player = new PlayerBuilder(scene).build()
     player.standOn(field1)
   })
 
@@ -85,7 +83,7 @@ describe('Spot', () => {
   })
 
   it('playerがいない場合、移動対象として設定できない', () => {
-    const freeField = new FieldImpl({ x: 10, y: 10, width: 500, height: 300 })
+    const freeField = new FieldBuilder().build()
     const spot = sb.build()
     spot.deployOn(freeField)
     expect(() => spot.setAsDestination()).toThrow()
