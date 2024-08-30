@@ -1,21 +1,27 @@
 import { PlayerBuilder } from '../../src'
+import { image } from '../../src/util/loader'
 
 describe('playerBuilder', () => {
   it('デフォルトの設定で作成できる', () => {
-    const pb = new PlayerBuilder()
+    const pb = new PlayerBuilder(scene)
     const player = pb.build()
     expect(player.speed).toBe(1)
+    expect(player.view).toBeInstanceOf(g.Sprite)
+    expect((player.view as g.Sprite).src).toBe(image(scene, 'player.default.png'))
   })
 
   it('カスタム設定で作成できる', () => {
-    const pb = new PlayerBuilder()
+    const pb = new PlayerBuilder(scene)
     pb.speed = 2
+    pb.asset = image(scene, 'default.png')
     const player = pb.build()
     expect(player.speed).toBe(2)
+    expect(player.view).toBeInstanceOf(g.Sprite)
+    expect((player.view as g.Sprite).src).toBe(image(scene, 'default.png'))
   })
 
   it('不正な値は設定できない', () => {
-    const pb = new PlayerBuilder()
+    const pb = new PlayerBuilder(scene)
     expect(() => {
       pb.speed = -1
     }).toThrow()

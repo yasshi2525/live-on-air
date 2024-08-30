@@ -31,6 +31,11 @@ export interface Player {
   readonly location?: Readonly<g.CommonOffset>
 
   /**
+   * 現在描画されているスポットのエンティティ.
+   */
+  readonly view?: g.E
+
+  /**
    * プレイヤーが所属するマップ.
    *
    * マップ上にいないときは undefined が返されます
@@ -99,13 +104,15 @@ export interface Player {
 
 export class PlayerImpl implements Player {
   private _field?: Field
+  private readonly _view: g.E
   private _location?: g.CommonOffset
   private _staying?: Spot
   private _destination?: Spot
   private _status: PlayerStatus = 'non-field'
 
-  // eslint-disable-next-line no-useless-constructor
-  constructor (protected _speed: number) { }
+  constructor (_scene: g.Scene, _asset: g.ImageAsset, protected _speed: number) {
+    this._view = new g.Sprite({ scene: _scene, src: _asset })
+  }
 
   standOn (field: Field): void {
     if (this._field && this._field !== field) {
@@ -202,6 +209,10 @@ export class PlayerImpl implements Player {
       return { ...this._location }
     }
     return undefined
+  }
+
+  get view (): g.E {
+    return this._view
   }
 
   get field (): Field | undefined {

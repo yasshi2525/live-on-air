@@ -1,4 +1,6 @@
 import { Player, PlayerImpl } from '../model/player'
+import { Configure } from '../util/configure'
+import { image } from '../util/loader'
 
 /**
  * プレイヤー Player を簡便に作るためのクラス.
@@ -6,10 +8,28 @@ import { Player, PlayerImpl } from '../model/player'
  * Player は本クラスを用いて作成してください.
  */
 export class PlayerBuilder {
+  private readonly imgConfig: Configure<'normal', g.ImageAsset>
   private _speed: number
 
-  constructor () {
+  constructor (private readonly scene: g.Scene) {
+    this.imgConfig = new Configure(image(scene, 'image/player.default.png'))
     this._speed = 1
+  }
+
+  /**
+   * 作成する player に使用される画像アセットを取得します.
+   */
+  get asset (): g.ImageAsset {
+    return this.imgConfig.get('normal')
+  }
+
+  /**
+   * 作成する player に設定する画像アセットを登録します.
+   *
+   * @param asset 描画に使用する画像アセット
+   */
+  set asset (asset : g.ImageAsset) {
+    this.imgConfig.put('normal', asset)
   }
 
   /**
@@ -35,6 +55,6 @@ export class PlayerBuilder {
    * player を作成します.
    */
   build (): Player {
-    return new PlayerImpl(this._speed)
+    return new PlayerImpl(this.scene, this.imgConfig.get('normal'), this._speed)
   }
 }

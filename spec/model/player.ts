@@ -1,6 +1,5 @@
 import { Field, FieldImpl } from '../../src/model/field'
-import { PlayerImpl } from '../../src/model/player'
-import { Spot, SpotBuilder } from '../../src'
+import { PlayerBuilder, Spot, SpotBuilder } from '../../src'
 
 describe('Player', () => {
   let field1: Field
@@ -20,7 +19,7 @@ describe('Player', () => {
   })
 
   it('fieldに入場できる', () => {
-    const player = new PlayerImpl(1)
+    const player = new PlayerBuilder(scene).build()
     expect(player.field).not.toBeDefined()
     expect(player.location).not.toBeDefined()
     expect(player.status).toEqual('non-field')
@@ -31,7 +30,7 @@ describe('Player', () => {
   })
 
   it('同じFieldへの二重登録時は警告だけで何もしない', () => {
-    const player = new PlayerImpl(1)
+    const player = new PlayerBuilder(scene).build()
     player.standOn(field1)
     player.standOn(field1)
     expect(player.field).toBe(field1)
@@ -39,7 +38,7 @@ describe('Player', () => {
   })
 
   it('他のFieldには配置できない', () => {
-    const player = new PlayerImpl(1)
+    const player = new PlayerBuilder(scene).build()
     player.standOn(field1)
     expect(() => player.standOn(field2)).toThrow()
     expect(player.field).toBe(field1)
@@ -48,7 +47,7 @@ describe('Player', () => {
   })
 
   it('指定した目的地(spot1)に移動できる', () => {
-    const player = new PlayerImpl(1)
+    const player = new PlayerBuilder(scene).build()
     player.standOn(field1)
     player.departTo(spot1)
     expect(player.destination).toBe(spot1)
@@ -58,7 +57,7 @@ describe('Player', () => {
   })
 
   it('移動中の場合、移動をキャンセルできる', () => {
-    const player = new PlayerImpl(1)
+    const player = new PlayerBuilder(scene).build()
     player.standOn(field1)
     player.departTo(spot1)
     player.stop()
@@ -69,14 +68,14 @@ describe('Player', () => {
   })
 
   it('fieldに配置されていないと移動できない', () => {
-    const player = new PlayerImpl(1)
+    const player = new PlayerBuilder(scene).build()
     expect(() => player.jumpTo(spot1)).toThrow()
     expect(() => player.departTo(spot1)).toThrow()
     expect(() => player.stop()).toThrow()
   })
 
   it('指定した位置に即時移動できる', () => {
-    const player = new PlayerImpl(1)
+    const player = new PlayerBuilder(scene).build()
     player.standOn(field1)
     player.jumpTo(spot1)
     expect(player.staying).toBe(spot1)
@@ -85,7 +84,7 @@ describe('Player', () => {
   })
 
   it('fieldに配置されていないspotには移動できない', () => {
-    const player = new PlayerImpl(1)
+    const player = new PlayerBuilder(scene).build()
     player.standOn(field1)
     const freeSpot = sb.build()
     expect(() => player.jumpTo(freeSpot)).toThrow()
@@ -93,7 +92,7 @@ describe('Player', () => {
   })
 
   it('異なるfieldのspotには移動できない', () => {
-    const player = new PlayerImpl(1)
+    const player = new PlayerBuilder(scene).build()
     player.standOn(field1)
     const otherSpot = sb.build()
     otherSpot.deployOn(field2)
@@ -102,7 +101,7 @@ describe('Player', () => {
   })
 
   it('移動中は移動できない', () => {
-    const player = new PlayerImpl(1)
+    const player = new PlayerBuilder(scene).build()
     player.standOn(field1)
     player.departTo(spot1)
     expect(() => player.departTo(spot2)).toThrow()
@@ -112,21 +111,21 @@ describe('Player', () => {
   })
 
   it('停止中は移動停止できない', () => {
-    const player = new PlayerImpl(1)
+    const player = new PlayerBuilder(scene).build()
     player.standOn(field1)
     expect(() => player.stop()).toThrow()
     expect(player.status).toBe('stopping')
   })
 
   it('移動速度を設定できる', () => {
-    const player = new PlayerImpl(1)
+    const player = new PlayerBuilder(scene).build()
     expect(player.speed).toBe(1)
     player.speed = 2
     expect(player.speed).toBe(2)
   })
 
   it('負の速度は設定できない', () => {
-    const player = new PlayerImpl(1)
+    const player = new PlayerBuilder(scene).build()
     expect(() => {
       player.speed = 0
     }).toThrow()
