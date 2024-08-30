@@ -7,14 +7,14 @@ describe('spotBuilder', () => {
     expect(Object.keys(sb.default.images)).toEqual(spotImageTypes)
     expect(sb.default.defaultImage.path).toEqual('./image/spot.default.png')
     for (const typ of spotImageTypes) {
-      expect(sb.default.images[typ].path).toEqual('./image/spot.default.png')
+      expect(sb.default.images[typ].path).toEqual(`./image/spot.default.${typ}.png`)
     }
   })
   it('個別設定を参照できる', () => {
     const sb = new SpotBuilder(scene)
     expect(Object.keys(sb.images)).toEqual(spotImageTypes)
     for (const typ of spotImageTypes) {
-      expect(sb.images[typ].path).toEqual('./image/spot.default.png')
+      expect(sb.images[typ].path).toEqual(`./image/spot.default.${typ}.png`)
     }
   })
   it('共通設定ができる', () => {
@@ -52,7 +52,7 @@ describe('spotBuilder', () => {
     })
     expect(sb.default.defaultImage.path).toEqual('./image/spot.default.png')
     for (const typ of spotImageTypes) {
-      expect(sb.default.images[typ].path).toEqual('./image/spot.default.png')
+      expect(sb.default.images[typ].path).toEqual(`./image/spot.default.${typ}.png`)
     }
     for (const typ of spotImageTypes) {
       expect(sb.images[typ].path).toEqual('./image/default.png')
@@ -63,9 +63,9 @@ describe('spotBuilder', () => {
     const spot = sb.build()
     expect(Object.keys(spot.assets)).toEqual(spotImageTypes)
     for (const typ of spotImageTypes) {
-      expect(spot.assets[typ].path).toEqual('./image/spot.default.png')
+      expect(spot.assets[typ].path).toEqual(`./image/spot.default.${typ}.png`)
     }
     expect(spot.view).toBeInstanceOf(g.Sprite)
-    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/spot.default.png')
+    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/spot.default.normal.png')
   })
 })
