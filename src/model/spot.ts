@@ -75,7 +75,7 @@ export interface Spot {
 }
 
 export class SpotImpl implements Spot {
-  private readonly _view: g.E
+  private readonly _view: g.Sprite
   private _field?: Field
   private _location?: g.CommonOffset
   private _status: SpotStatus = 'non-deployed'
@@ -94,6 +94,8 @@ export class SpotImpl implements Spot {
     this._field = field
     this._location = { x: 0, y: 0 }
     this._status = 'enabled'
+    this._view.src = this.assets.unvisited
+    this._view.invalidate()
 
     if (!field.spots.some(sp => sp === this)) {
       field.addSpot(this)
@@ -131,6 +133,8 @@ export class SpotImpl implements Spot {
     }
 
     this._status = 'enabled'
+    this._view.src = this.assets.normal
+    this._view.invalidate()
 
     if (this._field.player.destination === this) {
       this._field.player.stop()
@@ -142,6 +146,8 @@ export class SpotImpl implements Spot {
       throw new Error('spotがfieldに配置されていないため訪問先として指定可能にできませんでした. spotをfieldに配置してください')
     }
     this._status = 'enabled'
+    this._view.src = this.assets.normal
+    this._view.invalidate()
   }
 
   disable (): void {
@@ -149,6 +155,8 @@ export class SpotImpl implements Spot {
       throw new Error('spotがfieldに配置されていないため訪問先として指定不可能にできませんでした. spotをfieldに配置してください')
     }
     this._status = 'disabled'
+    this._view.src = this.assets.disabled
+    this._view.invalidate()
   }
 
   get field (): Field | undefined {
