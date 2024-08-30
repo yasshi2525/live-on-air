@@ -125,7 +125,7 @@ export class SpotImpl implements Spot {
     }
 
     // status が target になった時点でplayerが存在するはずなので下記は非到達
-    /* istanbul ignore if */
+    // istanbul ignore if
     if (!this._field.player) {
       throw new Error('playerがfieldに配置されていないため移動先としての設定に失敗しました. playerをfieldに配置してください')
     }
