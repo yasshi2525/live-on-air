@@ -13,4 +13,12 @@ describe('playerBuilder', () => {
     const player = pb.build()
     expect(player.speed).toBe(2)
   })
+
+  it('不正な値は設定できない', () => {
+    const pb = new PlayerBuilder()
+    expect(() => {
+      pb.speed = -1
+    }).toThrow()
+    expect(pb.speed).toBe(1)
+  })
 })
