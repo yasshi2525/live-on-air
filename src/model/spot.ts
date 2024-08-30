@@ -123,6 +123,9 @@ export class SpotImpl implements Spot {
       throw new Error('spotは移動先として設定されていないため、移動先設定の解除に失敗しました.' +
         ' 移動先として設定されているspotに対して解除命令を実行してください')
     }
+
+    // status が target になった時点でplayerが存在するはずなので下記は非到達
+    /* istanbul ignore if */
     if (!this._field.player) {
       throw new Error('playerがfieldに配置されていないため移動先としての設定に失敗しました. playerをfieldに配置してください')
     }
