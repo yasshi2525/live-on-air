@@ -36,6 +36,11 @@ describe('spotBuilder', () => {
       expect(sb.images[typ].path).toEqual('./image/default.png')
     }
   })
+  it('デフォルトのデフォルト値を変更できる', () => {
+    const sb = new SpotBuilder(scene)
+    sb.default.defaultImage = scene.asset.getImageById('default')
+    expect(sb.default.defaultImage.path).toEqual('./image/default.png')
+  })
   it('個別設定ができる', () => {
     const sb = new SpotBuilder(scene)
     const asset = scene.asset.getImageById('default')
