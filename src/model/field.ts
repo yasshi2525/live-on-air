@@ -6,18 +6,9 @@ import { Player } from './player'
  */
 export interface Field {
   /**
-   * マップの領域座標.
-   *
-   * view に値が登録されているとき値を返します.
+   * マップの領域座標
    */
-  readonly area?: Readonly<g.CommonArea>
-
-  /**
-   * player, spot を描画するエンティティ.
-   *
-   * 登録されている player, spot は本エンティティの子として描画されます
-   */
-  view?: g.E
+  readonly area: Readonly<g.CommonArea>
 
   /**
    * マップ上に存在する Player を取得します
@@ -61,9 +52,13 @@ export interface Field {
 }
 
 export class FieldImpl implements Field {
-  private _view?: g.E
+  private readonly _area: g.CommonArea
   private readonly _spots: Set<Spot> = new Set<Spot>()
   private _player?: Player
+
+  constructor (area: g.CommonArea) {
+    this._area = { ...area }
+  }
 
   addPlayer (player: Player): void {
     if (this._player && this._player !== player) {
@@ -107,26 +102,8 @@ export class FieldImpl implements Field {
     }
   }
 
-  get view (): g.E | undefined {
-    return this._view
-  }
-
-  set view (view: g.E | undefined) {
-    this._view = view
-    for (const s of this._spots) {
-      s.view.parent = this._view
-    }
-  }
-
-  get area (): Readonly<g.CommonArea> | undefined {
-    return this._view
-      ? {
-          x: this._view.x,
-          y: this._view.y,
-          width: this._view.width,
-          height: this._view.height
-        }
-      : undefined
+  get area (): Readonly<g.CommonArea> {
+    return { ...this._area }
   }
 
   get player (): Player | undefined {
