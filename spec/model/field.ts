@@ -1,19 +1,21 @@
 import { SpotBuilder, Spot, PlayerBuilder, Player, Field, FieldBuilder } from '../../src'
+import { FieldImpl } from '../../src/model/field'
 
 describe('field', () => {
   let spot1: Spot
   let spot2: Spot
   let player: Player
+  let layer1: g.E
+  let layer2: g.E
 
   beforeEach(() => {
     spot1 = new SpotBuilder(scene).build()
     spot2 = new SpotBuilder(scene).build()
     player = new PlayerBuilder(scene).build()
-  })
-
-  it('サイズを設定できる', () => {
-    const field: Field = new FieldBuilder().build()
-    expect(field.area).toEqual({ x: 0, y: 0, width: 100, height: 100 })
+    layer1 = new g.E({ scene, parent: scene, x: 10, y: 10, width: 500, height: 300 })
+    layer2 = new g.E({ scene, parent: scene, x: 520, y: 20, width: 600, height: 600 })
+    layer1.append(new g.FilledRect({ scene, width: layer1.width, height: layer1.height, cssColor: '#ffaaaa', opacity: 0.25 }))
+    layer2.append(new g.FilledRect({ scene, width: layer2.width, height: layer2.height, cssColor: '#aaffaa', opacity: 0.25 }))
   })
 
   it('スポットが自身に登録できる', () => {
@@ -96,5 +98,67 @@ describe('field', () => {
     field.enableSpotExcept(spot1)
     expect(spot1.status).toEqual('target')
     expect(spot2.status).toEqual('enabled')
+  })
+
+  it('g.Eを登録すると今まで登録されたspot,playerが画面に描画される', () => {
+    const field: Field = new FieldImpl()
+    field.addSpot(spot1)
+    field.addSpot(spot2)
+    field.addPlayer(player)
+    expect(field.view).not.toBeDefined()
+    expect(field.area).not.toBeDefined()
+    gameContext.step()
+    screenshot('field.view.initial.png')
+    field.view = layer1
+    expect(spot1.view.parent).toBe(layer1)
+    expect(spot2.view.parent).toBe(layer1)
+    expect(player.view.parent).toBe(layer1)
+    expect(field.area).toEqual({ x: 10, y: 10, width: 500, height: 300 })
+    gameContext.step()
+    screenshot('field.view.follow.png')
+  })
+
+  it('先にg.Eを登録してからspot,playerを登録しても描画される', () => {
+    const field: Field = new FieldImpl()
+    field.view = layer1
+    field.addSpot(spot1)
+    field.addSpot(spot2)
+    field.addPlayer(player)
+    expect(spot1.view.parent).toBe(layer1)
+    expect(spot2.view.parent).toBe(layer1)
+    expect(player.view.parent).toBe(layer1)
+    expect(field.area).toEqual({ x: 10, y: 10, width: 500, height: 300 })
+    gameContext.step()
+    screenshot('field.view.register.png')
+  })
+
+  it('viewを差し替えるとspot,playerは差し替え後の方に所属する', () => {
+    const field: Field = new FieldImpl()
+    field.addSpot(spot1)
+    field.addSpot(spot2)
+    field.addPlayer(player)
+    field.view = layer1
+    field.view = layer2
+    expect(spot1.view.parent).toBe(layer2)
+    expect(spot2.view.parent).toBe(layer2)
+    expect(player.view.parent).toBe(layer2)
+    expect(field.area).toEqual({ x: 520, y: 20, width: 600, height: 600 })
+    gameContext.step()
+    screenshot('field.view.change.png')
+  })
+
+  it('viewが削除されるとspot,playerも孤立する', () => {
+    const field: Field = new FieldImpl()
+    field.addSpot(spot1)
+    field.addSpot(spot2)
+    field.addPlayer(player)
+    field.view = layer1
+    field.view = undefined
+    expect(spot1.view.parent).not.toBeDefined()
+    expect(spot2.view.parent).not.toBeDefined()
+    expect(player.view.parent).not.toBeDefined()
+    expect(field.area).not.toBeDefined()
+    gameContext.step()
+    screenshot('field.view.remove.png')
   })
 })

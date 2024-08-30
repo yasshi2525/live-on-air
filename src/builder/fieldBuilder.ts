@@ -10,6 +10,6 @@ export class FieldBuilder {
    * field を作成します.
    */
   build (): Field {
-    return new FieldImpl({ x: 0, y: 0, width: 100, height: 100 })
+    return new FieldImpl()
   }
 }
