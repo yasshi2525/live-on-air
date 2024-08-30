@@ -19,6 +19,8 @@ export class RecordWithDefaultConfigure<K extends string, V> extends RecordConfi
     this._default = value
   }
 
+  // 本クラスをメンバとして持つ Configure は利用しないため非到達
+  // istanbul ignore next
   override has (): boolean {
     return true
   }
