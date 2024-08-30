@@ -1,7 +1,6 @@
-import { LayerBuilder } from '../../src/builder/layerBuilder'
-import { LayerType, layerTypes } from '../../src/builder/layerConfig'
+import { LayerBuilder, Layer, LayerType } from '../../src'
+import { layerTypes } from '../../src/builder/layerConfig'
 import { image } from '../../src/util/loader'
-import { Layer } from '../../src/model/layer'
 
 const insertDebugView = (layer: Layer) => {
   for (const typ of layerTypes) {
