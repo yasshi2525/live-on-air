@@ -15,6 +15,9 @@ export class Configure<K extends string, V> {
   }
 
   set default (value: V) {
+    if (!value) {
+      throw new Error(`存在しない値 "${value}" をデフォルト値に設定しようとしました. デフォルト値は存在する必要があります`)
+    }
     this._default.default = value
   }
 
