@@ -62,6 +62,7 @@ export class PlayerBuilder {
 
   /**
    * 作成する player の座標を登録します.
+   *
    * @param location player の座標
    */
   set location (location: g.CommonOffset) {
