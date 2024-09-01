@@ -86,6 +86,9 @@ export class SpotBuilder implements SpotConfigure {
     }
   }
 
+  /**
+   * 指定された設定で Spot を作成します
+   */
   build (): Spot {
     return new SpotImpl(this.scene, this.images, this.location)
   }
