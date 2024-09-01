@@ -42,7 +42,7 @@ export class DefaultSpotConfigureImpl extends SpotConfigureImpl implements Defau
     this.imageEntry.default = asset
   }
 
-  get defaultLocation (): g.CommonOffset {
+  get defaultLocation (): Readonly<g.CommonOffset> {
     return { ...this._defaultLocation }
   }
 
