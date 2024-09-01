@@ -15,7 +15,7 @@ export interface SpotConfigure {
   /**
    * 描画に使用される画像アセットをすべての状態について取得します.
    */
-  images: Readonly<SpotImageConfig>
+  readonly images: Readonly<SpotImageConfig>
 
   /**
    * 作成する Spot を配置する座標を設定します.

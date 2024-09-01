@@ -29,7 +29,7 @@ export interface Spot {
   /**
    * 各場面における画像アセット一覧を取得します
    */
-  assets: Readonly<SpotImageConfig>
+  readonly assets: Readonly<SpotImageConfig>
 
   /**
    * Spot が登録されたマップを取得します.
@@ -80,7 +80,7 @@ export class SpotImpl implements Spot {
   private _status: SpotStatus = 'non-deployed'
 
   // eslint-disable-next-line no-useless-constructor
-  constructor (scene: g.Scene, public assets: Readonly<SpotImageConfig>, private readonly _location: g.CommonOffset) {
+  constructor (scene: g.Scene, public readonly assets: Readonly<SpotImageConfig>, private readonly _location: g.CommonOffset) {
     this._view = new g.Sprite({ scene, src: assets.normal, ..._location })
   }
 
