@@ -100,25 +100,25 @@ describe('field', () => {
     expect(spot2.status).toEqual('enabled')
   })
 
-  it('g.Eを登録すると今まで登録されたspot,playerが画面に描画される', () => {
+  it('g.Eを登録すると今まで登録されたspot,playerが画面に描画される', async () => {
     const field: Field = new FieldImpl()
     field.addSpot(spot1)
     field.addSpot(spot2)
     field.addPlayer(player)
     expect(field.view).not.toBeDefined()
     expect(field.area).not.toBeDefined()
-    gameContext.step()
+    await gameContext.step()
     screenshot('field.view.initial.png')
     field.view = layer1
     expect(spot1.view.parent).toBe(layer1)
     expect(spot2.view.parent).toBe(layer1)
     expect(player.view.parent).toBe(layer1)
     expect(field.area).toEqual({ x: 10, y: 10, width: 500, height: 300 })
-    gameContext.step()
+    await gameContext.step()
     screenshot('field.view.follow.png')
   })
 
-  it('先にg.Eを登録してからspot,playerを登録しても描画される', () => {
+  it('先にg.Eを登録してからspot,playerを登録しても描画される', async () => {
     const field: Field = new FieldImpl()
     field.view = layer1
     field.addSpot(spot1)
@@ -128,11 +128,11 @@ describe('field', () => {
     expect(spot2.view.parent).toBe(layer1)
     expect(player.view.parent).toBe(layer1)
     expect(field.area).toEqual({ x: 10, y: 10, width: 500, height: 300 })
-    gameContext.step()
+    await gameContext.step()
     screenshot('field.view.register.png')
   })
 
-  it('viewを差し替えるとspot,playerは差し替え後の方に所属する', () => {
+  it('viewを差し替えるとspot,playerは差し替え後の方に所属する', async () => {
     const field: Field = new FieldImpl()
     field.addSpot(spot1)
     field.addSpot(spot2)
@@ -143,11 +143,11 @@ describe('field', () => {
     expect(spot2.view.parent).toBe(layer2)
     expect(player.view.parent).toBe(layer2)
     expect(field.area).toEqual({ x: 520, y: 20, width: 600, height: 600 })
-    gameContext.step()
+    await gameContext.step()
     screenshot('field.view.change.png')
   })
 
-  it('viewが削除されるとspot,playerも孤立する', () => {
+  it('viewが削除されるとspot,playerも孤立する', async () => {
     const field: Field = new FieldImpl()
     field.addSpot(spot1)
     field.addSpot(spot2)
@@ -158,7 +158,7 @@ describe('field', () => {
     expect(spot2.view.parent).not.toBeDefined()
     expect(player.view.parent).not.toBeDefined()
     expect(field.area).not.toBeDefined()
-    gameContext.step()
+    await gameContext.step()
     screenshot('field.view.remove.png')
   })
 })

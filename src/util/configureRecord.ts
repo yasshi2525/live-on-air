@@ -1,5 +1,5 @@
 export class RecordConfigure<K extends string, V> {
-  protected readonly entry: Partial<Record<K, V>>
+  private readonly entry: Partial<Record<K, V>>
 
   constructor (entry: Partial<Record<K, V>>) {
     this.entry = { ...entry }

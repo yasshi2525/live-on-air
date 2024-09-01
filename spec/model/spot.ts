@@ -15,7 +15,7 @@ describe('Spot', () => {
     player.standOn(field1)
   })
 
-  it('Spotを配置できる', () => {
+  it('Spotを配置できる', async () => {
     const spot = sb.build()
     expect(spot.field).not.toBeDefined()
     expect(spot.location).not.toBeDefined()
@@ -27,7 +27,7 @@ describe('Spot', () => {
     expect(spot.status).toEqual('enabled')
     expect(spot.view).toBeInstanceOf(g.Sprite)
     expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/spot.default.unvisited.png')
-    gameContext.step()
+    await gameContext.step()
     screenshot('spot.deploy.png')
   })
 
@@ -48,29 +48,29 @@ describe('Spot', () => {
     expect(field2.spots).not.toContain(spot)
   })
 
-  it('訪問不可能にする', () => {
+  it('訪問不可能にする', async () => {
     const spot = sb.build()
     spot.deployOn(field1)
     spot.disable()
     expect(spot.status).toEqual('disabled')
     expect(spot.view).toBeInstanceOf(g.Sprite)
     expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/spot.default.disabled.png')
-    gameContext.step()
+    await gameContext.step()
     screenshot('spot.disabled.png')
   })
 
-  it('訪問可能にする', () => {
+  it('訪問可能にする', async () => {
     const spot = sb.build()
     spot.deployOn(field1)
     spot.enable()
     expect(spot.status).toEqual('enabled')
     expect(spot.view).toBeInstanceOf(g.Sprite)
     expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/spot.default.normal.png')
-    gameContext.step()
+    await gameContext.step()
     screenshot('spot.enabled.png')
   })
 
-  it('playerを訪問させる', () => {
+  it('playerを訪問させる', async () => {
     const spot = sb.build()
     spot.deployOn(field1)
     spot.setAsDestination()
@@ -78,11 +78,11 @@ describe('Spot', () => {
     expect(player.destination).toBe(spot)
     expect(spot.view).toBeInstanceOf(g.Sprite)
     expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/spot.default.unvisited.png')
-    gameContext.step()
+    await gameContext.step()
     screenshot('spot.target.png')
   })
 
-  it('playerの訪問をキャンセルさせる', () => {
+  it('playerの訪問をキャンセルさせる', async () => {
     const spot = sb.build()
     spot.deployOn(field1)
     spot.setAsDestination()
@@ -91,7 +91,7 @@ describe('Spot', () => {
     expect(player.destination).not.toBeDefined()
     expect(spot.view).toBeInstanceOf(g.Sprite)
     expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/spot.default.normal.png')
-    gameContext.step()
+    await gameContext.step()
     screenshot('spot.cancel.png')
   })
 

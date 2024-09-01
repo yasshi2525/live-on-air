@@ -13,6 +13,8 @@ export class RecordWithDefaultConfigure<K extends string, V> extends RecordConfi
   }
 
   set default (value: V) {
+    // ラップするクラスで値の存在チェックをしているため非到達
+    // istanbul ignore if
     if (!value) {
       throw new Error(`存在しない値 "${value}" をデフォルト値に設定しようとしました. デフォルト値は存在する必要があります`)
     }

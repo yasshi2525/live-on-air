@@ -15,7 +15,7 @@ export interface DefaultSpotConfigure extends SpotConfigure {
 }
 
 export class DefaultSpotConfigureImpl extends SpotConfigureImpl implements DefaultSpotConfigure {
-  protected readonly _defaultLocation: g.CommonOffset
+  private readonly _defaultLocation: g.CommonOffset
 
   constructor (protected readonly imageEntry: RecordWithDefaultConfigure<SpotImageTypes, g.ImageAsset>,
     _defaultLocation: g.CommonOffset) {
@@ -23,8 +23,15 @@ export class DefaultSpotConfigureImpl extends SpotConfigureImpl implements Defau
     this._defaultLocation = { ..._defaultLocation }
   }
 
-  override get location (): Readonly<g.CommonOffset> {
-    return this._location ?? this._defaultLocation
+  override location (location: g.CommonOffset): SpotConfigure
+
+  override location (): Readonly<g.CommonOffset>
+
+  override location (args?: g.CommonOffset): SpotConfigure | Readonly<g.CommonOffset> {
+    if (args) {
+      return super.location(args)
+    }
+    return this._location ? { ...this._location } : { ...this._defaultLocation }
   }
 
   get defaultImage (): g.ImageAsset {
@@ -35,8 +42,8 @@ export class DefaultSpotConfigureImpl extends SpotConfigureImpl implements Defau
     this.imageEntry.default = asset
   }
 
-  get defaultLocation (): g.CommonOffset {
-    return this._defaultLocation
+  get defaultLocation (): Readonly<g.CommonOffset> {
+    return { ...this._defaultLocation }
   }
 
   set defaultLocation (defaultLocation: g.CommonOffset) {
