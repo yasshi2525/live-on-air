@@ -15,7 +15,7 @@ export interface DefaultSpotConfigure extends SpotConfigure {
 }
 
 export class DefaultSpotConfigureImpl extends SpotConfigureImpl implements DefaultSpotConfigure {
-  protected readonly _defaultLocation: g.CommonOffset
+  private readonly _defaultLocation: g.CommonOffset
 
   constructor (protected readonly imageEntry: RecordWithDefaultConfigure<SpotImageTypes, g.ImageAsset>,
     _defaultLocation: g.CommonOffset) {

@@ -109,7 +109,7 @@ export class PlayerImpl implements Player {
   private _destination?: Spot
   private _status: PlayerStatus = 'non-field'
 
-  constructor (_scene: g.Scene, _asset: g.ImageAsset, protected _speed: number, protected readonly _location: g.CommonOffset) {
+  constructor (_scene: g.Scene, _asset: g.ImageAsset, private _speed: number, protected readonly _location: g.CommonOffset) {
     this._view = new g.Sprite({ scene: _scene, src: _asset, ..._location })
   }
 
