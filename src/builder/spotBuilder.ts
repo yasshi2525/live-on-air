@@ -29,7 +29,7 @@ export class SpotBuilder implements SpotConfigure {
       return prev
     }, {} as SpotImageConfig)
     this.imgConfig = new Configure<SpotImageTypes, g.ImageAsset>(image(scene, 'image/spot.default.png'), defaultValue)
-    this.default = new DefaultSpotConfigureImpl(this.imgConfig._default)
+    this.default = new DefaultSpotConfigureImpl(this.imgConfig._default, { x: 0, y: 0 })
     this.current = new SpotConfigureImpl(this.imgConfig.current)
   }
 
@@ -55,7 +55,38 @@ export class SpotBuilder implements SpotConfigure {
     return this.imgConfig.entries(spotImageTypes)
   }
 
+  /**
+   * 作成する Spot を配置する座標を設定します.
+   *
+   * 設定しなかった場合、
+   * default.locate() で設定した座標が使われます.
+   * default.locate() でも設定しなかった場合、
+   * default.defaultLocation で設定した座標が使用されます.
+   *
+   * @param location Spot に設定する座標
+   */
+  locate (location: g.CommonOffset): SpotBuilder {
+    this.current.locate(location)
+    return this
+  }
+
+  /**
+   * 作成する Spot を配置する座標を取得します.
+   */
+  get location (): Readonly<g.CommonOffset> {
+    try {
+      return this.current.location
+    } catch (e) {
+      if (e instanceof Error && e.message === '座標が設定されていません.') {
+        return this.default.location
+      }
+      // 非到達想定
+      // istanbul ignore next
+      throw e
+    }
+  }
+
   build (): Spot {
-    return new SpotImpl(this.scene, this.images)
+    return new SpotImpl(this.scene, this.images, this.location)
   }
 }

@@ -77,12 +77,11 @@ export interface Spot {
 export class SpotImpl implements Spot {
   private readonly _view: g.Sprite
   private _field?: Field
-  private _location?: g.CommonOffset
   private _status: SpotStatus = 'non-deployed'
 
   // eslint-disable-next-line no-useless-constructor
-  constructor (scene: g.Scene, public assets: Readonly<SpotImageConfig>) {
-    this._view = new g.Sprite({ scene, src: assets.normal })
+  constructor (scene: g.Scene, public assets: Readonly<SpotImageConfig>, private readonly _location: g.CommonOffset) {
+    this._view = new g.Sprite({ scene, src: assets.normal, ..._location })
   }
 
   deployOn (field: Field): void {
@@ -92,7 +91,6 @@ export class SpotImpl implements Spot {
     }
 
     this._field = field
-    this._location = { x: 0, y: 0 }
     this._status = 'enabled'
     this._view.src = this.assets.unvisited
     this._view.invalidate()
@@ -168,7 +166,7 @@ export class SpotImpl implements Spot {
   }
 
   get location (): Readonly<g.CommonOffset> | undefined {
-    if (this._location) {
+    if (this._field) {
       return { ...this._location }
     }
     return undefined

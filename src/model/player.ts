@@ -105,13 +105,12 @@ export interface Player {
 export class PlayerImpl implements Player {
   private _field?: Field
   private readonly _view: g.E
-  private _location?: g.CommonOffset
   private _staying?: Spot
   private _destination?: Spot
   private _status: PlayerStatus = 'non-field'
 
-  constructor (_scene: g.Scene, _asset: g.ImageAsset, protected _speed: number) {
-    this._view = new g.Sprite({ scene: _scene, src: _asset })
+  constructor (_scene: g.Scene, _asset: g.ImageAsset, protected _speed: number, protected readonly _location: g.CommonOffset) {
+    this._view = new g.Sprite({ scene: _scene, src: _asset, ..._location })
   }
 
   standOn (field: Field): void {
@@ -121,7 +120,6 @@ export class PlayerImpl implements Player {
     }
 
     this._field = field
-    this._location = { x: 0, y: 0 }
     this._status = 'stopping'
 
     if (!field.player) {
@@ -205,7 +203,7 @@ export class PlayerImpl implements Player {
   }
 
   get location (): Readonly<g.CommonOffset> | undefined {
-    if (this._location) {
+    if (this._field) {
       return { ...this._location }
     }
     return undefined
