@@ -9,10 +9,12 @@ import { image } from '../util/loader'
  */
 export class PlayerBuilder {
   private readonly imgConfig: Configure<'normal', g.ImageAsset>
+  private readonly _location: g.CommonOffset
   private _speed: number
 
   constructor (private readonly scene: g.Scene) {
     this.imgConfig = new Configure(image(scene, 'image/player.default.png'))
+    this._location = { x: 0, y: 0 }
     this._speed = 1
   }
 
@@ -52,9 +54,26 @@ export class PlayerBuilder {
   }
 
   /**
+   * 作成する player に設定する座標を取得します.
+   */
+  get location (): Readonly<g.CommonOffset> {
+    return { ...this._location }
+  }
+
+  /**
+   * 作成する player の座標を登録します.
+   *
+   * @param location player の座標
+   */
+  set location (location: g.CommonOffset) {
+    this._location.x = location.x
+    this._location.y = location.y
+  }
+
+  /**
    * player を作成します.
    */
   build (): Player {
-    return new PlayerImpl(this.scene, this.imgConfig.get('normal'), this._speed)
+    return new PlayerImpl(this.scene, this.imgConfig.get('normal'), this._speed, this._location)
   }
 }
