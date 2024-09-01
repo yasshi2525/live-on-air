@@ -43,15 +43,18 @@ export class SpotBuilder implements SpotConfigure {
    *
    * @param assets 状態ごとに使用する画像アセット
    */
-  image (assets: Partial<SpotImageConfig>): SpotBuilder {
-    this.current.image(assets)
-    return this
-  }
+  image (assets: Partial<SpotImageConfig>): SpotBuilder
 
   /**
    * 設定されている場面別の描画に使用する画像アセットを取得します.
    */
-  get images (): Readonly<SpotImageConfig> {
+  image (): Readonly<SpotImageConfig>
+
+  image (args?: Partial<SpotImageConfig>): SpotBuilder | Readonly<SpotImageConfig> {
+    if (args) {
+      this.current.image(args)
+      return this
+    }
     return this.imgConfig.entries(spotImageTypes)
   }
 
@@ -65,20 +68,23 @@ export class SpotBuilder implements SpotConfigure {
    *
    * @param location Spot に設定する座標
    */
-  locate (location: g.CommonOffset): SpotBuilder {
-    this.current.locate(location)
-    return this
-  }
+  location (location: g.CommonOffset): SpotBuilder
 
   /**
    * 作成する Spot を配置する座標を取得します.
    */
-  get location (): Readonly<g.CommonOffset> {
+  location (): Readonly<g.CommonOffset>
+
+  location (args?: g.CommonOffset): SpotBuilder | Readonly<g.CommonOffset> {
+    if (args) {
+      this.current.location(args)
+      return this
+    }
     try {
-      return { ...this.current.location }
+      return { ...this.current.location() }
     } catch (e) {
       if (e instanceof Error && e.message === '座標が設定されていません.') {
-        return { ...this.default.location }
+        return { ...this.default.location() }
       }
       // 非到達想定
       // istanbul ignore next
@@ -90,6 +96,6 @@ export class SpotBuilder implements SpotConfigure {
    * 指定された設定で Spot を作成します
    */
   build (): Spot {
-    return new SpotImpl(this.scene, this.images, this.location)
+    return new SpotImpl(this.scene, this.image(), this.location())
   }
 }

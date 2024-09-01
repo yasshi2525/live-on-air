@@ -15,19 +15,19 @@ export interface SpotConfigure {
   /**
    * 描画に使用される画像アセットをすべての状態について取得します.
    */
-  readonly images: Readonly<SpotImageConfig>
+  image(): Readonly<SpotImageConfig>
 
   /**
    * 作成する Spot を配置する座標を設定します.
    *
    * @param location Spot を配置する座標
    */
-  locate(location: g.CommonOffset): SpotConfigure
+  location(location: g.CommonOffset): SpotConfigure
 
   /**
    * 作成する Spot を配置する座標を取得します.
    */
-  readonly location: Readonly<g.CommonOffset>
+  location(): Readonly<g.CommonOffset>
 }
 
 export class SpotConfigureImpl implements SpotConfigure {
@@ -36,26 +36,32 @@ export class SpotConfigureImpl implements SpotConfigure {
   // eslint-disable-next-line no-useless-constructor
   constructor (protected readonly imageEntry: RecordConfigure<SpotImageTypes, g.ImageAsset>) {}
 
-  image (assets: SpotImageConfig): SpotConfigure {
-    this.imageEntry.putAll(assets)
-    return this
-  }
+  image (assets: SpotImageConfig): SpotConfigure
 
-  get images (): SpotImageConfig {
+  image (): SpotImageConfig
+
+  image (args?: SpotImageConfig): SpotConfigure | SpotImageConfig {
+    if (args) {
+      this.imageEntry.putAll(args)
+      return this
+    }
     return this.imageEntry.entries(spotImageTypes)
   }
 
-  locate (location: g.CommonOffset): SpotConfigure {
-    if (!this._location) {
-      this._location = { ...location }
-    } else {
-      this._location.x = location.x
-      this._location.y = location.y
-    }
-    return this
-  }
+  location (location: g.CommonOffset): SpotConfigure
 
-  get location (): Readonly<g.CommonOffset> {
+  location (): Readonly<g.CommonOffset>
+
+  location (args?: g.CommonOffset): SpotConfigure | Readonly<g.CommonOffset> {
+    if (args) {
+      if (!this._location) {
+        this._location = { ...args }
+      } else {
+        this._location.x = args.x
+        this._location.y = args.y
+      }
+      return this
+    }
     if (!this._location) {
       throw new Error('座標が設定されていません.')
     }

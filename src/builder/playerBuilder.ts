@@ -21,53 +21,69 @@ export class PlayerBuilder {
   /**
    * 作成する player に使用される画像アセットを取得します.
    */
-  get asset (): g.ImageAsset {
-    return this.imgConfig.get('normal')
-  }
+  asset (): g.ImageAsset
 
   /**
    * 作成する player に設定する画像アセットを登録します.
    *
    * @param asset 描画に使用する画像アセット
    */
-  set asset (asset : g.ImageAsset) {
-    this.imgConfig.put('normal', asset)
+  asset (asset: g.ImageAsset): PlayerBuilder
+
+  asset (args?: g.ImageAsset): g.ImageAsset | PlayerBuilder {
+    if (!args) {
+      return this.imgConfig.get('normal')
+    }
+    this.imgConfig.put('normal', args)
+    return this
   }
 
   /**
    * 作成する player に設定する移動速度を取得します.
    */
-  get speed (): number {
-    return this._speed
-  }
+  speed (): number
 
   /**
    * 作成する player に設定する移動速度を設定します.
    *
    * @param value 移動速度
    */
-  set speed (value: number) {
-    if (value <= 0) {
-      throw new Error(`無効な値 "${value}" を移動速度に設定しようとしました. 0より大きな正の値を指定してください`)
+  speed (value: number): PlayerBuilder
+
+  speed (args?: number): number | PlayerBuilder {
+    if (!args) {
+      return this._speed
     }
-    this._speed = value
+    if (args <= 0) {
+      throw new Error(`無効な値 "${args}" を移動速度に設定しようとしました. 0より大きな正の値を指定してください`)
+    }
+    this._speed = args
+    return this
   }
 
   /**
    * 作成する player に設定する座標を取得します.
    */
-  get location (): Readonly<g.CommonOffset> {
-    return { ...this._location }
-  }
+  location (): Readonly<g.CommonOffset>
 
   /**
    * 作成する player の座標を登録します.
    *
    * @param location player の座標
    */
-  set location (location: g.CommonOffset) {
-    this._location.x = location.x
-    this._location.y = location.y
+  location (location: g.CommonOffset): PlayerBuilder
+
+  /**
+   * hoge
+   * @param arg
+   */
+  location (arg?: g.CommonOffset): Readonly<g.CommonOffset> | PlayerBuilder {
+    if (!arg) {
+      return { ...this._location }
+    }
+    this._location.x = arg.x
+    this._location.y = arg.y
+    return this
   }
 
   /**

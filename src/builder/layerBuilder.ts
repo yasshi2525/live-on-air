@@ -18,13 +18,23 @@ export class LayerBuilder {
   }
 
   /**
+   * Spot, Player が配置されるマップを取得します.
+   */
+  field (): Readonly<g.CommonArea>
+
+  /**
    * Spot, Player が配置されるマップの大きさを設定します.
    *
    * @param area 設定する領域
    */
-  field (area: g.CommonArea): LayerBuilder {
-    this.config.put('field', area)
-    return this
+  field (area: g.CommonArea): LayerBuilder
+
+  field (args?: g.CommonArea): LayerBuilder | Readonly<g.CommonArea> {
+    if (args) {
+      this.config.put('field', { ...args })
+      return this
+    }
+    return { ...this.config.get('field') }
   }
 
   /**

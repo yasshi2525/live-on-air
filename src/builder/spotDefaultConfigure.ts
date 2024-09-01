@@ -23,7 +23,14 @@ export class DefaultSpotConfigureImpl extends SpotConfigureImpl implements Defau
     this._defaultLocation = { ..._defaultLocation }
   }
 
-  override get location (): Readonly<g.CommonOffset> {
+  override location (location: g.CommonOffset): SpotConfigure
+
+  override location (): Readonly<g.CommonOffset>
+
+  override location (args?: g.CommonOffset): SpotConfigure | Readonly<g.CommonOffset> {
+    if (args) {
+      return super.location(args)
+    }
     return this._location ? { ...this._location } : { ...this._defaultLocation }
   }
 
