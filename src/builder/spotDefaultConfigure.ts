@@ -24,7 +24,7 @@ export class DefaultSpotConfigureImpl extends SpotConfigureImpl implements Defau
   }
 
   override get location (): Readonly<g.CommonOffset> {
-    return this._location ?? this._defaultLocation
+    return this._location ? { ...this._location } : { ...this._defaultLocation }
   }
 
   get defaultImage (): g.ImageAsset {
@@ -36,7 +36,7 @@ export class DefaultSpotConfigureImpl extends SpotConfigureImpl implements Defau
   }
 
   get defaultLocation (): g.CommonOffset {
-    return this._defaultLocation
+    return { ...this._defaultLocation }
   }
 
   set defaultLocation (defaultLocation: g.CommonOffset) {

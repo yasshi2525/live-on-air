@@ -75,10 +75,10 @@ export class SpotBuilder implements SpotConfigure {
    */
   get location (): Readonly<g.CommonOffset> {
     try {
-      return this.current.location
+      return { ...this.current.location }
     } catch (e) {
       if (e instanceof Error && e.message === '座標が設定されていません.') {
-        return this.default.location
+        return { ...this.default.location }
       }
       // 非到達想定
       // istanbul ignore next
