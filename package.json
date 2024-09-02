@@ -13,6 +13,8 @@
   "scripts": {
     "build": "ts-node build.ts",
     "build:image": "cross-env NODE_OPTIONS=--no-experimental-fetch pixi-image-packer-cli resource/image/index.ts -o image --sync",
+    "doc": "typedoc --out tmp/docs src/index.ts",
+    "doc:test": "typedoc --out tmp/docs --validation src/index.ts",
     "lint:check": "eslint --ignore-pattern lib .",
     "lint": "eslint --ignore-pattern lib --fix .",
     "test": "jest",
@@ -37,6 +39,7 @@
     "pixi.js": "^7.4.2",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
+    "typedoc": "^0.26.6",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.2.0"
   },
