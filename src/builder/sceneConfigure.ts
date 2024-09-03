@@ -3,6 +3,7 @@ import { ScenePlayerConfig, SceneSpotConfig } from './sceneConfig'
 import { ScenePlayerConfigure, ScenePlayerConfigureImpl } from './scenePlayerConfigure'
 import { SceneLayerConfigure, SceneLayerConfigureImpl } from './sceneLayerConfigure'
 import { SceneSpotConfigure, SceneSpotConfigureImpl } from './sceneSpotConfigure'
+import { isError } from '../util/validate'
 
 /**
  * {@link Scene} を新規作成する際の各種設定を格納します.
@@ -173,7 +174,7 @@ export class SceneConfigureImpl implements SceneConfigure, PlayerConfigComplemen
     } catch (e) {
       // 非到達想定
       // istanbul ignore else
-      if (e instanceof Error && e.message === '座標が設定されていません.') {
+      if (isError(e) && e.message === '座標が設定されていません.') {
         error.x = e
         error.y = e
       } else {
@@ -185,7 +186,7 @@ export class SceneConfigureImpl implements SceneConfigure, PlayerConfigComplemen
     } catch (e) {
       // 非到達想定
       // istanbul ignore else
-      if (e instanceof Error && e.message === '移動速度が設定されていません.') {
+      if (isError(e) && e.message === '移動速度が設定されていません.') {
         error.speed = e
       } else {
         throw e
@@ -196,7 +197,7 @@ export class SceneConfigureImpl implements SceneConfigure, PlayerConfigComplemen
     } catch (e) {
       // 非到達想定
       // istanbul ignore else
-      if (e instanceof Error && e.message === 'アセットが設定されていません.') {
+      if (isError(e) && e.message === 'アセットが設定されていません.') {
         error.asset = e
       } else {
         throw e
@@ -259,7 +260,7 @@ export class SceneConfigureImpl implements SceneConfigure, PlayerConfigComplemen
     } catch (e) {
       // 非到達想定
       // istanbul ignore else
-      if (e instanceof Error && e.message === '座標が設定されていません.') {
+      if (isError(e) && e.message === '座標が設定されていません.') {
         error.x = e
         error.y = e
       } else {
@@ -271,7 +272,7 @@ export class SceneConfigureImpl implements SceneConfigure, PlayerConfigComplemen
     } catch (e) {
       // 非到達想定
       // istanbul ignore else
-      if (e instanceof Error && e.message === 'アセットが設定されていません.') {
+      if (isError(e) && e.message === 'アセットが設定されていません.') {
         error.locked = e
       } else {
         throw e
@@ -282,7 +283,7 @@ export class SceneConfigureImpl implements SceneConfigure, PlayerConfigComplemen
     } catch (e) {
       // 非到達想定
       // istanbul ignore else
-      if (e instanceof Error && e.message === 'アセットが設定されていません.') {
+      if (isError(e) && e.message === 'アセットが設定されていません.') {
         error.unvisited = e
       } else {
         throw e
@@ -293,7 +294,7 @@ export class SceneConfigureImpl implements SceneConfigure, PlayerConfigComplemen
     } catch (e) {
       // 非到達想定
       // istanbul ignore else
-      if (e instanceof Error && e.message === 'アセットが設定されていません.') {
+      if (isError(e) && e.message === 'アセットが設定されていません.') {
         error.disabled = e
       } else {
         throw e
@@ -304,7 +305,7 @@ export class SceneConfigureImpl implements SceneConfigure, PlayerConfigComplemen
     } catch (e) {
       // 非到達想定
       // istanbul ignore else
-      if (e instanceof Error && e.message === 'アセットが設定されていません.') {
+      if (isError(e) && e.message === 'アセットが設定されていません.') {
         error.normal = e
       } else {
         throw e

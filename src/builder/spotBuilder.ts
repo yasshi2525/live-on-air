@@ -4,6 +4,7 @@ import { SpotImageConfig, spotImageTypes, SpotImageTypes } from './spotConfig'
 import { Configure } from '../util/configure'
 import { image } from '../util/loader'
 import { Spot, SpotImpl } from '../model/spot'
+import { isError } from '../util/validate'
 
 /**
  * 訪問先 {@link Spot} を簡便に作るためのクラス.
@@ -80,7 +81,7 @@ export class SpotBuilder implements SpotConfigure {
     try {
       return { ...this.current.location() }
     } catch (e) {
-      if (e instanceof Error && e.message === '座標が設定されていません.') {
+      if (isError(e) && e.message === '座標が設定されていません.') {
         return { ...this.default.location() }
       }
       // 非到達想定
