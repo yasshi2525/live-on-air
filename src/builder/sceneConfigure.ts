@@ -58,14 +58,26 @@ export interface SceneConfigure {
   spot(): readonly SceneSpotConfig[]
 }
 
+/**
+ * 作成する spot の属性値が存在しないとき、デフォルト値を設定します.
+ */
 export interface SpotConfigComplement {
+  /**
+   * spot に設定するの属性値が省略された場合、デフォルト値で補完します.
+   */
   completeSpotConfig({ value, error } : {
     value: Partial<SceneSpotConfig>,
     error: Partial<Record<keyof SceneSpotConfig, Error>>
   }): SceneSpotConfig
 }
 
+/**
+ * 作成する player の属性値が省略された場合、デフォルト値を設定します.
+ */
 export interface PlayerConfigComplement {
+  /**
+   * player に設定するの属性値が省略された場合、デフォルト値で補完します.
+   */
   completePlayerConfig({ value, error } : {
     value: Partial<ScenePlayerConfig>,
     error: Partial<Record<keyof ScenePlayerConfig, Error>>

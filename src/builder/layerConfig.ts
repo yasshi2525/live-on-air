@@ -1,5 +1,11 @@
+/**
+ * レイアウトのためのレイヤ名一覧
+ */
 export const layerTypes = ['field'] as const
 
+/**
+ * レイアウトのためのレイヤ名一覧
+ */
 export type LayerType = typeof layerTypes[number]
 
 /**

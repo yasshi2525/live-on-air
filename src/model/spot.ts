@@ -13,6 +13,11 @@ import { Field } from './field'
  */
 export type SpotStatus = 'non-deployed' | 'enabled' | 'target' | 'disabled'
 
+/**
+ * スポット.
+ *
+ * スポットはマップ (field) の上に存在し、プレイヤー (player) が訪問すると生放送が始まります.
+ */
 export interface Spot {
   /**
    * スポットの座標

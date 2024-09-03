@@ -83,6 +83,9 @@ export class SceneBuilder implements SceneConfigure {
     return this.custom.spot()
   }
 
+  /**
+   * 指定された設定で scene を作成します.
+   */
   build (): Scene {
     return new SceneImpl({ game: this.game, layer: this.layer(), player: this.player(), spots: this.spot() })
   }
