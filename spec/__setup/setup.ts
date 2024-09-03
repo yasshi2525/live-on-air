@@ -13,7 +13,7 @@ const gameJSON: GameConfiguration = {
 }
 
 const setup = (): void => {
-  fs.writeFileSync('game.json', JSON.stringify(gameJSON))
+  fs.writeFileSync('game.json', JSON.stringify(gameJSON, null, 2))
   execSync('akashic scan asset image')
 }
 
