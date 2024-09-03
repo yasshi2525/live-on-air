@@ -11,17 +11,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-      - uses: actions/cache@v4
+      - name: Restore node_modules
+        uses: actions/cache@v4
         id: node-cache-restore
         with:
           path: node_modules
           key: dependencies-${{ hashFiles('package-lock.json') }}
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
         if: steps.node-cache-restore.outputs.cache-hit != 'true'
-      - run: npm run doc
+      - name: Generate documents
+        run: npm run doc
       - run: echo "VERSION=$(cat package.json | jq '.version' | tr -d '"')" >> $GITHUB_ENV
       - run: echo "TIMESTAMP=$(TZ='Asia/Tokyo' date "+%Y%m%d-%H%M%S")" >> $GITHUB_ENV
-      - uses: actions/upload-artifact@v4
+      - name: Save documents
+        uses: actions/upload-artifact@v4
         with:
           name: yasshi2525-live-on-air-docs-${{ env.VERSION }}-${{ env.TIMESTAMP }}
           path: tmp/docs

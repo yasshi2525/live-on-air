@@ -5,67 +5,81 @@ import { SceneLayerConfigure, SceneLayerConfigureImpl } from './sceneLayerConfig
 import { SceneSpotConfigure, SceneSpotConfigureImpl } from './sceneSpotConfigure'
 
 /**
- * Scene を新規作成する際の各種設定を格納します.
+ * {@link Scene} を新規作成する際の各種設定を格納します.
  */
 export interface SceneConfigure {
   /**
-   * Scene 上に配置される各 layer の領域値を設定します.
+   * Scene 上に配置される各レイヤーの領域値を設定します.
    *
-   * @param config 設定されている各 layer についての領域の位置・大きさ
+   * @param config 設定されている各レイヤーについての領域の位置・大きさ
    */
   layer(config: Partial<LayerConfig>): SceneConfigure
 
   /**
-   * Scene 上に配置される各 layer の領域値を取得します.
+   * Scene 上に配置される各レイヤーの領域値を取得します.
    *
    */
   layer(): Readonly<LayerConfig>
 
   /**
-   * マップ (field) の属性情報を設定します.
+   * マップ ({@link Field}) の属性情報を設定します.
    *
-   * @param config field の設定値
+   * @param config Field の設定値
    */
   field(config: object): SceneConfigure
 
   /**
-   * マップ (field) の属性情報を取得します.
+   * マップ ({@link Field}) の属性情報を取得します.
    */
   field(): Readonly<object>
 
   /**
-   * 作成する player の属性情報を設定します.
+   * 作成する {@link Player} の属性情報を設定します.
    *
-   * @param config player の設定値
+   * @param config Player の設定値
    */
   player(config: Partial<ScenePlayerConfig>): SceneConfigure
 
   /**
-   * 作成する player の属性情報を取得します.
+   * 作成する {@link Player} の属性情報を取得します.
    */
   player(): Readonly<ScenePlayerConfig>
 
   /**
-   * 作成する spot の属性情報を設定します.
+   * 作成する {@link Spot} の属性情報を設定します.
    *
-   * @param config spot の設定値
+   * @param config Spot の設定値
    */
   spot(config: Partial<SceneSpotConfig>): SceneConfigure
 
   /**
-   * 作成する spot の属性情報を取得します.
+   * 作成する {@link Spot} の属性情報を取得します.
    */
   spot(): readonly SceneSpotConfig[]
 }
 
+/**
+ * 作成する {@link Spot} の属性値が存在しないとき、デフォルト値を設定します.
+ * @internal
+ */
 export interface SpotConfigComplement {
+  /**
+   * Spot に設定するの属性値が省略された場合、デフォルト値で補完します.
+   */
   completeSpotConfig({ value, error } : {
     value: Partial<SceneSpotConfig>,
     error: Partial<Record<keyof SceneSpotConfig, Error>>
   }): SceneSpotConfig
 }
 
+/**
+ * 作成する {@link Player} の属性値が省略された場合、デフォルト値を設定します.
+ * @internal
+ */
 export interface PlayerConfigComplement {
+  /**
+   * Player に設定するの属性値が省略された場合、デフォルト値で補完します.
+   */
   completePlayerConfig({ value, error } : {
     value: Partial<ScenePlayerConfig>,
     error: Partial<Record<keyof ScenePlayerConfig, Error>>

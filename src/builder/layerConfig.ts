@@ -1,13 +1,19 @@
+/**
+ * {@link Layer} のレイアウトのためのレイヤ名一覧
+ */
 export const layerTypes = ['field'] as const
 
+/**
+ * {@link Layer} のレイアウトのためのレイヤ名一覧
+ */
 export type LayerType = typeof layerTypes[number]
 
 /**
- * scene 上に配置するエンティティのレイアウト情報
+ * g.Scene 上に配置するエンティティ ({@link Layer}) のレイアウト情報
  */
 export interface LayerConfig {
   /**
-   * Spot, Player が配置されるマップの大きさ.
+   * {@link Spot}, {@link Player} が配置されるマップの大きさ.
    */
   field: g.CommonArea
 }

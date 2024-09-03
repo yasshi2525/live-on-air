@@ -1,7 +1,7 @@
 import { SpotImageConfig } from '../builder/spotConfig'
 import { Field } from './field'
 /**
- * スポットの状態
+ * スポット ({@link Spot}) の状態
  *
  * "non-deployed": マップ上に配置されていない.
  *
@@ -13,11 +13,16 @@ import { Field } from './field'
  */
 export type SpotStatus = 'non-deployed' | 'enabled' | 'target' | 'disabled'
 
+/**
+ * スポット.
+ *
+ * スポットはマップ ({@link Field}) の上に存在し、プレイヤー ({@link Player}) が訪問すると生放送が始まります.
+ */
 export interface Spot {
   /**
    * スポットの座標
    *
-   * マップ field 上に配置されていないときは undefined が返されます
+   * マップ Field 上に配置されていないときは undefined が返されます
    */
   readonly location?: Readonly<g.CommonOffset>
 
@@ -34,7 +39,7 @@ export interface Spot {
   /**
    * Spot が登録されたマップを取得します.
    *
-   * マップ field 上に配置されていないときは undefined が返されます
+   * マップ Field 上に配置されていないときは undefined が返されます
    */
   readonly field?: Field
 
@@ -44,7 +49,7 @@ export interface Spot {
   readonly status: SpotStatus
 
   /**
-   * 指定したマップに登録します.
+   * 指定したマップ (Field) に登録します.
    *
    * 登録することで Player は Spot を訪問し、生放送できるようになります.
    * 登録すると Spot は画面に描画されるようになります.

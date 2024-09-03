@@ -6,13 +6,13 @@ import { image } from '../util/loader'
 import { Spot, SpotImpl } from '../model/spot'
 
 /**
- * 訪問先 Spot を簡便に作るためのクラス.
+ * 訪問先 {@link Spot} を簡便に作るためのクラス.
  *
  * Spot は本クラスを用いて作成してください.
  */
 export class SpotBuilder implements SpotConfigure {
   /**
-   * build() を使用して Spot を作成する際、
+   * {@link build} を使用して Spot を作成する際、
    * 個別の設定を省略した際のデフォルト値.
    *
    * 個々の Spot によらず共通の設定をしたい場合は、
@@ -37,9 +37,8 @@ export class SpotBuilder implements SpotConfigure {
    * 描画に使用する画像アセットを場面別に設定します.
    *
    * ある場面について画像アセットを設定しなかった場合、
-   * default.image(assets) で指定した場面の画像アセットが使用されます.
-   * default.image(assets) でも設定しなかった場合、
-   * default.defaultImage で設定した画像アセットが使用されます.
+   * {@link default} の {@link DefaultSpotConfigure#image} で指定した場面の画像アセットが使用されます.
+   * それも設定しなかった場合、 {@link DefaultSpotConfigure#defaultImage} で設定した画像アセットが使用されます.
    *
    * @param assets 状態ごとに使用する画像アセット
    */
@@ -61,10 +60,8 @@ export class SpotBuilder implements SpotConfigure {
   /**
    * 作成する Spot を配置する座標を設定します.
    *
-   * 設定しなかった場合、
-   * default.locate() で設定した座標が使われます.
-   * default.locate() でも設定しなかった場合、
-   * default.defaultLocation で設定した座標が使用されます.
+   * 設定しなかった場合、 {@link default} の {@link DefaultSpotConfigure#location} で設定した座標が使われます.
+   * それも設定しなかった場合、 {@link DefaultSpotConfigure#defaultLocation} で設定した座標が使用されます.
    *
    * @param location Spot に設定する座標
    */

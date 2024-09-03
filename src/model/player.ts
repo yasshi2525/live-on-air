@@ -1,11 +1,11 @@
 import { Field } from './field'
 import { Spot } from './spot'
 /**
- * プレイヤーの状態を表します.
+ * プレイヤー ({@link Player}) の状態を表します.
  *
  * "non-field": マップ上に配置されていない.
  *
- * "staying": ある Spot に滞在中である.
+ * "staying": ある {@link Spot} に滞在中である.
  *
  * "moving": ある Spot に向かって移動中である.
  *
@@ -16,7 +16,8 @@ export type PlayerStatus = 'non-field' | 'staying' | 'moving' | 'stopping'
 /**
  * プレイヤー.
  *
- * プレイヤーはマップの上 (Field) を移動でき、 Spot を訪問すると生放送します.
+ * プレイヤーはマップの上 ({@link Field}) を移動でき、 {@link Spot} を訪問すると生放送します.
+ * {@link PlayerBuilder} を使ってインスタンスを作成してください.
  */
 export interface Player {
   /**
@@ -26,7 +27,7 @@ export interface Player {
   /**
    * プレイヤーの座標
    *
-   * マップ field 上にいないときは undefined が返されます
+   * マップ (Field) 上にいないときは undefined が返されます
    */
   readonly location?: Readonly<g.CommonOffset>
 
@@ -36,16 +37,16 @@ export interface Player {
   readonly view: g.E
 
   /**
-   * プレイヤーが所属するマップ.
+   * プレイヤーが所属するマップ (Field).
    *
-   * マップ上にいないときは undefined が返されます
+   * マップ (Field) 上にいないときは undefined が返されます
    */
   readonly field?: Field
 
   /**
    * プレイヤーが現在訪問中の Spot.
    *
-   * 訪問中出ない場合 undefined を返します.
+   * 訪問中でない場合 undefined を返します.
    */
   readonly staying?: Spot
 
@@ -62,7 +63,7 @@ export interface Player {
   readonly status: PlayerStatus
 
   /**
-   * 指定したマップに登録し、マップの上を移動できるようにします.
+   * 指定したマップ (Field) に登録し、マップの上を移動できるようにします.
    *
    * 本メソッドを実行するとプレイヤーが画面上に描画されるようになります.
    *
@@ -73,8 +74,8 @@ export interface Player {
   /**
    * 指定した Spot の場所にワープします.
    *
-   * 移動速度 speed の制約は受けず、移動は瞬間で完了します.
-   * プレイヤーはマップ field を登録している必要があります
+   * 移動速度 {@link speed} の制約は受けず、移動は瞬間で完了します.
+   * プレイヤーはマップ (Field) を登録している必要があります
    * @see standOn
    *
    * @param spot ワープ先
@@ -84,11 +85,11 @@ export interface Player {
   /**
    * 指定した Spot へ移動し始めます.
    *
-   * 移動は 1フレームあたり speed の距離進みます.
-   * プレイヤーはマップ field を登録している必要があります
+   * 移動は 1フレームあたり {@link speed} の距離進みます.
+   * プレイヤーはマップ (Field) を登録している必要があります
    * @see standOn
    *
-   * @param spot
+   * @param spot 目的地として設定する Spot
    */
   departTo(spot: Spot): void
 
@@ -96,7 +97,7 @@ export interface Player {
    * 移動中の場合、移動を中止します.
    *
    * 現在地で待機を開始します.
-   * プレイヤーはマップ field を登録している必要があります
+   * プレイヤーはマップ (Field) を登録している必要があります
    * @see standOn
    */
   stop(): void
