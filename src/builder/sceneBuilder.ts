@@ -4,6 +4,7 @@ import { ScenePlayerConfig, SceneSpotConfig } from './sceneConfig'
 import { image } from '../util/loader'
 import { Scene, SceneImpl } from '../model/scene'
 import { DefaultSceneConfigureImpl } from './sceneDefaultConfigure'
+import { isError } from '../util/validate'
 
 /**
  * ゲームが動作する g.Scene を簡便に作るためのクラス.
@@ -29,7 +30,7 @@ export class SceneBuilder implements SceneConfigure {
     try {
       return { ...this.custom.layer() }
     } catch (e) {
-      if (e instanceof Error && e.message === '領域が設定されていません.') {
+      if (isError(e) && e.message === '領域が設定されていません.') {
         return { ...SceneBuilder.getDefault(this.game).layer() }
       }
       // 非到達想定
@@ -50,7 +51,7 @@ export class SceneBuilder implements SceneConfigure {
     try {
       return { ...this.custom.field() }
     } catch (e) {
-      if (e instanceof Error && e.message === '値が設定されていません.') {
+      if (isError(e) && e.message === '値が設定されていません.') {
         return { ...SceneBuilder.getDefault(this.game).field() }
       }
       // 非到達想定
