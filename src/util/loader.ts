@@ -1,4 +1,4 @@
 // テスト時はモック化されるのでカバレッジ収集対象外
 // istanbul ignore next
-export const image = (scene: g.Scene, path: string): g.ImageAsset =>
-  scene.asset.getImage(require.resolve(`../../${path}`))
+export const image = (container: g.Game | g.Scene, path: string): g.ImageAsset =>
+  (container instanceof g.Game ? container.scene()! : container).asset.getImage(require.resolve(`../../${path}`))

@@ -1,10 +1,10 @@
-import { SpotImageConfig, SpotImageTypes, SceneBuilder, SceneConfigure } from '../../src'
+import { SceneBuilder, SceneConfigure, SpotAssetRecord, SpotAssetType } from '../../src'
 import { SceneImpl } from '../../src/model/scene'
 
 describe('sceneBuilder', () => {
   let _default: SceneConfigure
-  let spotAssets: SpotImageConfig
-  let matchSpotAssets: Record<SpotImageTypes, { path: string }>
+  let spotAssets: SpotAssetRecord
+  let matchSpotAssets: Record<SpotAssetType, { path: string }>
 
   beforeEach(() => {
     _default = SceneBuilder.getDefault(g.game)
@@ -23,7 +23,6 @@ describe('sceneBuilder', () => {
   })
 
   afterEach(async () => {
-    SceneBuilder.resetDefault()
     if (g.game.scene() instanceof SceneImpl) {
       g.game.popScene()
       await gameContext.step()
@@ -45,7 +44,7 @@ describe('sceneBuilder', () => {
     expect(_default.layer()).toEqual({ field: { x: 100, y: 100, width: 1080, height: 520 } })
     expect(_default.field()).toEqual({})
     expect(_default.player()).toMatchObject({ x: 0, y: 0, speed: 1, asset: { path: './image/player.default.png' } })
-    expect(_default.spot()).toEqual([])
+    expect(_default.spot()).toMatchObject([{ x: 0, y: 0, ...matchSpotAssets }])
   })
   it('デフォルト要素をカスタマイズできる', () => {
     _default

@@ -1,5 +1,5 @@
-import { SpotImageConfig } from '../builder/spotConfig'
 import { Field } from './field'
+import { SpotAssetRecord } from '../value/spotConfig'
 /**
  * スポット ({@link Spot}) の状態
  *
@@ -34,7 +34,7 @@ export interface Spot {
   /**
    * 各場面における画像アセット一覧を取得します
    */
-  readonly assets: Readonly<SpotImageConfig>
+  readonly assets: Readonly<SpotAssetRecord>
 
   /**
    * Spot が登録されたマップを取得します.
@@ -85,7 +85,7 @@ export class SpotImpl implements Spot {
   private _status: SpotStatus = 'non-deployed'
 
   // eslint-disable-next-line no-useless-constructor
-  constructor (scene: g.Scene, readonly assets: Readonly<SpotImageConfig>, private readonly _location: g.CommonOffset) {
+  constructor (scene: g.Scene, readonly assets: Readonly<SpotAssetRecord>, private readonly _location: g.CommonOffset) {
     this._view = new g.Sprite({ scene, src: assets.normal, ..._location })
   }
 

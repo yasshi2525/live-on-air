@@ -1,9 +1,8 @@
-import { LayerConfig } from './layerConfig'
-import { ScenePlayerConfig, SceneSpotConfig } from './sceneConfig'
-import { ScenePlayerConfigure, ScenePlayerConfigureImpl } from './scenePlayerConfigure'
-import { SceneLayerConfigure, SceneLayerConfigureImpl } from './sceneLayerConfigure'
-import { SceneSpotConfigure, SceneSpotConfigureImpl } from './sceneSpotConfigure'
-import { isError } from '../util/validate'
+import { LayerConfig, LayerConfigSupplier } from '../value/layerConfig'
+import { PlayerConfig, PlayerConfigSupplier } from '../value/playerConfig'
+import { SpotConfig, SpotConfigSupplier } from '../value/spotConfig'
+import { FieldConfigSupplier } from '../value/fieldConfig'
+import { Scene, SceneImpl } from '../model/scene'
 
 /**
  * {@link Scene} を新規作成する際の各種設定を格納します.
@@ -39,68 +38,68 @@ export interface SceneConfigure {
    *
    * @param config Player の設定値
    */
-  player(config: Partial<ScenePlayerConfig>): SceneConfigure
+  player(config: Partial<PlayerConfig>): SceneConfigure
 
   /**
    * 作成する {@link Player} の属性情報を取得します.
    */
-  player(): Readonly<ScenePlayerConfig>
+  player(): Readonly<PlayerConfig>
 
   /**
    * 作成する {@link Spot} の属性情報を設定します.
    *
    * @param config Spot の設定値
    */
-  spot(config: Partial<SceneSpotConfig>): SceneConfigure
+  spot(config: Partial<SpotConfig>): SceneConfigure
 
   /**
    * 作成する {@link Spot} の属性情報を取得します.
    */
-  spot(): readonly SceneSpotConfig[]
-}
+  spot(): readonly SpotConfig[]
 
-/**
- * 作成する {@link Spot} の属性値が存在しないとき、デフォルト値を設定します.
- * @internal
- */
-export interface SpotConfigComplement {
   /**
-   * Spot に設定するの属性値が省略された場合、デフォルト値で補完します.
+   * 指定された設定で {@link Scene} を作成します.
    */
-  completeSpotConfig({ value, error } : {
-    value: Partial<SceneSpotConfig>,
-    error: Partial<Record<keyof SceneSpotConfig, Error>>
-  }): SceneSpotConfig
+  build (): Scene & g.Scene
 }
 
-/**
- * 作成する {@link Player} の属性値が省略された場合、デフォルト値を設定します.
- * @internal
- */
-export interface PlayerConfigComplement {
-  /**
-   * Player に設定するの属性値が省略された場合、デフォルト値で補完します.
-   */
-  completePlayerConfig({ value, error } : {
-    value: Partial<ScenePlayerConfig>,
-    error: Partial<Record<keyof ScenePlayerConfig, Error>>
-  }): ScenePlayerConfig
+export interface SceneConfigSupplierOptions {
+  game: g.Game
+  layer: LayerConfigSupplier
+  field: FieldConfigSupplier
+  player: PlayerConfigSupplier
+  spot: SpotConfigSupplier
+  isDefault: boolean
 }
 
-export class SceneConfigureImpl implements SceneConfigure, PlayerConfigComplement, SpotConfigComplement {
-  protected readonly layerConfig: SceneLayerConfigure
-  protected fieldConfig?: object
-  protected readonly playerConfig: ScenePlayerConfigure
-  protected readonly spotConfigs: SceneSpotConfigure[]
-  protected readonly playerComplement?: PlayerConfigComplement
-  protected readonly spotComplement?: SpotConfigComplement
+export class SceneConfigureImpl implements SceneConfigure {
+  private readonly isDefault: boolean
+  private readonly game: g.Game
+  private readonly spotConfig: SpotConfigSupplier
 
-  constructor ({ player, spot }: { player?: PlayerConfigComplement, spot?: SpotConfigComplement}) {
-    this.layerConfig = new SceneLayerConfigureImpl()
-    this.playerConfig = new ScenePlayerConfigureImpl()
+  private readonly spotConfigs: SpotConfigSupplier[]
+
+  private readonly layerGetter: () => LayerConfig
+  private readonly fieldGetter: () => object
+  private readonly playerGetter: () => PlayerConfig
+
+  private readonly layerSetter: (obj: Partial<LayerConfig>) => void
+  private readonly fieldSetter: (obj: object) => void
+  private readonly playerSetter: (obj: Partial<PlayerConfig>) => void
+
+  constructor ({ game, layer, field, player, spot, isDefault }: SceneConfigSupplierOptions) {
+    this.isDefault = isDefault
+    this.game = game
+    this.spotConfig = spot
     this.spotConfigs = []
-    this.spotComplement = spot
-    this.playerComplement = player
+
+    this.layerGetter = () => isDefault ? layer.default() : layer.get()
+    this.fieldGetter = () => isDefault ? field.default() : field.get()
+    this.playerGetter = () => isDefault ? player.default() : player.get()
+
+    this.layerSetter = obj => isDefault ? layer.defaultIf(obj) : layer.setIf(obj)
+    this.fieldSetter = obj => isDefault ? field.defaultIf(obj) : field.setIf(obj)
+    this.playerSetter = obj => isDefault ? player.defaultIf(obj) : player.setIf(obj)
   }
 
   layer (config: Partial<LayerConfig>): SceneConfigure
@@ -109,12 +108,10 @@ export class SceneConfigureImpl implements SceneConfigure, PlayerConfigComplemen
 
   layer (args?: Partial<LayerConfig>): SceneConfigure | Readonly<LayerConfig> {
     if (args) {
-      if (args.field) {
-        this.layerConfig.field(args.field)
-      }
+      this.layerSetter(args)
       return this
     }
-    return { field: this.layerConfig.field() }
+    return this.layerGetter()
   }
 
   field (config: object): SceneConfigure
@@ -123,194 +120,43 @@ export class SceneConfigureImpl implements SceneConfigure, PlayerConfigComplemen
 
   field (args?: object): SceneConfigure | Readonly<object> {
     if (args) {
-      this.fieldConfig = { ...args }
+      this.fieldSetter(args)
       return this
     }
-    if (!this.fieldConfig) {
-      throw new Error('値が設定されていません.')
-    }
-    return { ...this.fieldConfig }
+    return this.fieldGetter()
   }
 
-  player (config: Partial<ScenePlayerConfig>): SceneConfigure
+  player (config: Partial<PlayerConfig>): SceneConfigure
 
-  player (): Readonly<ScenePlayerConfig>
+  player (): Readonly<PlayerConfig>
 
-  player (args?: Partial<ScenePlayerConfig>): SceneConfigure | Readonly<ScenePlayerConfig> {
+  player (args?: Partial<PlayerConfig>): SceneConfigure | Readonly<PlayerConfig> {
     if (args) {
-      if (typeof args.speed === 'number') {
-        this.playerConfig.speed(args.speed)
-      }
-      if (typeof args.x === 'number' && typeof args.y === 'number') {
-        this.playerConfig.location({ x: args.x, y: args.y })
-      }
-      if (args.asset) {
-        this.playerConfig.asset(args.asset)
-      }
+      this.playerSetter(args)
       return this
     }
-    return (this.playerComplement ?? this).completePlayerConfig(this.parsePlayerConfig(this.playerConfig))
+    return this.playerGetter()
   }
 
-  // DefaultConfigure で処理するため非到達想定
-  // istanbul ignore next
-  completePlayerConfig ({ value, error } : {
-    value: Partial<ScenePlayerConfig>,
-    error: Partial<Record<keyof ScenePlayerConfig, Error>>
-  }): ScenePlayerConfig {
-    if (error) {
-      throw new Error(Object.entries(error).map(([key, err]) => `${key}: ${err.message}`).join('\n'))
-    }
-    return value as ScenePlayerConfig
-  }
+  spot (config: Partial<SpotConfig>): SceneConfigure
 
-  protected parsePlayerConfig (config: ScenePlayerConfigureImpl): { value: Partial<ScenePlayerConfig>, error: Partial<Record<keyof ScenePlayerConfig, Error>> } {
-    const value: Partial<ScenePlayerConfig> = {}
-    const error: Partial<Record<keyof ScenePlayerConfig, Error>> = {}
-    try {
-      const location = config.location()
-      value.x = location.x
-      value.y = location.y
-    } catch (e) {
-      // 非到達想定
-      // istanbul ignore else
-      if (isError(e) && e.message === '座標が設定されていません.') {
-        error.x = e
-        error.y = e
-      } else {
-        throw e
-      }
-    }
-    try {
-      value.speed = config.speed()
-    } catch (e) {
-      // 非到達想定
-      // istanbul ignore else
-      if (isError(e) && e.message === '移動速度が設定されていません.') {
-        error.speed = e
-      } else {
-        throw e
-      }
-    }
-    try {
-      value.asset = config.asset()
-    } catch (e) {
-      // 非到達想定
-      // istanbul ignore else
-      if (isError(e) && e.message === 'アセットが設定されていません.') {
-        error.asset = e
-      } else {
-        throw e
-      }
-    }
-    return { value, error }
-  }
+  spot (): readonly SpotConfig[]
 
-  spot (config: Partial<SceneSpotConfig>): SceneConfigure
-
-  spot (): readonly SceneSpotConfig[]
-
-  spot (args?: Partial<SceneSpotConfig>): SceneConfigure | readonly SceneSpotConfig[] {
+  spot (args?: Partial<SpotConfig>): SceneConfigure | readonly SpotConfig[] {
     if (args) {
-      const spotConfig = this.newSpotConfig()
-      if (typeof args.x === 'number' && typeof args.y === 'number') {
-        spotConfig.location({ x: args.x, y: args.y })
+      if (!this.isDefault) {
+        const spotConfig = new SpotConfigSupplier(this.spotConfig.default())
+        spotConfig.setIf(args)
+        this.spotConfigs.push(spotConfig)
+      } else {
+        this.spotConfig.defaultIf(args)
       }
-      if (args.locked) {
-        spotConfig.locked(args.locked)
-      }
-      if (args.unvisited) {
-        spotConfig.unvisited(args.unvisited)
-      }
-      if (args.disabled) {
-        spotConfig.disabled(args.disabled)
-      }
-      if (args.normal) {
-        spotConfig.normal(args.normal)
-      }
-      this.spotConfigs.push(spotConfig)
       return this
     }
-    return this.spotConfigs.map(config => (this.spotComplement ?? this).completeSpotConfig(this.parseSpotConfig(config)))
+    return this.isDefault ? [this.spotConfig.default()] : [...this.spotConfigs.map(config => config.get())]
   }
 
-  // DefaultConfigure で処理するため非到達想定
-  // istanbul ignore next
-  completeSpotConfig ({ value, error } : {
-    value: Partial<SceneSpotConfig>,
-    error: Partial<Record<keyof SceneSpotConfig, Error>>
-  }): SceneSpotConfig {
-    if (error) {
-      throw new Error(Object.entries(error).map(([key, err]) => `${key}: ${err.message}`).join('\n'))
-    }
-    return value as SceneSpotConfig
-  }
-
-  protected newSpotConfig (): SceneSpotConfigureImpl {
-    return new SceneSpotConfigureImpl()
-  }
-
-  protected parseSpotConfig (config: SceneSpotConfigureImpl): { value: Partial<SceneSpotConfig>, error: Partial<Record<keyof SceneSpotConfig, Error>> } {
-    const value: Partial<SceneSpotConfig> = {}
-    const error: Partial<Record<keyof SceneSpotConfig, Error>> = {}
-    try {
-      const location = config.location()
-      value.x = location.x
-      value.y = location.y
-    } catch (e) {
-      // 非到達想定
-      // istanbul ignore else
-      if (isError(e) && e.message === '座標が設定されていません.') {
-        error.x = e
-        error.y = e
-      } else {
-        throw e
-      }
-    }
-    try {
-      value.locked = config.locked()
-    } catch (e) {
-      // 非到達想定
-      // istanbul ignore else
-      if (isError(e) && e.message === 'アセットが設定されていません.') {
-        error.locked = e
-      } else {
-        throw e
-      }
-    }
-    try {
-      value.unvisited = config.unvisited()
-    } catch (e) {
-      // 非到達想定
-      // istanbul ignore else
-      if (isError(e) && e.message === 'アセットが設定されていません.') {
-        error.unvisited = e
-      } else {
-        throw e
-      }
-    }
-    try {
-      value.disabled = config.disabled()
-    } catch (e) {
-      // 非到達想定
-      // istanbul ignore else
-      if (isError(e) && e.message === 'アセットが設定されていません.') {
-        error.disabled = e
-      } else {
-        throw e
-      }
-    }
-    try {
-      value.normal = config.normal()
-    } catch (e) {
-      // 非到達想定
-      // istanbul ignore else
-      if (isError(e) && e.message === 'アセットが設定されていません.') {
-        error.normal = e
-      } else {
-        throw e
-      }
-    }
-    return { value, error }
+  build (): Scene & g.Scene {
+    return new SceneImpl({ game: this.game, layer: this.layer(), player: this.player(), spots: this.spot() })
   }
 }

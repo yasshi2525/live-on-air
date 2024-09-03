@@ -3,11 +3,12 @@ import { Field } from './field'
 import { Player } from './player'
 import { Spot } from './spot'
 import { LayerBuilder } from '../builder/layerBuilder'
-import { LayerConfig } from '../builder/layerConfig'
 import { FieldBuilder } from '../builder/fieldBuilder'
 import { PlayerBuilder } from '../builder/playerBuilder'
-import { ScenePlayerConfig, SceneSpotConfig } from '../builder/sceneConfig'
 import { SpotBuilder } from '../builder/spotBuilder'
+import { LayerConfig } from '../value/layerConfig'
+import { PlayerConfig } from '../value/playerConfig'
+import { SpotConfig } from '../value/spotConfig'
 
 /**
  * 本ゲームが動作する g.Scene が持つゲーム情報を格納したパラメタ一覧です.
@@ -34,7 +35,7 @@ export interface Scene{
 export class SceneImpl extends g.Scene implements Scene {
   private context: { loaded: false } | { loaded: true, layer: Layer, field: Field, player: Player, spots: Set<Spot> }
 
-  constructor (param: g.SceneParameterObject & { layer: LayerConfig, player: ScenePlayerConfig, spots: readonly SceneSpotConfig[] }) {
+  constructor (param: g.SceneParameterObject & { layer: LayerConfig, player: PlayerConfig, spots: readonly SpotConfig[] }) {
     super(param)
     this.context = { loaded: false }
     this.onLoad.add(() => {
