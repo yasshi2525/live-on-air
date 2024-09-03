@@ -36,11 +36,11 @@ export class SpotConfigureImpl implements SpotConfigure {
   // eslint-disable-next-line no-useless-constructor
   constructor (protected readonly imageEntry: RecordConfigure<SpotImageTypes, g.ImageAsset>) {}
 
-  image (assets: SpotImageConfig): SpotConfigure
+  image (assets: Partial<SpotImageConfig>): SpotConfigure
 
-  image (): SpotImageConfig
+  image (): Readonly<SpotImageConfig>
 
-  image (args?: SpotImageConfig): SpotConfigure | SpotImageConfig {
+  image (args?: Partial<SpotImageConfig>): SpotConfigure | Readonly<SpotImageConfig> {
     if (args) {
       this.imageEntry.putAll(args)
       return this
