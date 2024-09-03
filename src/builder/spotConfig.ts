@@ -1,15 +1,15 @@
 /**
- * Spot の状態一覧
+ * {@link Spot} の状態一覧
  */
 export const spotImageTypes = ['locked', 'unvisited', 'disabled', 'normal'] as const
 
 /**
- * Spot の状態一覧
+ * {@link Spot} の状態一覧
  */
 export type SpotImageTypes = typeof spotImageTypes[number]
 
 /**
- * Spot の各種状態において表示に利用する画像アセット.
+ * {@link Spot} の各種状態において表示に利用する画像アセット.
  */
 export interface SpotImageConfig {
   /**

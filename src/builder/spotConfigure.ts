@@ -2,7 +2,7 @@ import { SpotImageConfig, spotImageTypes, SpotImageTypes } from './spotConfig'
 import { RecordConfigure } from '../util/configureRecord'
 
 /**
- * Spot を新規作成する際の各種設定を格納します.
+ * {@link Spot} を新規作成する際の各種設定を格納します.
  */
 export interface SpotConfigure {
   /**

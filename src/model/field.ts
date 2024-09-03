@@ -2,22 +2,25 @@ import { Spot } from './spot'
 import { Player } from './player'
 
 /**
- * プレイヤー (Player) とスポット (Spot) が配置され、ゲームがプレイされる舞台.
+ * プレイヤー ({@link Player}) とスポット ({@link Spot}) が配置され、ゲームがプレイされる舞台.
+ *
+ * {@link FieldBuilder} を使ってインスタンスを作成してください.
  */
 export interface Field {
   /**
    * マップの領域座標.
    *
-   * view に値が登録されているとき値を返します.
+   * {@link view} に値が登録されているとき値を返します.
    */
   readonly area?: Readonly<g.CommonArea>
 
   /**
-   * player, spot を描画するエンティティ.
+   * Player, Spot を描画するエンティティ.
    *
-   * 登録されている player, spot は本エンティティの子として描画されます
+   * 登録されている Player, Spot は本エンティティの子として描画されます
    */
   view?: g.E
+
   /**
    * マップ上に存在する Player を取得します
    */
@@ -31,18 +34,18 @@ export interface Field {
   /**
    * 指定した Player をマップに配置します
    *
-   * 配置するとプレイヤーはマップ上を移動可能になります.
+   * 配置すると Player ーはマップ上を移動可能になります.
    *
-   * @param player 配置するプレイヤー
+   * @param player 配置する Player
    */
   addPlayer(player: Player): void
 
   /**
    * 指定した Spot をマップに配置します.
    *
-   * 配置するとプレイヤーは Spot を目的地として選択できるようになります.
+   * 配置すると Player は Spot を目的地として選択できるようになります.
    *
-   * @param spot 配置するスポット
+   * @param spot 配置する Spot
    */
   addSpot(spot: Spot): void
 
@@ -54,7 +57,7 @@ export interface Field {
   disableSpotExcept(spot: Spot): void
 
   /**
-   * 指定した Spot 以外を  Player が目的地として選択できるようにします.
+   * 指定した Spot 以外を Player が目的地として選択できるようにします.
    */
   enableSpotExcept(spot: Spot): void
 }

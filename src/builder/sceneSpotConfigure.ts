@@ -1,75 +1,75 @@
 /**
- * Spot を新規作成する際の各種設定を格納します.
+ * {@link Spot} を新規作成する際の各種設定を格納します.
  */
 export interface SceneSpotConfigure {
   /**
-   * 作成する spot を配置する座標を設定します.
+   * 作成する Spot を配置する座標を設定します.
    *
    * @param location Spot を配置する座標
    */
   location (location: g.CommonOffset): SceneSpotConfigure
 
   /**
-   * 作成する spot を配置する座標を取得します.
+   * 作成する Spot を配置する座標を取得します.
    */
   location (): Readonly<g.CommonOffset>
 
   /**
-   * 作成する spot の未解放状態の画像アセットを設定します.
+   * 作成する Spot の未解放状態の画像アセットを設定します.
    *
    * プレイヤーには存在を見せたいが、条件をみたすまで
    * 訪問させたくない Spot を作成したいときに設定してください.
    *
-   * @param asset 作成する spot の未解放状態の画像アセット
+   * @param asset 作成する Spot の未解放状態の画像アセット
    */
   locked (asset: g.ImageAsset): SceneSpotConfigure
 
   /**
-   * 作成する spot の未解放状態の画像アセットを取得します.
+   * 作成する Spot の未解放状態の画像アセットを取得します.
    */
   locked (): g.ImageAsset
 
   /**
-   * 作成する spot の未訪問状態の画像アセットを設定します.
+   * 作成する Spot の未訪問状態の画像アセットを設定します.
    *
    * プレイヤーがまだ訪問していない場合、
    * 強調表示をして訪問を促したい際に設定してください.
    *
-   * @param asset 作成する spot の未訪問状態の画像アセット
+   * @param asset 作成する Spot の未訪問状態の画像アセット
    */
   unvisited (asset: g.ImageAsset): SceneSpotConfigure
 
   /**
-   * 作成する spot の未訪問状態の画像アセットを取得します.
+   * 作成する Spot の未訪問状態の画像アセットを取得します.
    */
   unvisited (): g.ImageAsset
 
   /**
-   * 作成する spot の訪問操作受付禁止状態の画像アセットを設定します.
+   * 作成する Spot の訪問操作受付禁止状態の画像アセットを設定します.
    *
    * プレイヤーが他の Spot に向かって移動しているときなど、
    * クリックしても目的地に指定できないことを強調する際に設定してください.
    *
-   * @param asset 作成する spot の未訪問状態の画像アセット
+   * @param asset 作成する Spot の未訪問状態の画像アセット
    */
   disabled (asset: g.ImageAsset): SceneSpotConfigure
 
   /**
-   * 作成する spot の訪問操作受付禁止状態の画像アセットを取得します.
+   * 作成する Spot の訪問操作受付禁止状態の画像アセットを取得します.
    */
   disabled (): g.ImageAsset
 
   /**
-   * 作成する spot の通常時の画像アセットを設定します.
+   * 作成する Spot の通常時の画像アセットを設定します.
    *
    * プレイヤーがクリックすれば目的地に設定される状態の際の画像を設定してください.
    *
-   * @param asset 作成する spot の通常時の画像アセット
+   * @param asset 作成する Spot の通常時の画像アセット
    */
   normal (asset: g.ImageAsset): SceneSpotConfigure
 
   /**
-   * 作成する spot の通常時の画像アセットを取得します.
+   * 作成する Spot の通常時の画像アセットを取得します.
    */
   normal (): g.ImageAsset
 }

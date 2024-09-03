@@ -3,7 +3,9 @@ import { LayerType, layerTypes } from './layerConfig'
 import { Layer, LayerImpl } from '../model/layer'
 
 /**
- * レイアウト情報をもとに scene に配置する各エンティティの構築を支援します.
+ * レイアウト情報をもとに g.Scene に配置する各エンティティ ({@link Layer}) の構築を支援します.
+ *
+ * Layer は本クラスを用いて作成してください.
  */
 export class LayerBuilder {
   private readonly config: Configure<LayerType, g.CommonArea>

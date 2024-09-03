@@ -1,40 +1,40 @@
 /**
- * Player を新規作成する際の各種設定を格納します.
+ * {@link Player} を新規作成する際の各種設定を格納します.
  */
 export interface ScenePlayerConfigure {
   /**
-   * 作成する player の移動速度を設定します.
+   * 作成する Player の移動速度を設定します.
    *
-   * @param speed player の移動速度
+   * @param speed Player の移動速度
    */
   speed (speed: number): ScenePlayerConfigure
 
   /**
-   * 作成する player の移動速度を取得します.
+   * 作成する Player の移動速度を取得します.
    */
   speed (): Readonly<number>
 
   /**
-   * 作成する player を配置する座標を設定します.
+   * 作成する Player を配置する座標を設定します.
    *
    * @param location Spot を配置する座標
    */
   location (location: g.CommonOffset): ScenePlayerConfigure
 
   /**
-   * 作成する player を配置する座標を取得します.
+   * 作成する Player を配置する座標を取得します.
    */
   location (): Readonly<g.CommonOffset>
 
   /**
-   * 作成する player に使用される画像アセットを設定します.
+   * 作成する Player に使用される画像アセットを設定します.
    *
-   * @param asset player に使用される画像アセット
+   * @param asset Player に使用される画像アセット
    */
   asset (asset: g.ImageAsset): ScenePlayerConfigure
 
   /**
-   * 作成する player に使用される画像アセットを取得します.
+   * 作成する Player に使用される画像アセットを取得します.
    */
   asset (): g.ImageAsset
 }

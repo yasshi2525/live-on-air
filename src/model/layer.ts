@@ -1,13 +1,15 @@
 import { LayerConfig, LayerType } from '../builder/layerConfig'
 
 /**
- * ゲーム Scene 上にエンティティを前後適切に配置するためのレイヤ層.
+ * ゲーム g.Scene 上にエンティティを前後適切に配置するためのレイヤ層.
+ *
+ * {@link LayerBuilder} を使ってインスタンスを作成してください.
  */
 export interface Layer {
   /**
    * マップ層.
    *
-   * Spot, Player を配置するためのレイヤ.
+   * {@link Spot}, {@link Player} を配置するためのレイヤ.
    */
   readonly field: g.E
 }

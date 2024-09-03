@@ -10,23 +10,23 @@ import { ScenePlayerConfig, SceneSpotConfig } from '../builder/sceneConfig'
 import { SpotBuilder } from '../builder/spotBuilder'
 
 /**
- * 本ゲームが動作する scene が持つパラメタです.
+ * 本ゲームが動作する g.Scene が持つゲーム情報を格納したパラメタ一覧です.
  */
 export interface Scene{
   /**
-   * レイアウト情報
+   * レイアウト情報.
    */
   readonly layer: Layer
   /**
-   * マップ情報
+   * マップ情報.
    */
   readonly field: Field
   /**
-   * プレイヤー情報
+   * プレイヤー情報.
    */
   readonly player: Player
   /**
-   * スポット情報一覧
+   * スポット情報一覧.
    */
   readonly spots: Spot[]
 }

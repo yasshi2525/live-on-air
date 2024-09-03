@@ -3,7 +3,7 @@ import { Configure } from '../util/configure'
 import { image } from '../util/loader'
 
 /**
- * プレイヤー Player を簡便に作るためのクラス.
+ * プレイヤー {@link Player} を簡便に作るためのクラス.
  *
  * Player は本クラスを用いて作成してください.
  */
@@ -19,12 +19,12 @@ export class PlayerBuilder {
   }
 
   /**
-   * 作成する player に使用される画像アセットを取得します.
+   * 作成する Player に使用される画像アセットを取得します.
    */
   asset (): g.ImageAsset
 
   /**
-   * 作成する player に設定する画像アセットを登録します.
+   * 作成する Player に設定する画像アセットを登録します.
    *
    * @param asset 描画に使用する画像アセット
    */
@@ -39,12 +39,12 @@ export class PlayerBuilder {
   }
 
   /**
-   * 作成する player に設定する移動速度を取得します.
+   * 作成する Player に設定する移動速度を取得します.
    */
   speed (): number
 
   /**
-   * 作成する player に設定する移動速度を設定します.
+   * 作成する Player に設定する移動速度を設定します.
    *
    * @param value 移動速度
    */
@@ -62,21 +62,17 @@ export class PlayerBuilder {
   }
 
   /**
-   * 作成する player に設定する座標を取得します.
+   * 作成する Player に設定する座標を取得します.
    */
   location (): Readonly<g.CommonOffset>
 
   /**
-   * 作成する player の座標を登録します.
+   * 作成する Player の座標を登録します.
    *
-   * @param location player の座標
+   * @param location Player の座標
    */
   location (location: g.CommonOffset): PlayerBuilder
 
-  /**
-   * hoge
-   * @param arg
-   */
   location (arg?: g.CommonOffset): Readonly<g.CommonOffset> | PlayerBuilder {
     if (!arg) {
       return { ...this._location }
@@ -87,7 +83,7 @@ export class PlayerBuilder {
   }
 
   /**
-   * player を作成します.
+   * Player を作成します.
    */
   build (): Player {
     return new PlayerImpl(this.scene, this.imgConfig.get('normal'), this._speed, this._location)

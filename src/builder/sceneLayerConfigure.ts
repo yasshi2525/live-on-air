@@ -1,20 +1,20 @@
 /**
- * Layer を新規作成する際の各種設定を格納します.
+ * {@link Layer} を新規作成する際の各種設定を格納します.
  */
 export interface SceneLayerConfigure {
   /**
-   * 作成する layer のマップの領域情報を設定します.
+   * 作成する Layer のマップの領域情報を設定します.
    *
-   * 本領域上に player, spot が配置されます.
+   * 本領域上に {@link Player}, {@link Spot} が配置されます.
    *
    * @param area マップのレイアウト情報
    */
   field (area: g.CommonArea): SceneLayerConfigure
 
   /**
-   * 作成する layer のマップの領域情報を取得します.
+   * 作成する Layer のマップの領域情報を取得します.
    *
-   * 本領域上に player, spot が配置されます.
+   * 本領域上に {@link Player}, {@link Spot} が配置されます.
    */
   field (): Readonly<g.CommonArea>
 }
