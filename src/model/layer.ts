@@ -1,4 +1,4 @@
-import { LayerConfig, LayerType } from '../builder/layerConfig'
+import { LayerConfig, LayerType } from '../value/layerConfig'
 
 /**
  * ゲーム g.Scene 上にエンティティを前後適切に配置するためのレイヤ層.

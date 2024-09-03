@@ -1,48 +1,56 @@
-import { Configure } from '../util/configure'
-import { LayerType, layerTypes } from './layerConfig'
-import { Layer, LayerImpl } from '../model/layer'
+import { LayerConfigure, LayerConfigureImpl } from './layerConfigure'
+import { LayerConfigSupplier } from '../value/layerConfig'
 
 /**
  * レイアウト情報をもとに g.Scene に配置する各エンティティ ({@link Layer}) の構築を支援します.
  *
  * Layer は本クラスを用いて作成してください.
  */
-export class LayerBuilder {
-  private readonly config: Configure<LayerType, g.CommonArea>
+export class LayerBuilder extends LayerConfigureImpl {
+  private static lastUsedScene?: g.Scene
+  private static defaultConfig?: LayerConfigSupplier
+  private static defaultConfigure?: LayerConfigure
 
-  constructor (private readonly scene: g.Scene) {
-    this.config = new Configure(
-      { x: 0, y: 0, width: scene.game.width, height: scene.game.height },
-      {
-        field: { x: 100, y: 100, width: scene.game.width - 200, height: scene.game.height - 200 }
-      }
-    )
+  constructor (scene: g.Scene) {
+    super(false, scene, new LayerConfigSupplier(LayerBuilder.getDefaultConfig(scene).get()))
   }
 
   /**
-   * Spot, Player が配置されるマップを取得します.
-   */
-  field (): Readonly<g.CommonArea>
-
-  /**
-   * Spot, Player が配置されるマップの大きさを設定します.
+   * 各属性値に値を設定しなかった際に使用されるデフォルト値を設定します.
    *
-   * @param area 設定する領域
+   * @param scene 現在の scene を指定してください.
    */
-  field (area: g.CommonArea): LayerBuilder
-
-  field (args?: g.CommonArea): LayerBuilder | Readonly<g.CommonArea> {
-    if (args) {
-      this.config.put('field', { ...args })
-      return this
+  static getDefault (scene: g.Scene): LayerConfigure {
+    if (LayerBuilder.lastUsedScene !== scene) {
+      LayerBuilder.resetDefault()
     }
-    return { ...this.config.get('field') }
+    if (!LayerBuilder.defaultConfigure) {
+      LayerBuilder.defaultConfigure = new LayerConfigureImpl(true, scene, LayerBuilder.getDefaultConfig(scene))
+    }
+    LayerBuilder.lastUsedScene = scene
+    return LayerBuilder.defaultConfigure
+  }
+
+  private static getDefaultConfig (scene: g.Scene): LayerConfigSupplier {
+    if (LayerBuilder.lastUsedScene !== scene) {
+      LayerBuilder.resetDefault()
+    }
+    if (!LayerBuilder.defaultConfig) {
+      LayerBuilder.defaultConfig = new LayerConfigSupplier({
+        field: { x: 100, y: 100, width: scene.game.width - 200, height: scene.game.height - 200 }
+      })
+    }
+    LayerBuilder.lastUsedScene = scene
+    return LayerBuilder.defaultConfig
   }
 
   /**
-   * 設定されたレイアウト情報をもとに各レイヤを作成し、sceneに登録します
+   * {@link getDefault} で設定した変更を消去します.
+   *
+   * @internal
    */
-  build (): Layer {
-    return new LayerImpl(this.scene, this.config.entries(layerTypes))
+  private static resetDefault () {
+    delete LayerBuilder.defaultConfig
+    delete LayerBuilder.defaultConfigure
   }
 }

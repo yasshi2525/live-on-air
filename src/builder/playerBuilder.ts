@@ -1,91 +1,56 @@
-import { Player, PlayerImpl } from '../model/player'
-import { Configure } from '../util/configure'
 import { image } from '../util/loader'
+import { PlayerConfigure, PlayerConfigureImpl } from './playerConfigure'
+import { PlayerConfigSupplier } from '../value/playerConfig'
 
 /**
  * プレイヤー {@link Player} を簡便に作るためのクラス.
  *
  * Player は本クラスを用いて作成してください.
  */
-export class PlayerBuilder {
-  private readonly imgConfig: Configure<'normal', g.ImageAsset>
-  private readonly _location: g.CommonOffset
-  private _speed: number
+export class PlayerBuilder extends PlayerConfigureImpl {
+  private static lastUsedScene?: g.Scene
+  private static defaultConfig?: PlayerConfigSupplier
+  private static defaultConfigure?: PlayerConfigure
 
-  constructor (private readonly scene: g.Scene) {
-    this.imgConfig = new Configure(image(scene, 'image/player.default.png'))
-    this._location = { x: 0, y: 0 }
-    this._speed = 1
+  constructor (scene: g.Scene) {
+    super(false, scene, new PlayerConfigSupplier(PlayerBuilder.getDefaultConfig(scene).get()))
   }
 
   /**
-   * 作成する Player に使用される画像アセットを取得します.
-   */
-  asset (): g.ImageAsset
-
-  /**
-   * 作成する Player に設定する画像アセットを登録します.
+   * 各属性値に値を設定しなかった際に使用されるデフォルト値を設定します.
    *
-   * @param asset 描画に使用する画像アセット
+   * @param scene 現在の scene を指定してください.
    */
-  asset (asset: g.ImageAsset): PlayerBuilder
-
-  asset (args?: g.ImageAsset): g.ImageAsset | PlayerBuilder {
-    if (!args) {
-      return this.imgConfig.get('normal')
+  static getDefault (scene: g.Scene): PlayerConfigure {
+    if (PlayerBuilder.lastUsedScene !== scene) {
+      PlayerBuilder.resetDefault()
     }
-    this.imgConfig.put('normal', args)
-    return this
+    if (!PlayerBuilder.defaultConfigure) {
+      PlayerBuilder.defaultConfigure = new PlayerConfigureImpl(true, scene, PlayerBuilder.getDefaultConfig(scene))
+    }
+    PlayerBuilder.lastUsedScene = scene
+    return PlayerBuilder.defaultConfigure
+  }
+
+  private static getDefaultConfig (scene: g.Scene): PlayerConfigSupplier {
+    if (PlayerBuilder.lastUsedScene !== scene) {
+      PlayerBuilder.resetDefault()
+    }
+    if (!PlayerBuilder.defaultConfig) {
+      PlayerBuilder.defaultConfig = new PlayerConfigSupplier({
+        x: 0, y: 0, speed: 1, asset: image(scene, 'image/player.default.png')
+      })
+    }
+    PlayerBuilder.lastUsedScene = scene
+    return PlayerBuilder.defaultConfig
   }
 
   /**
-   * 作成する Player に設定する移動速度を取得します.
+   * {@link getDefault} で設定した変更を消去します.
+   * @internal
    */
-  speed (): number
-
-  /**
-   * 作成する Player に設定する移動速度を設定します.
-   *
-   * @param value 移動速度
-   */
-  speed (value: number): PlayerBuilder
-
-  speed (args?: number): number | PlayerBuilder {
-    if (!args) {
-      return this._speed
-    }
-    if (args <= 0) {
-      throw new Error(`無効な値 "${args}" を移動速度に設定しようとしました. 0より大きな正の値を指定してください`)
-    }
-    this._speed = args
-    return this
-  }
-
-  /**
-   * 作成する Player に設定する座標を取得します.
-   */
-  location (): Readonly<g.CommonOffset>
-
-  /**
-   * 作成する Player の座標を登録します.
-   *
-   * @param location Player の座標
-   */
-  location (location: g.CommonOffset): PlayerBuilder
-
-  location (arg?: g.CommonOffset): Readonly<g.CommonOffset> | PlayerBuilder {
-    if (!arg) {
-      return { ...this._location }
-    }
-    this._location.x = arg.x
-    this._location.y = arg.y
-    return this
-  }
-
-  /**
-   * Player を作成します.
-   */
-  build (): Player {
-    return new PlayerImpl(this.scene, this.imgConfig.get('normal'), this._speed, this._location)
+  private static resetDefault () {
+    delete PlayerBuilder.defaultConfig
+    delete PlayerBuilder.defaultConfigure
   }
 }

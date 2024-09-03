@@ -2,6 +2,16 @@ import { PlayerBuilder } from '../../src'
 import { image } from '../../src/util/loader'
 
 describe('playerBuilder', () => {
+  it('デフォルトの設定を変更できる', () => {
+    const def = PlayerBuilder.getDefault(scene)
+    expect(def.location()).toEqual({ x: 0, y: 0 })
+    expect(def.speed()).toEqual(1)
+    expect(def.asset()).toMatchObject({ path: './image/player.default.png' })
+    def.location({ x: 1, y: 2 })
+    expect(def.location()).toEqual({ x: 1, y: 2 })
+    const lb = new PlayerBuilder(scene)
+    expect(lb.location()).toEqual({ x: 1, y: 2 })
+  })
   it('デフォルトの設定で作成できる', () => {
     const pb = new PlayerBuilder(scene)
     expect(pb.speed()).toEqual(1)
