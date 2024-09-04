@@ -14,7 +14,7 @@ const gameJSON: GameConfiguration = {
 
 const setup = (): void => {
   fs.writeFileSync('game.json', JSON.stringify(gameJSON, null, 2))
-  execSync('akashic scan asset image')
+  execSync('npx akashic scan asset image')
 }
 
 export default setup
