@@ -1,5 +1,5 @@
 import { SingleFrameAssets } from '@yasshi2525/pixi-image-packer'
-import { spotImageTypes } from '../../src/builder/spotConfig'
+import { SpotAssetType } from '../../src'
 import { Container, Graphics } from 'pixi.js'
 import { AdjustmentFilter, GlowFilter, OutlineFilter } from 'pixi-filters'
 import { buildText } from './text'
@@ -17,7 +17,7 @@ interface SpotOptions {
 export const createSpot = ({
   name, label, fontSize = 50, width, height, baseColor, padding = 10
 }: SpotOptions): SingleFrameAssets[] => {
-  return spotImageTypes.map(typ => {
+  return (['locked', 'unvisited', 'disabled', 'normal'] as SpotAssetType[]).map(typ => {
     const data = new Container()
     const base = new Graphics()
     base.beginFill(baseColor)
