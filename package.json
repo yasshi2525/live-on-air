@@ -15,8 +15,8 @@
     "build:image": "cross-env NODE_OPTIONS=--no-experimental-fetch pixi-image-packer-cli resource/image/index.ts -o image --sync",
     "doc": "typedoc --out tmp/docs src/index.ts",
     "doc:test": "typedoc --out tmp/docs --validation src/index.ts",
-    "lint:check": "eslint --ignore-pattern lib --ignore-pattern tmp .",
-    "lint": "eslint --ignore-pattern lib --ignore-pattern tmp --fix .",
+    "lint:check": "eslint .",
+    "lint": "eslint --fix .",
     "test": "jest",
     "watch:image": "cross-env NODE_OPTIONS=--no-experimental-fetch pixi-image-packer-cli resource/image/index.ts -o image --onlyCreate"
   },
