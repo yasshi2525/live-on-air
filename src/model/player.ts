@@ -154,6 +154,10 @@ export class PlayerImpl implements Player {
     this._view.x = spot.location.x
     this._view.y = spot.location.y
 
+    this._destination = spot
+    spot.markAsVisited()
+    this._destination = undefined
+
     this._staying = spot
     this._status = 'staying'
   }
@@ -182,6 +186,7 @@ export class PlayerImpl implements Player {
       this._tween.moveTo(spot.location!.x, spot.location!.y, distance / this._speed, Easing.easeInOutCubic)
     }
     this._tween.call(() => {
+      spot.markAsVisited()
       this._destination = undefined
       this._tween = undefined
       this._staying = spot

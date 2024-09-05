@@ -49,6 +49,11 @@ export interface Spot {
   readonly status: SpotStatus
 
   /**
+   * 過去にプレイヤーが訪問したかどうか取得します.
+   */
+  readonly visited: boolean
+
+  /**
    * 指定したマップ (Field) に登録します.
    *
    * 登録することで Player は Spot を訪問し、生放送できるようになります.
@@ -77,12 +82,23 @@ export interface Spot {
    * プレイヤーが目的地として選択できる状態にします.
    */
   enable(): void
+
+  /**
+   * プレイヤーが訪問済であると登録します.
+   *
+   * 本メソッドはプレイヤー移動完了時に自動で呼び出されるため、
+   * 本ライブラリ利用者が利用する必要はありません.
+   *
+   * @internal
+   */
+  markAsVisited(): void
 }
 
 export class SpotImpl implements Spot {
   private readonly _view: g.Sprite
   private _field?: Field
   private _status: SpotStatus = 'non-deployed'
+  private _visited = false
 
   // eslint-disable-next-line no-useless-constructor
   constructor (scene: g.Scene, readonly assets: Readonly<SpotAssetRecord>, private readonly _location: g.CommonOffset) {
@@ -136,7 +152,7 @@ export class SpotImpl implements Spot {
     }
 
     this._status = 'enabled'
-    this._view.src = this.assets.normal
+    this._view.src = this._visited ? this.assets.normal : this.assets.unvisited
     this._view.invalidate()
 
     if (this._field.player.destination === this) {
@@ -149,7 +165,7 @@ export class SpotImpl implements Spot {
       throw new Error('spotがfieldに配置されていないため訪問先として指定可能にできませんでした. spotをfieldに配置してください')
     }
     this._status = 'enabled'
-    this._view.src = this.assets.normal
+    this._view.src = this._visited ? this.assets.normal : this.assets.unvisited
     this._view.invalidate()
   }
 
@@ -160,6 +176,23 @@ export class SpotImpl implements Spot {
     this._status = 'disabled'
     this._view.src = this.assets.disabled
     this._view.invalidate()
+  }
+
+  markAsVisited (): void {
+    if (!this._field || !this.location) {
+      throw new Error('spotがfieldに配置されていないため訪問済みステータスへの遷移に失敗しました. spotをfieldに配置してください')
+    }
+    if (!this._field.player || !this._field.player.location) {
+      throw new Error('playerがfieldに配置されていないため訪問済みステータスへの遷移に失敗しました. playerをfieldに配置してください')
+    }
+    if (this._field.player.destination !== this) {
+      throw new Error('playerは異なるspotへ移動中のため訪問済みステータスへの遷移に失敗しました. playerの目的地を変更してください')
+    }
+    if (g.Util.distanceBetweenOffsets(this.location, this._field.player.location) > 0) {
+      throw new Error('playerがspotに到着していないため訪問済みステータスへの遷移に失敗しました. playerがspotに到着してから実行してください')
+    }
+
+    this._visited = true
   }
 
   get field (): Field | undefined {
@@ -179,5 +212,9 @@ export class SpotImpl implements Spot {
 
   get status (): SpotStatus {
     return this._status
+  }
+
+  get visited (): boolean {
+    return this._visited
   }
 }
