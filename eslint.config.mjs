@@ -16,5 +16,7 @@ delete standard.globals
 export default [
   standard,
   ...tslint.configs.recommended,
-  ...tslint.configs.stylistic
+  ...tslint.configs.stylistic, {
+    ignores: ['lib', 'tmp', 'sample']
+  }
 ]

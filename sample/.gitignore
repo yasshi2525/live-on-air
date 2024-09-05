@@ -1,0 +1,5 @@
+node_modules
+script
+entrypoint.json
+game.json
+_bootstrap.ts

@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": "script",
+    "target": "ES6",
+    "module": "CommonJS",
+    "strict": true,
+    "allowUmdGlobalAccess": true,
+  },
+  "files": ["node_modules/@akashic/akashic-engine/index.runtime.d.ts"],
+  "include": [
+    "_bootstrap.ts",
+    "src/**/*.ts"
+  ],
+}
