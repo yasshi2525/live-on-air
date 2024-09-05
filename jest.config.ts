@@ -6,7 +6,7 @@ const config: Config = {
   coverageDirectory: 'tmp/coverage',
   coverageProvider: 'babel',
   testMatch: ['<rootDir>/spec/**/*.ts'],
-  testPathIgnorePatterns: ['__setup'],
+  testPathIgnorePatterns: ['__setup', '__helper.ts'],
   transform: {
     '^.+.tsx?$': [
       'ts-jest', { tsconfig: '<rootDir>/spec/tsconfig.json' }

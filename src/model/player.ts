@@ -1,5 +1,6 @@
 import { Field } from './field'
 import { Spot } from './spot'
+import { Easing, Timeline, Tween } from '@akashic-extension/akashic-timeline'
 /**
  * プレイヤー ({@link Player}) の状態を表します.
  *
@@ -20,6 +21,11 @@ export type PlayerStatus = 'non-field' | 'staying' | 'moving' | 'stopping'
  * {@link PlayerBuilder} を使ってインスタンスを作成してください.
  */
 export interface Player {
+  /**
+   * Spot に到達した際発火されます. 引数には到達した Spot が格納されます.
+   */
+  readonly onEnter: g.Trigger<Spot>
+
   /**
    * 移動速度. 1フレームで移動する距離 (画面座標系) で指定します
    */
@@ -104,14 +110,17 @@ export interface Player {
 }
 
 export class PlayerImpl implements Player {
+  readonly onEnter = new g.Trigger<Spot>()
+
   private _field?: Field
   private readonly _view: g.E
   private _staying?: Spot
   private _destination?: Spot
   private _status: PlayerStatus = 'non-field'
+  private _tween?: Tween
 
-  constructor (_scene: g.Scene, _asset: g.ImageAsset, private _speed: number, protected readonly _location: g.CommonOffset) {
-    this._view = new g.Sprite({ scene: _scene, src: _asset, ..._location })
+  constructor (_scene: g.Scene, _asset: g.ImageAsset, private _speed: number, location: g.CommonOffset) {
+    this._view = new g.Sprite({ scene: _scene, src: _asset, x: location.x, y: location.y })
   }
 
   standOn (field: Field): void {
@@ -132,7 +141,7 @@ export class PlayerImpl implements Player {
     if (!spot.field || !spot.location) {
       throw new Error('指定したspotがfieldに配置されていないためワープに失敗しました. spotをfieldに配置してください')
     }
-    if (!this._field || !this._location) {
+    if (!this._field || !this.location) {
       throw new Error('playerがfieldに配置されていないためワープに失敗しました. playerをfieldに配置してください')
     }
     if (this._field !== spot.field) {
@@ -142,8 +151,8 @@ export class PlayerImpl implements Player {
       throw new Error('playerは現在移動中のためワープに失敗しました. playerの移動を停止してください')
     }
 
-    this._location.x = spot.location.x
-    this._location.y = spot.location.y
+    this._view.x = spot.location.x
+    this._view.y = spot.location.y
 
     this._staying = spot
     this._status = 'staying'
@@ -159,7 +168,7 @@ export class PlayerImpl implements Player {
     if (this._field !== spot.field) {
       throw new Error('指定したspotがplayerと異なるfieldに配置されているため移動先の設定に失敗しました. 同じfieldに配置されたspotを指定してください')
     }
-    if (this._destination) {
+    if (this._destination || this._tween) {
       throw new Error('playerは現在移動中のため移動先の設定に失敗しました. playerの移動を停止してください')
     }
 
@@ -167,6 +176,20 @@ export class PlayerImpl implements Player {
 
     this._staying = undefined
     this._destination = spot
+    this._tween = new Timeline(this._view.scene).create(this._view)
+    const distance = g.Util.distanceBetweenOffsets(spot.location!, this._view)
+    if (distance > 0) {
+      this._tween.moveTo(spot.location!.x, spot.location!.y, distance / this._speed, Easing.easeInOutCubic)
+    }
+    this._tween.call(() => {
+      this._destination = undefined
+      this._tween = undefined
+      this._staying = spot
+      this._status = 'staying'
+      this._field!.enableSpotExcept(spot)
+      spot.unsetAsDestination()
+      this.onEnter.fire(spot)
+    })
     this._status = 'moving'
 
     if (spot.status !== 'target') {
@@ -178,13 +201,15 @@ export class PlayerImpl implements Player {
     if (!this._field) {
       throw new Error('playerがfieldに配置されていないため移動の停止に失敗しました. playerをfieldに配置してください')
     }
-    if (!this._destination) {
+    if (!this._destination || !this._tween) {
       throw new Error('playerは現在移動中でないため移動の停止に失敗しました. playerの移動中に停止命令を実行してください')
     }
 
     const oldDestination = this._destination
     this._field.enableSpotExcept(oldDestination)
     this._destination = undefined
+    this._tween.cancel()
+    this._tween = undefined
     this._status = 'stopping'
 
     if (oldDestination.status === 'target') {
@@ -205,7 +230,7 @@ export class PlayerImpl implements Player {
 
   get location (): Readonly<g.CommonOffset> | undefined {
     if (this._field) {
-      return { ...this._location }
+      return { x: this._view.x, y: this._view.y }
     }
     return undefined
   }

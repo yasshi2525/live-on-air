@@ -1,4 +1,5 @@
-import { FieldBuilder, Field, PlayerBuilder, Spot, SpotBuilder } from '../../src'
+import { FieldBuilder, Field, PlayerBuilder, Spot, SpotBuilder, LayerBuilder } from '../../src'
+import { waitFor } from '../__helper'
 
 describe('Player', () => {
   let field1: Field
@@ -11,10 +12,14 @@ describe('Player', () => {
     field1 = new FieldBuilder().build()
     field2 = new FieldBuilder().build()
     sb = new SpotBuilder(scene)
-    spot1 = sb.build()
-    spot2 = sb.build()
+    spot1 = sb.location({ x: 100, y: 0 }).build()
+    spot2 = sb.location({ x: 0, y: 100 }).build()
     field1.addSpot(spot1)
     field1.addSpot(spot2)
+    const layer = new LayerBuilder(scene)
+      .field({ x: 0, y: 0, width: 1280, height: 720 })
+      .build()
+    field1.view = layer.field
   })
 
   it('fieldに入場できる', () => {
@@ -55,6 +60,74 @@ describe('Player', () => {
     expect(spot2.status).toEqual('disabled')
   })
 
+  it('目的地が設定されると、それに向かって移動を開始する', async () => {
+    const player = new PlayerBuilder(scene).build()
+    player.standOn(field1)
+    expect(player.status).toBe('stopping')
+    expect(player.location).toEqual({ x: 0, y: 0 })
+    player.departTo(spot1)
+    await gameContext.step()
+    expect(player.location!.x).toBeGreaterThan(0)
+    screenshot('player.moving.started.png')
+  })
+
+  it('目的地に到達すると移動を停止する', async () => {
+    const player = new PlayerBuilder(scene).build()
+    player.standOn(field1)
+    player.departTo(spot1)
+    const goal = await waitFor(player.onEnter)
+    expect(goal).toBe(spot1)
+    expect(player.location).toEqual(spot1.location)
+    expect(player.status).toBe('staying')
+    screenshot('player.moving.entered.png')
+  })
+
+  it('目的地に到達すると他のスポットへも移動可能になる', async () => {
+    const player = new PlayerBuilder(scene).build()
+    player.standOn(field1)
+    player.departTo(spot1)
+    await waitFor(player.onEnter)
+    expect(spot1.status).toEqual('enabled')
+    expect(spot2.status).toEqual('enabled')
+  })
+
+  it('Spotに滞在中ならば他のSpotに向かって移動開始できる', async () => {
+    const player = new PlayerBuilder(scene).build()
+    player.standOn(field1)
+    player.departTo(spot1)
+    const s = await waitFor(player.onEnter)
+    expect(s).toEqual(spot1)
+    expect(player.status).toBe('staying')
+    player.departTo(spot2)
+    await gameContext.step()
+    expect(player.status).toBe('moving')
+    expect(player.location!.y).toBeGreaterThan(0)
+    expect(spot1.status).toEqual('disabled')
+    expect(spot2.status).toEqual('target')
+    screenshot('player.moving.restarted.png')
+  })
+
+  it('同じSpotを目的地にすると、次のstepで即時到着イベントが発生する', async () => {
+    const player = new PlayerBuilder(scene).build()
+    player.standOn(field1)
+    player.departTo(spot1)
+    const s = await waitFor(player.onEnter)
+    expect(s).toEqual(spot1)
+    let goal: Spot | undefined
+    player.onEnter.add(s => { goal = s })
+    expect(goal).not.toBeDefined()
+    player.departTo(spot1)
+    expect(player.status).toBe('moving')
+    expect(goal).not.toBeDefined()
+    expect(spot1.status).toEqual('target')
+    expect(spot2.status).toEqual('disabled')
+    await gameContext.step()
+    expect(goal).toBe(spot1)
+    expect(player.status).toBe('staying')
+    expect(spot1.status).toEqual('enabled')
+    expect(spot2.status).toEqual('enabled')
+  })
+
   it('移動中の場合、移動をキャンセルできる', () => {
     const player = new PlayerBuilder(scene).build()
     player.standOn(field1)
@@ -64,6 +137,20 @@ describe('Player', () => {
     expect(player.status).toEqual('stopping')
     expect(spot1.status).toEqual('enabled')
     expect(spot2.status).toEqual('enabled')
+  })
+
+  it('stop()が実行されたら移動処理も中止される', async () => {
+    const player = new PlayerBuilder(scene).build()
+    player.standOn(field1)
+    player.departTo(spot1)
+    await gameContext.step()
+    await gameContext.step()
+    const location = { ...player.location }
+    player.stop()
+    expect(player.location).toEqual(location)
+    await gameContext.step()
+    expect(player.location).toEqual(location)
+    screenshot('player.moving.stop.png')
   })
 
   it('fieldに配置されていないと移動できない', () => {
