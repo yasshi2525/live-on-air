@@ -4,6 +4,14 @@
 
 Akashic Engine の公式ページを参考にプロジェクトを作成してください.  
 
+> [!WARNING]
+> live-on-air はランキング形式のニコ生ゲーム向けに作られています.
+> マルチプレイには対応していないのでご注意ください.
+
+> [!TIP]
+> 言語は javascript でも開発できますが、 Typescript の利用を推奨します.
+> 型情報が利用できるため、補完機能を使って効率的にコーディングを進められるためです.
+
 ## live-on-air のインストール
 
 プロジェクトルートフォルダ (`game.json` のある場所) をカレントディレクトリとして、以下のコマンドを実行してください.
@@ -60,6 +68,72 @@ npx akashic install @yasshi2525/live-on-air
 > [!NOTE]
 > 上記は出力例です. 細かなパスや値は変わることがあります.
 > また Akashic Engine の仕様変更により、項目が変わる可能性があります.
+
+## main() を実装する
+
+live-on-air は構築済みのゲーム基盤を提供します.
+ゲームのメイン要素である g.Scene を取得するだけでゲームが動作します.
+
+`main.ts`
+
+```typescript
+import { GameMainParameterObject } from './parameterObject'
+import { SceneBuilder } from '@yasshi2525/live-on-air'
+
+export const main = (param: GameMainParameterObject) => {
+  g.game.vars.gameState = { score: 0 }
+  g.game.random = param.random
+  
+  const scene = new SceneBuilder(g.game)
+    .spot({ x: 200, y: 0 })
+    .spot({ x: 400, y: 0 })
+    .spot({ x: 600, y: 0 })
+    .spot({ x: 800, y: 0 })
+    .build()
+  g.game.pushScene(scene)
+}
+```
+
+> [!NOTE]
+> 上記は live-on-air のもっとも簡単な使い方の一例です.
+> カスタマイズ方法は後ほど紹介します.
+
+> [!TIP]
+> 上記はプレイヤーが訪問すると生放送イベントが発生するスポット(`Spot`)と呼んでいる構成要素を
+> 横一列に4個並べた状態でゲームを起動します. 具体的な内容は後ほど説明します.
+
+## ゲームの起動
+
+下記コマンドを利用してゲームスクリプトをビルドしてください.
+
+```shell
+npm run build
+```
+
+もし `package.json` に npmスクリプトが組まれていない場合は、
+代わりに下記を実行してください.
+
+```shell
+npx tsc
+npx akashic scan asset script
+```
+
+sandbox 環境を起動することで、ゲームの動作確認ができます.
+
+```shell
+npx akashic sandbox
+```
+
+下記はゲーム画面の出力例です.
+
+![ゲーム画面](getting.started.1.png)
+
+> [!TIP]
+> 画面上のスポットをクリックしてみてください.
+> プレイヤーが移動し、生放送イベントが開始する様子が確認できるはずです.  
+
+生放送イベントは自作したイベントにカスタマイズできます.  
+背景、プレイヤー、スポットの画像を差し替えることでオリジナルゲームが簡単に作れます.
 
 ## (補足) アップデート方法
 
