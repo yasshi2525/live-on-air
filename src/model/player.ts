@@ -6,13 +6,13 @@ import { Easing, Timeline, Tween } from '@akashic-extension/akashic-timeline'
  *
  * "non-field": マップ上に配置されていない.
  *
- * "staying": ある {@link Spot} に滞在中である.
+ * "staying": ある {@link Spot} に滞在中である. (生放送はしていない)
  *
  * "moving": ある Spot に向かって移動中である.
  *
  * "stopping": マップ上で待機中である.
  *
- * "on-air": スポットにて生放送中 (マップ上では不可視).
+ * "on-air": スポットにて生放送中
  */
 export type PlayerStatus = 'non-field' | 'staying' | 'moving' | 'stopping' | 'on-air'
 
@@ -57,9 +57,9 @@ export interface Player {
   readonly field?: Field
 
   /**
-   * プレイヤーが現在訪問中の Spot.
+   * プレイヤーが現在滞在中または生放送をしている Spot.
    *
-   * 訪問中でない場合 undefined を返します.
+   * 滞在中でない場合 undefined を返します.
    */
   readonly staying?: Spot
 
@@ -88,8 +88,11 @@ export interface Player {
    * 指定した Spot の場所にワープします.
    *
    * 移動速度 {@link speed} の制約は受けず、移動は瞬間で完了します.
-   * プレイヤーはマップ (Field) を登録している必要があります
+   * プレイヤーはマップ (Field) を登録している必要があります.
+   * プレイヤーは移動中でない必要があります. 移動中の場合は停止させてください.
+   *
    * @see standOn
+   * @see stop
    *
    * @param spot ワープ先
    */
@@ -99,8 +102,11 @@ export interface Player {
    * 指定した Spot へ移動し始めます.
    *
    * 移動は 1フレームあたり {@link speed} の距離進みます.
-   * プレイヤーはマップ (Field) を登録している必要があります
+   * プレイヤーはマップ (Field) を登録している必要があります.
+   * プレイヤーは移動中でない必要があります. 移動中の場合は停止させてください.
+   *
    * @see standOn
+   * @see stop
    *
    * @param spot 目的地として設定する Spot
    */
@@ -110,13 +116,18 @@ export interface Player {
    * 移動中の場合、移動を中止します.
    *
    * 現在地で待機を開始します.
-   * プレイヤーはマップ (Field) を登録している必要があります
+   * プレイヤーはマップ (Field) を登録している必要があります.
+   * プレイヤーは移動中でない場合、実行に失敗します.
+   *
    * @see standOn
+   * @see destination
    */
   stop(): void
 
   /**
    * 生放送が終わったため、再びマップで移動可能状態にします.
+   *
+   * 生放送中でない場合、実行に失敗します.
    *
    * 本メソッドは自動で呼び出されるため、
    * 本ライブラリ利用者が実行する必要はありません.

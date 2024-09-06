@@ -35,6 +35,7 @@ export interface Field {
    * 指定した Player をマップに配置します
    *
    * 配置すると Player ーはマップ上を移動可能になります.
+   * プレイヤーは一人のみ配置可能です.
    *
    * @param player 配置する Player
    */
