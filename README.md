@@ -9,6 +9,10 @@ Akashic Engineプロジェクトにて下記コマンドを実行してくださ
 akashic install @yasshi2525/live-on-air
 ```
 
+# チュートリアル
+
+[使ってみる](sample/src/getting.started.md)
+
 # LICENSE
 
 MIT License
