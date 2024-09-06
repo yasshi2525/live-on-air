@@ -1,4 +1,4 @@
-import { PlayerBuilder, Field, Player, SpotBuilder, FieldBuilder } from '../../src'
+import { PlayerBuilder, Field, Player, SpotBuilder, FieldBuilder, Screen, ScreenBuilder } from '../../src'
 import { waitFor } from '../__helper'
 
 describe('Spot', () => {
@@ -6,6 +6,7 @@ describe('Spot', () => {
   let field1: Field
   let field2: Field
   let player: Player
+  let screen: Screen
 
   beforeEach(() => {
     sb = new SpotBuilder(scene)
@@ -14,6 +15,7 @@ describe('Spot', () => {
     field2 = new FieldBuilder().build()
     player = new PlayerBuilder(scene).build()
     player.standOn(field1)
+    screen = new ScreenBuilder(scene).build()
   })
 
   it('Spotを配置できる', async () => {
@@ -74,6 +76,7 @@ describe('Spot', () => {
   it('訪問可能にする(訪問済み状態)', async () => {
     const spot = sb.build()
     spot.deployOn(field1)
+    spot.attach(screen)
     player.jumpTo(spot)
     spot.enable()
     expect(spot.status).toEqual('enabled')
@@ -86,6 +89,7 @@ describe('Spot', () => {
   it('playerを訪問させる', async () => {
     const spot = sb.build()
     spot.deployOn(field1)
+    spot.attach(screen)
     spot.setAsDestination()
     expect(spot.status).toEqual('target')
     expect(player.destination).toBe(spot)
@@ -98,6 +102,7 @@ describe('Spot', () => {
   it('playerの訪問をキャンセルさせる', async () => {
     const spot = sb.build()
     spot.deployOn(field1)
+    spot.attach(screen)
     spot.setAsDestination()
     spot.unsetAsDestination()
     expect(spot.status).toEqual('enabled')
@@ -126,9 +131,10 @@ describe('Spot', () => {
     expect(() => spot.markAsVisited()).toThrow()
   })
 
-  it('playerが到達すると訪問済み状態に遷移する', async () => {
+  it('playerが到達すると放送中状態に遷移する', async () => {
     const spot = sb.location({ x: 100, y: 100 }).build()
     spot.deployOn(field1)
+    spot.attach(screen)
     player.departTo(spot)
     expect(spot.visited).toBeFalsy()
     expect(spot.status).toEqual('target')
@@ -136,14 +142,15 @@ describe('Spot', () => {
     await waitFor(player.onEnter)
     expect(spot.visited).toBeTruthy()
     expect(spot.status).toEqual('enabled')
-    expect(player.status).toEqual('staying')
+    expect(player.status).toEqual('on-air')
     await gameContext.step()
     screenshot('spot.visited.png')
   })
 
-  it('playerがゼロ距離移動で到達すると次stepで訪問済み状態に遷移する', async () => {
+  it('playerがゼロ距離移動で到達すると次stepで放送中状態に遷移する', async () => {
     const spot = sb.build()
     spot.deployOn(field1)
+    spot.attach(screen)
     expect(player.location).toEqual(spot.location)
     expect(spot.visited).toBeFalsy()
     player.departTo(spot)
@@ -153,19 +160,20 @@ describe('Spot', () => {
     await gameContext.step()
     expect(spot.visited).toBeTruthy()
     expect(spot.status).toEqual('enabled')
-    expect(player.status).toEqual('staying')
+    expect(player.status).toEqual('on-air')
     await gameContext.step()
     screenshot('spot.visited.zero-distance-moving.png')
   })
 
-  it('playerがjumpすると同一stepで訪問済み状態に遷移する', async () => {
+  it('playerがjumpすると同一stepで放送中状態に遷移する', async () => {
     const spot = sb.location({ x: 100, y: 100 }).build()
     spot.deployOn(field1)
+    spot.attach(screen)
     expect(spot.visited).toBeFalsy()
     player.jumpTo(spot)
     expect(spot.visited).toBeTruthy()
     expect(spot.status).toEqual('enabled')
-    expect(player.status).toEqual('staying')
+    expect(player.status).toEqual('on-air')
     await gameContext.step()
     screenshot('spot.visited.jump.png')
   })
@@ -173,6 +181,7 @@ describe('Spot', () => {
   it('playerが到着する前は、訪問済みマークに失敗する', () => {
     const spot = sb.location({ x: 100, y: 100 }).build()
     spot.deployOn(field1)
+    spot.attach(screen)
     player.departTo(spot)
     expect(player.location).not.toEqual(spot.location)
     expect(spot.visited).toBeFalsy()
@@ -200,6 +209,7 @@ describe('Spot', () => {
     spot.deployOn(field1)
     const destination = sb.build()
     field1.addSpot(destination)
+    destination.attach(screen)
     player.departTo(destination)
     expect(spot.visited).toBeFalsy()
     expect(() => spot.markAsVisited()).toThrow()

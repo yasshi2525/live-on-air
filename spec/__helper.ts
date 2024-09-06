@@ -1,3 +1,5 @@
+import { Live } from '../src'
+
 export const waitFor = async <T>(trigger: g.Trigger<T>): Promise<T> =>
   new Promise<T>(resolve => {
     let result:
@@ -16,3 +18,10 @@ export const waitFor = async <T>(trigger: g.Trigger<T>): Promise<T> =>
     }
     next()
   })
+
+export class SimpleLive implements Live {
+  readonly onEnd = new g.Trigger()
+  start () {
+    this.onEnd.fire()
+  }
+}

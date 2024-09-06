@@ -5,6 +5,7 @@ const config: Config = {
   collectCoverage: true,
   coverageDirectory: 'tmp/coverage',
   coverageProvider: 'babel',
+  coveragePathIgnorePatterns: ['spec'],
   testMatch: ['<rootDir>/spec/**/*.ts'],
   testPathIgnorePatterns: ['__setup', '__helper.ts'],
   transform: {

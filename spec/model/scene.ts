@@ -6,6 +6,7 @@ describe('Scene', () => {
     expect(() => scene.layer).toThrow()
     expect(() => scene.field).toThrow()
     expect(() => scene.player).toThrow()
+    expect(() => scene.screen).toThrow()
     expect(() => scene.spots).toThrow()
   })
 })

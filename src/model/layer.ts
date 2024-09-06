@@ -12,13 +12,21 @@ export interface Layer {
    * {@link Spot}, {@link Player} を配置するためのレイヤ.
    */
   readonly field: g.E
+  /**
+   * 生放送層.
+   *
+   * {@link Live}, を配置するためのレイヤ.
+   */
+  readonly screen: g.E
 }
 
 export class LayerImpl implements Layer {
   readonly field: g.E
+  readonly screen: g.E
 
   constructor (private readonly scene: g.Scene, private readonly config: LayerConfig) {
     this.field = this.createEntity('field')
+    this.screen = this.createEntity('screen')
   }
 
   private createEntity (typ: LayerType) {

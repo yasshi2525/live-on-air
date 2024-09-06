@@ -1,4 +1,5 @@
-import { ObjectSupplier, RecordSupplier, ValueSupplier } from './value'
+import { ObjectSupplier, PrimitiveValueSupplier, RecordSupplier, ValueSupplier } from './value'
+import { Live } from '../model/live'
 
 /**
  * {@link Spot} の状態一覧
@@ -54,6 +55,12 @@ export interface SpotConfig {
    * プレイヤーがクリックすれば目的地に設定される状態の際の画像を設定してください.
    */
   normal: g.ImageAsset
+  /**
+   * 訪問時に始まる生放送.
+   *
+   * 生放送での処理を定義したクラス名を設定してください. インスタンスでない点にご留意ください.
+   */
+  liveClass: new () => Live
 }
 
 /**
@@ -62,6 +69,7 @@ export interface SpotConfig {
 export class SpotConfigSupplier implements ValueSupplier<SpotConfig> {
   private readonly location: ObjectSupplier<g.CommonOffset>
   private readonly assets: RecordSupplier<SpotAssetType, g.ImageAsset>
+  private readonly liveClass: PrimitiveValueSupplier<new () => Live>
 
   constructor (initial: SpotConfig) {
     this.location = ObjectSupplier.create({ x: initial.x, y: initial.y })
@@ -71,29 +79,34 @@ export class SpotConfigSupplier implements ValueSupplier<SpotConfig> {
       disabled: initial.disabled,
       normal: initial.normal
     })
+    this.liveClass = PrimitiveValueSupplier.create(initial.liveClass)
   }
 
   get (): SpotConfig {
     return {
       ...this.location.get(),
-      ...this.assets.get()
+      ...this.assets.get(),
+      liveClass: this.liveClass.get()
     }
   }
 
   setIf (obj: Partial<SpotConfig>): void {
     this.location.setIf(obj)
     this.assets.setIf(obj)
+    this.liveClass.setIf(obj.liveClass)
   }
 
   default (): SpotConfig {
     return {
       ...this.location.default(),
-      ...this.assets.default()
+      ...this.assets.default(),
+      liveClass: this.liveClass.default()
     }
   }
 
   defaultIf (obj: Partial<SpotConfig>): void {
     this.location.defaultIf(obj)
     this.assets.defaultIf(obj)
+    this.liveClass.defaultIf(obj.liveClass)
   }
 }

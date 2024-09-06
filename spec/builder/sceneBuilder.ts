@@ -33,45 +33,71 @@ describe('sceneBuilder', () => {
       .layer({})
       .field({})
       .player({})
+      .screen({})
       .spot({})
-    expect(_default.layer()).toEqual({ field: { x: 100, y: 100, width: 1080, height: 520 } })
+    expect(_default.layer()).toEqual({
+      field: { x: 100, y: 100, width: 1080, height: 520 },
+      screen: { x: 100, y: 100, width: 1080, height: 520 }
+    })
     expect(_default.field()).toEqual({})
     expect(_default.player()).toMatchObject({ x: 0, y: 0, speed: 1, asset: { path: './image/player.default.png' } })
+    expect(_default.screen()).toEqual({})
     expect(_default.spot()).toHaveLength(1)
     expect(_default.spot()[0]).toMatchObject({ x: 0, y: 0, ...matchSpotAssets })
   })
   it('デフォルト要素が自動で定義される', () => {
-    expect(_default.layer()).toEqual({ field: { x: 100, y: 100, width: 1080, height: 520 } })
+    expect(_default.layer()).toEqual({
+      field: { x: 100, y: 100, width: 1080, height: 520 },
+      screen: { x: 100, y: 100, width: 1080, height: 520 }
+    })
     expect(_default.field()).toEqual({})
     expect(_default.player()).toMatchObject({ x: 0, y: 0, speed: 1, asset: { path: './image/player.default.png' } })
+    expect(_default.screen()).toEqual({})
     expect(_default.spot()).toMatchObject([{ x: 0, y: 0, ...matchSpotAssets }])
   })
   it('デフォルト要素をカスタマイズできる', () => {
     _default
-      .layer({ field: { x: 150, y: 200, width: 1000, height: 800 } })
+      .layer({
+        field: { x: 150, y: 200, width: 1000, height: 800 },
+        screen: { x: 250, y: 300, width: 1500, height: 1800 }
+      })
       .field({})
       .player({ x: 300, y: 400, speed: 2, asset: scene.asset.getImageById('player.default') })
+      .screen({})
       .spot({ x: 500, y: 600, ...spotAssets })
-    expect(_default.layer()).toEqual({ field: { x: 150, y: 200, width: 1000, height: 800 } })
+    expect(_default.layer()).toEqual({
+      field: { x: 150, y: 200, width: 1000, height: 800 },
+      screen: { x: 250, y: 300, width: 1500, height: 1800 }
+    })
     expect(_default.field()).toEqual({})
     expect(_default.player()).toMatchObject({ x: 300, y: 400, speed: 2, asset: { path: './image/player.default.png' } })
+    expect(_default.screen()).toEqual({})
     expect(_default.spot()).toMatchObject([{ x: 500, y: 600, ...matchSpotAssets }])
     const sb = new SceneBuilder(g.game)
-    expect(sb.layer()).toEqual({ field: { x: 150, y: 200, width: 1000, height: 800 } })
+    expect(sb.layer()).toEqual({
+      field: { x: 150, y: 200, width: 1000, height: 800 },
+      screen: { x: 250, y: 300, width: 1500, height: 1800 }
+    })
     expect(sb.field()).toEqual({})
     expect(sb.player()).toMatchObject({ x: 300, y: 400, speed: 2, asset: { path: './image/player.default.png' } })
+    expect(sb.screen()).toEqual({})
     expect(sb.spot()).toHaveLength(0)
   })
   it('すべて未指定で定義した構成要素を参照できる', async () => {
     const sb = new SceneBuilder(g.game)
       .layer({})
       .field({})
+      .screen({})
       .player({})
       .spot({})
       .spot({})
-    expect(sb.layer()).toEqual({ field: { x: 100, y: 100, width: 1080, height: 520 } })
+    expect(sb.layer()).toEqual({
+      field: { x: 100, y: 100, width: 1080, height: 520 },
+      screen: { x: 100, y: 100, width: 1080, height: 520 }
+    })
     expect(sb.field()).toEqual({})
     expect(sb.player()).toMatchObject({ x: 0, y: 0, speed: 1, asset: { path: './image/player.default.png' } })
+    expect(sb.screen()).toEqual({})
     expect(sb.spot()).toMatchObject([{ x: 0, y: 0, ...matchSpotAssets }, { x: 0, y: 0, ...matchSpotAssets }])
     const s = sb.build()
     g.game.pushScene(s)
@@ -79,6 +105,7 @@ describe('sceneBuilder', () => {
     expect(s.layer.field).toMatchObject({ x: 100, y: 100, width: 1080, height: 520 })
     expect(s.field.area).toEqual({ x: 100, y: 100, width: 1080, height: 520 })
     expect(s.player.view).toMatchObject({ x: 0, y: 0, src: scene.asset.getImageById('player.default') })
+    expect(s.screen.area).toEqual({ x: 100, y: 100, width: 1080, height: 520 })
     expect(s.spots).toHaveLength(2)
     expect(s.spots[0].location).toEqual({ x: 0, y: 0 })
     expect(s.spots[0].view).toMatchObject({ src: { path: './image/spot.default.unvisited.png' } })
@@ -88,20 +115,30 @@ describe('sceneBuilder', () => {
   })
   it('定義したカスタム構成要素（すべて指定）を参照できる', async () => {
     const sb = new SceneBuilder(g.game)
-      .layer({ field: { x: 150, y: 200, width: 1000, height: 800 } })
+      .layer({
+        field: { x: 150, y: 200, width: 1000, height: 800 },
+        screen: { x: 250, y: 300, width: 1200, height: 500 }
+      })
       .field({})
       .player({ x: 500, y: 600, speed: 2, asset: scene.asset.getImageById('player.default') })
+      .screen({})
       .spot({ x: 700, y: 400, ...spotAssets })
-    expect(sb.layer()).toEqual({ field: { x: 150, y: 200, width: 1000, height: 800 } })
+    expect(sb.layer()).toEqual({
+      field: { x: 150, y: 200, width: 1000, height: 800 },
+      screen: { x: 250, y: 300, width: 1200, height: 500 }
+    })
     expect(sb.field()).toEqual({})
     expect(sb.player()).toMatchObject({ x: 500, y: 600, speed: 2, asset: { path: './image/player.default.png' } })
+    expect(sb.screen()).toEqual({})
     expect(sb.spot()).toMatchObject([{ x: 700, y: 400, ...matchSpotAssets }])
     const s = sb.build()
     g.game.pushScene(s)
     await gameContext.step()
     expect(s.layer.field).toMatchObject({ x: 150, y: 200, width: 1000, height: 800 })
+    expect(s.layer.screen).toMatchObject({ x: 250, y: 300, width: 1200, height: 500 })
     expect(s.field.area).toEqual({ x: 150, y: 200, width: 1000, height: 800 })
     expect(s.player.view).toMatchObject({ x: 500, y: 600, src: scene.asset.getImageById('player.default') })
+    expect(s.screen.area).toEqual({ x: 250, y: 300, width: 1200, height: 500 })
     expect(s.spots).toHaveLength(1)
     expect(s.spots[0].location).toEqual({ x: 700, y: 400 })
     expect(s.spots[0].view).toMatchObject({ src: { path: './image/spot.default.unvisited.png' } })
@@ -109,11 +146,20 @@ describe('sceneBuilder', () => {
   })
   it('一度定義したカスタム構成要素を更新できる', () => {
     const sb = new SceneBuilder(g.game)
-      .layer({ field: { x: 150, y: 200, width: 1000, height: 800 } })
-      .layer({ field: { x: 300, y: 400, width: 500, height: 400 } })
+      .layer({
+        field: { x: 150, y: 200, width: 1000, height: 800 },
+        screen: { x: 250, y: 300, width: 1500, height: 1800 }
+      })
+      .layer({
+        field: { x: 300, y: 400, width: 500, height: 400 },
+        screen: { x: 50, y: 100, width: 200, height: 300 }
+      })
       .player({ x: 100, y: 200 })
       .player({ x: 300, y: 400 })
-    expect(sb.layer()).toEqual({ field: { x: 300, y: 400, width: 500, height: 400 } })
+    expect(sb.layer()).toEqual({
+      field: { x: 300, y: 400, width: 500, height: 400 },
+      screen: { x: 50, y: 100, width: 200, height: 300 }
+    })
     expect(sb.player()).toMatchObject({ x: 300, y: 400 })
   })
   it('無効な値は設定できない', () => {

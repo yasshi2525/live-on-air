@@ -3,7 +3,7 @@ import { RecordSupplier, ValueSupplier } from './value'
 /**
  * {@link Layer} のレイアウトのためのレイヤ名一覧
  */
-export const layerTypes = ['field'] as const
+export const layerTypes = ['field', 'screen'] as const
 
 /**
  * {@link Layer} のレイアウトのためのレイヤ名一覧
@@ -18,6 +18,10 @@ export interface LayerConfig {
    * {@link Spot}, {@link Player} が配置されるマップの大きさ.
    */
   field: g.CommonArea
+  /**
+   * {@link Live} が配置されるマップの大きさ
+   */
+  screen: g.CommonArea
 }
 
 export class LayerConfigSupplier implements ValueSupplier<LayerConfig> {
@@ -25,7 +29,8 @@ export class LayerConfigSupplier implements ValueSupplier<LayerConfig> {
 
   constructor (initial: LayerConfig) {
     this.layouts = RecordSupplier.create({
-      field: initial.field
+      field: initial.field,
+      screen: initial.screen
     })
   }
 

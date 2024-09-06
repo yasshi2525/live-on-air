@@ -1,5 +1,6 @@
 import { SpotAssetRecord, SpotConfig, SpotConfigSupplier } from '../value/spotConfig'
 import { Spot, SpotImpl } from '../model/spot'
+import { Live } from '../model/live'
 
 /**
  * {@link Spot} を新規作成する際の各種設定を格納します.
@@ -28,6 +29,18 @@ export interface SpotConfigure {
    * 作成する Spot を配置する座標を取得します.
    */
   location(): Readonly<g.CommonOffset>
+
+  /**
+   * 作成する Spot に到達すると開始する生放送を取得します.
+   */
+  liveClass(): new () => Live
+
+  /**
+   * 作成する Spot に到達すると開始する生放送を設定します.
+   *
+   * @param liveClass 開始する生放送クラス名. インスタンスでない点にご留意ください.
+   */
+  liveClass(liveClass: new() => Live): SpotConfigure
 
   /**
    * 指定された設定で Spot を作成します
@@ -75,7 +88,19 @@ export class SpotConfigureImpl implements SpotConfigure {
     return { x: value.x, y: value.y }
   }
 
+  liveClass(): new () => Live
+
+  liveClass(liveClass: new () => Live): SpotConfigure
+
+  liveClass (args?: new () => Live): SpotConfigure | Readonly<new () => Live> {
+    if (args) {
+      this.setter({ liveClass: args })
+      return this
+    }
+    return this.getter().liveClass
+  }
+
   build (): Spot {
-    return new SpotImpl(this.scene, this.image(), this.location())
+    return new SpotImpl(this.scene, this.image(), this.location(), this.liveClass())
   }
 }

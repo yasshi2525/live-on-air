@@ -18,6 +18,18 @@ export interface LayerConfigure {
   field (area: g.CommonArea): LayerConfigure
 
   /**
+   * Live が配置される生放送画面の大きさを取得します.
+   */
+  screen (): Readonly<g.CommonArea>
+
+  /**
+   * Live が配置される生放送画面の大きさを設定します.
+   *
+   * @param area 設定する領域
+   */
+  screen (area: g.CommonArea): LayerConfigure
+
+  /**
    * 設定されたレイアウト情報をもとに各レイヤを作成し、sceneに登録します
    */
   build(): Layer
@@ -42,6 +54,18 @@ export class LayerConfigureImpl implements LayerConfigure {
       return this
     }
     return this.getter().field
+  }
+
+  screen (): Readonly<g.CommonArea>
+
+  screen (area: g.CommonArea): LayerConfigure
+
+  screen (args?: g.CommonArea): LayerConfigure | Readonly<g.CommonArea> {
+    if (args) {
+      this.setter({ screen: args })
+      return this
+    }
+    return this.getter().screen
   }
 
   build (): Layer {

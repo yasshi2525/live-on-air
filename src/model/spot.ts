@@ -1,5 +1,7 @@
 import { Field } from './field'
 import { SpotAssetRecord } from '../value/spotConfig'
+import { Screen } from './screen'
+import { Live } from './live'
 /**
  * スポット ({@link Spot}) の状態
  *
@@ -54,6 +56,18 @@ export interface Spot {
   readonly visited: boolean
 
   /**
+   * 訪問時に開始される生放送を描画する環境情報を取得します.
+   *
+   * 未登録の場合 undefined が返されます
+   */
+  readonly screen?: Screen
+
+  /**
+   * 訪問時に開始する生放送を取得します.
+   */
+  readonly liveClass: new () => Live
+
+  /**
    * 指定したマップ (Field) に登録します.
    *
    * 登録することで Player は Spot を訪問し、生放送できるようになります.
@@ -72,6 +86,13 @@ export interface Spot {
    * 目的地として設定されていることを解除します.
    */
   unsetAsDestination(): void
+
+  /**
+   * プレイヤーが訪問した際、生放送を開始するためのスクリーン環境情報を登録します.
+   *
+   * @param screen
+   */
+  attach(screen: Screen): void
 
   /**
    * プレイヤーが目的地として選択できない状態にします.
@@ -99,9 +120,15 @@ export class SpotImpl implements Spot {
   private _field?: Field
   private _status: SpotStatus = 'non-deployed'
   private _visited = false
+  private _screen?: Screen
 
   // eslint-disable-next-line no-useless-constructor
-  constructor (scene: g.Scene, readonly assets: Readonly<SpotAssetRecord>, private readonly _location: g.CommonOffset) {
+  constructor (
+    scene: g.Scene,
+    readonly assets: Readonly<SpotAssetRecord>,
+    private readonly _location: g.CommonOffset,
+    private readonly _liveClass: new () => Live
+  ) {
     this._view = new g.Sprite({ scene, src: assets.normal, ..._location })
   }
 
@@ -160,6 +187,13 @@ export class SpotImpl implements Spot {
     }
   }
 
+  attach (screen: Screen): void {
+    if (this._screen && this._screen !== screen) {
+      throw new Error('spotはすでに他のscreenを登録しています. 設定するscreenが正しいか見直してください')
+    }
+    this._screen = screen
+  }
+
   enable (): void {
     if (!this._field) {
       throw new Error('spotがfieldに配置されていないため訪問先として指定可能にできませんでした. spotをfieldに配置してください')
@@ -216,5 +250,13 @@ export class SpotImpl implements Spot {
 
   get visited (): boolean {
     return this._visited
+  }
+
+  get screen (): Screen | undefined {
+    return this._screen
+  }
+
+  get liveClass (): (new () => Live) {
+    return this._liveClass
   }
 }
