@@ -11,8 +11,10 @@ import { Easing, Timeline, Tween } from '@akashic-extension/akashic-timeline'
  * "moving": ある Spot に向かって移動中である.
  *
  * "stopping": マップ上で待機中である.
+ *
+ * "on-air": スポットにて生放送中 (マップ上では不可視).
  */
-export type PlayerStatus = 'non-field' | 'staying' | 'moving' | 'stopping'
+export type PlayerStatus = 'non-field' | 'staying' | 'moving' | 'stopping' | 'on-air'
 
 /**
  * プレイヤー.
@@ -25,6 +27,11 @@ export interface Player {
    * Spot に到達した際発火されます. 引数には到達した Spot が格納されます.
    */
   readonly onEnter: g.Trigger<Spot>
+
+  /**
+   * Spot での生放送が終了した際発火されます.
+   */
+  readonly onLiveEnd: g.Trigger
 
   /**
    * 移動速度. 1フレームで移動する距離 (画面座標系) で指定します
@@ -107,10 +114,21 @@ export interface Player {
    * @see standOn
    */
   stop(): void
+
+  /**
+   * 生放送が終わったため、再びマップで移動可能状態にします.
+   *
+   * 本メソッドは自動で呼び出されるため、
+   * 本ライブラリ利用者が実行する必要はありません.
+   *
+   * @internal
+   */
+  backFromLive(): void
 }
 
 export class PlayerImpl implements Player {
   readonly onEnter = new g.Trigger<Spot>()
+  readonly onLiveEnd = new g.Trigger()
 
   private _field?: Field
   private readonly _view: g.E
@@ -150,6 +168,9 @@ export class PlayerImpl implements Player {
     if (this._destination) {
       throw new Error('playerは現在移動中のためワープに失敗しました. playerの移動を停止してください')
     }
+    if (!spot.screen) {
+      throw new Error('screenが設定されていないspotに到達したため、生放送の開始に失敗しました. spotにscreenを設定してください')
+    }
 
     this._view.x = spot.location.x
     this._view.y = spot.location.y
@@ -157,9 +178,11 @@ export class PlayerImpl implements Player {
     this._destination = spot
     spot.markAsVisited()
     this._destination = undefined
-
+    this._status = 'on-air'
     this._staying = spot
-    this._status = 'staying'
+
+    this._view.hide()
+    spot.screen.startLive(this)
   }
 
   departTo (spot: Spot): void {
@@ -174,6 +197,9 @@ export class PlayerImpl implements Player {
     }
     if (this._destination || this._tween) {
       throw new Error('playerは現在移動中のため移動先の設定に失敗しました. playerの移動を停止してください')
+    }
+    if (!spot.screen) {
+      throw new Error('screenが設定されていないため移動先の設定に失敗しました. spotにscreenを設定してください')
     }
 
     this._field.disableSpotExcept(spot)
@@ -190,10 +216,12 @@ export class PlayerImpl implements Player {
       this._destination = undefined
       this._tween = undefined
       this._staying = spot
-      this._status = 'staying'
+      this._status = 'on-air'
       this._field!.enableSpotExcept(spot)
       spot.unsetAsDestination()
       this.onEnter.fire(spot)
+      this._view.hide()
+      spot.screen!.startLive(this)
     })
     this._status = 'moving'
 
@@ -220,6 +248,15 @@ export class PlayerImpl implements Player {
     if (oldDestination.status === 'target') {
       oldDestination.unsetAsDestination()
     }
+  }
+
+  backFromLive (): void {
+    if (this._status !== 'on-air') {
+      throw new Error('生放送中でない状態で生放送終了後処理を実行しようとしました. playerが生放送中であることを確認してください')
+    }
+    this._view.show()
+    this._status = 'staying'
+    this.onLiveEnd.fire()
   }
 
   get speed (): number {

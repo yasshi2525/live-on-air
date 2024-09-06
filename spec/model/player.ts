@@ -1,10 +1,11 @@
-import { FieldBuilder, Field, PlayerBuilder, Spot, SpotBuilder, LayerBuilder } from '../../src'
+import { FieldBuilder, Field, PlayerBuilder, Spot, SpotBuilder, LayerBuilder, ScreenBuilder, Screen } from '../../src'
 import { waitFor } from '../__helper'
 
 describe('Player', () => {
   let field1: Field
   let field2: Field
   let sb: SpotBuilder
+  let screen: Screen
   let spot1: Spot
   let spot2: Spot
 
@@ -20,6 +21,9 @@ describe('Player', () => {
       .field({ x: 0, y: 0, width: 1280, height: 720 })
       .build()
     field1.view = layer.field
+    screen = new ScreenBuilder(scene).build()
+    screen.addSpot(spot1)
+    screen.addSpot(spot2)
   })
 
   it('fieldに入場できる', () => {
@@ -78,7 +82,7 @@ describe('Player', () => {
     const goal = await waitFor(player.onEnter)
     expect(goal).toBe(spot1)
     expect(player.location).toEqual(spot1.location)
-    expect(player.status).toBe('staying')
+    expect(player.status).toBe('on-air')
     screenshot('player.moving.entered.png')
   })
 
@@ -97,6 +101,8 @@ describe('Player', () => {
     player.departTo(spot1)
     const s = await waitFor(player.onEnter)
     expect(s).toEqual(spot1)
+    expect(player.status).toBe('on-air')
+    await waitFor(player.onLiveEnd)
     expect(player.status).toBe('staying')
     player.departTo(spot2)
     await gameContext.step()
@@ -112,6 +118,7 @@ describe('Player', () => {
     player.standOn(field1)
     player.departTo(spot1)
     const s = await waitFor(player.onEnter)
+    await waitFor(player.onLiveEnd)
     expect(s).toEqual(spot1)
     let goal: Spot | undefined
     player.onEnter.add(s => { goal = s })
@@ -123,7 +130,7 @@ describe('Player', () => {
     expect(spot2.status).toEqual('disabled')
     await gameContext.step()
     expect(goal).toBe(spot1)
-    expect(player.status).toBe('staying')
+    expect(player.status).toBe('on-air')
     expect(spot1.status).toEqual('enabled')
     expect(spot2.status).toEqual('enabled')
   })
@@ -166,13 +173,23 @@ describe('Player', () => {
     player.jumpTo(spot1)
     expect(player.staying).toBe(spot1)
     expect(player.location).toEqual(spot1.location)
-    expect(player.status).toEqual('staying')
+    expect(player.status).toEqual('on-air')
   })
 
   it('fieldに配置されていないspotには移動できない', () => {
     const player = new PlayerBuilder(scene).build()
     player.standOn(field1)
     const freeSpot = sb.build()
+    freeSpot.attach(screen)
+    expect(() => player.jumpTo(freeSpot)).toThrow()
+    expect(() => player.departTo(freeSpot)).toThrow()
+  })
+
+  it('screenを登録していないspotには移動できない', () => {
+    const player = new PlayerBuilder(scene).build()
+    player.standOn(field1)
+    const freeSpot = sb.build()
+    freeSpot.deployOn(field1)
     expect(() => player.jumpTo(freeSpot)).toThrow()
     expect(() => player.departTo(freeSpot)).toThrow()
   })
@@ -219,5 +236,10 @@ describe('Player', () => {
       player.speed = -1
     }).toThrow()
     expect(player.speed).toBe(1)
+  })
+
+  it('放送中でない場合、放送からの復帰に失敗する', () => {
+    const player = new PlayerBuilder(scene).build()
+    expect(() => player.backFromLive()).toThrow()
   })
 })

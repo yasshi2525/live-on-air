@@ -4,6 +4,8 @@ import { PlayerConfigSupplier } from '../value/playerConfig'
 import { LayerConfigSupplier } from '../value/layerConfig'
 import { SpotConfigSupplier } from '../value/spotConfig'
 import { FieldConfigSupplier } from '../value/fieldConfig'
+import { ScreenConfigSupplier } from '../value/screenConfig'
+import { SampleLive } from '../model/live'
 
 /**
  * ゲームが動作する g.Scene を簡便に作るためのクラス.
@@ -39,21 +41,24 @@ export class SceneBuilder extends SceneConfigureImpl {
     }
     if (!SceneBuilder.defaultConfig) {
       const layer = new LayerConfigSupplier({
-        field: { x: 100, y: 100, width: game.width - 200, height: game.height - 200 }
+        field: { x: 100, y: 100, width: game.width - 200, height: game.height - 200 },
+        screen: { x: 100, y: 100, width: game.width - 200, height: game.height - 200 }
       })
       const field = new FieldConfigSupplier({})
       const player = new PlayerConfigSupplier({
         x: 0, y: 0, speed: 1, asset: image(game, 'image/player.default.png')
       })
+      const screen = new ScreenConfigSupplier({})
       const spot = new SpotConfigSupplier({
         x: 0,
         y: 0,
         locked: image(game.scene()!, 'image/spot.default.locked.png'),
         unvisited: image(game.scene()!, 'image/spot.default.unvisited.png'),
         disabled: image(game.scene()!, 'image/spot.default.disabled.png'),
-        normal: image(game.scene()!, 'image/spot.default.normal.png')
+        normal: image(game.scene()!, 'image/spot.default.normal.png'),
+        liveClass: SampleLive
       })
-      SceneBuilder.defaultConfig = { game, layer, field, player, spot }
+      SceneBuilder.defaultConfig = { game, layer, field, player, screen, spot }
     }
     this.lastUsedScene = game.scene()
     return SceneBuilder.defaultConfig

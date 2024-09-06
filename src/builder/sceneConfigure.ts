@@ -3,6 +3,7 @@ import { PlayerConfig, PlayerConfigSupplier } from '../value/playerConfig'
 import { SpotConfig, SpotConfigSupplier } from '../value/spotConfig'
 import { FieldConfigSupplier } from '../value/fieldConfig'
 import { Scene, SceneImpl } from '../model/scene'
+import { ScreenConfigSupplier } from '../value/screenConfig'
 
 /**
  * {@link Scene} を新規作成する際の各種設定を格納します.
@@ -46,6 +47,18 @@ export interface SceneConfigure {
   player(): Readonly<PlayerConfig>
 
   /**
+   * 生放送の画面 ({@link Screen}) の属性情報を設定します.
+   *
+   * @param config Field の設定値
+   */
+  screen(config: object): SceneConfigure
+
+  /**
+   * 生放送の画面 ({@link Screen}) の属性情報を取得します.
+   */
+  screen(): Readonly<object>
+
+  /**
    * 作成する {@link Spot} の属性情報を設定します.
    *
    * @param config Spot の設定値
@@ -68,6 +81,7 @@ export interface SceneConfigSupplierOptions {
   layer: LayerConfigSupplier
   field: FieldConfigSupplier
   player: PlayerConfigSupplier
+  screen: ScreenConfigSupplier
   spot: SpotConfigSupplier
   isDefault: boolean
 }
@@ -82,12 +96,14 @@ export class SceneConfigureImpl implements SceneConfigure {
   private readonly layerGetter: () => LayerConfig
   private readonly fieldGetter: () => object
   private readonly playerGetter: () => PlayerConfig
+  private readonly screenGetter: () => object
 
   private readonly layerSetter: (obj: Partial<LayerConfig>) => void
   private readonly fieldSetter: (obj: object) => void
   private readonly playerSetter: (obj: Partial<PlayerConfig>) => void
+  private readonly screenSetter: (obj: object) => void
 
-  constructor ({ game, layer, field, player, spot, isDefault }: SceneConfigSupplierOptions) {
+  constructor ({ game, layer, field, player, screen, spot, isDefault }: SceneConfigSupplierOptions) {
     this.isDefault = isDefault
     this.game = game
     this.spotConfig = spot
@@ -96,10 +112,12 @@ export class SceneConfigureImpl implements SceneConfigure {
     this.layerGetter = () => isDefault ? layer.default() : layer.get()
     this.fieldGetter = () => isDefault ? field.default() : field.get()
     this.playerGetter = () => isDefault ? player.default() : player.get()
+    this.screenGetter = () => isDefault ? screen.default() : screen.get()
 
     this.layerSetter = obj => isDefault ? layer.defaultIf(obj) : layer.setIf(obj)
     this.fieldSetter = obj => isDefault ? field.defaultIf(obj) : field.setIf(obj)
     this.playerSetter = obj => isDefault ? player.defaultIf(obj) : player.setIf(obj)
+    this.screenSetter = obj => isDefault ? screen.defaultIf(obj) : screen.setIf(obj)
   }
 
   layer (config: Partial<LayerConfig>): SceneConfigure
@@ -136,6 +154,18 @@ export class SceneConfigureImpl implements SceneConfigure {
       return this
     }
     return this.playerGetter()
+  }
+
+  screen (config: object): SceneConfigure
+
+  screen (): Readonly<object>
+
+  screen (args?: object): SceneConfigure | Readonly<object> {
+    if (args) {
+      this.screenSetter(args)
+      return this
+    }
+    return this.screenGetter()
   }
 
   spot (config: Partial<SpotConfig>): SceneConfigure

@@ -1,6 +1,7 @@
 import { Layer } from './layer'
 import { Field } from './field'
 import { Player } from './player'
+import { Screen } from './screen'
 import { Spot } from './spot'
 import { LayerBuilder } from '../builder/layerBuilder'
 import { FieldBuilder } from '../builder/fieldBuilder'
@@ -9,6 +10,7 @@ import { SpotBuilder } from '../builder/spotBuilder'
 import { LayerConfig } from '../value/layerConfig'
 import { PlayerConfig } from '../value/playerConfig'
 import { SpotConfig } from '../value/spotConfig'
+import { ScreenBuilder } from '../builder/screenBuilder'
 
 /**
  * 本ゲームが動作する g.Scene が持つゲーム情報を格納したパラメタ一覧です.
@@ -27,13 +29,17 @@ export interface Scene{
    */
   readonly player: Player
   /**
+   * 生放送環境情報.
+   */
+  readonly screen: Screen
+  /**
    * スポット情報一覧.
    */
   readonly spots: Spot[]
 }
 
 export class SceneImpl extends g.Scene implements Scene {
-  private context: { loaded: false } | { loaded: true, layer: Layer, field: Field, player: Player, spots: Set<Spot> }
+  private context: { loaded: false } | { loaded: true, layer: Layer, field: Field, player: Player, screen: Screen, spots: Set<Spot> }
 
   constructor (param: g.SceneParameterObject & { layer: LayerConfig, player: PlayerConfig, spots: readonly SpotConfig[] }) {
     super(param)
@@ -41,6 +47,7 @@ export class SceneImpl extends g.Scene implements Scene {
     this.onLoad.add(() => {
       const layer = new LayerBuilder(this)
         .field(param.layer.field)
+        .screen(param.layer.screen)
         .build()
       const field = new FieldBuilder()
         .build()
@@ -51,6 +58,9 @@ export class SceneImpl extends g.Scene implements Scene {
         .asset(param.player.asset)
         .build()
       player.standOn(field)
+      const screen = new ScreenBuilder(this)
+        .build()
+      screen.view = layer.screen
       const spots = new Set<Spot>()
       for (const spot of param.spots) {
         const inst = new SpotBuilder(this)
@@ -58,9 +68,10 @@ export class SceneImpl extends g.Scene implements Scene {
           .image(spot)
           .build()
         inst.deployOn(field)
+        inst.attach(screen)
         spots.add(inst)
       }
-      this.context = { loaded: true, layer, field, player, spots }
+      this.context = { loaded: true, layer, field, player, screen, spots }
     })
   }
 
@@ -83,6 +94,13 @@ export class SceneImpl extends g.Scene implements Scene {
       throw new Error('onLoad が実行されていません. onLoad が実行されてから本パラメタを取得してください')
     }
     return this.context.player
+  }
+
+  get screen (): Screen {
+    if (!this.context.loaded) {
+      throw new Error('onLoad が実行されていません. onLoad が実行されてから本パラメタを取得してください')
+    }
+    return this.context.screen
   }
 
   get spots (): Spot[] {

@@ -1,6 +1,7 @@
 import { SpotConfigure, SpotConfigureImpl } from './spotConfigure'
 import { image } from '../util/loader'
 import { SpotConfigSupplier } from '../value/spotConfig'
+import { SampleLive } from '../model/live'
 
 /**
  * 訪問先 {@link Spot} を簡便に作るためのクラス.
@@ -45,7 +46,8 @@ export class SpotBuilder extends SpotConfigureImpl {
         locked: image(scene, 'image/spot.default.locked.png'),
         unvisited: image(scene, 'image/spot.default.unvisited.png'),
         disabled: image(scene, 'image/spot.default.disabled.png'),
-        normal: image(scene, 'image/spot.default.normal.png')
+        normal: image(scene, 'image/spot.default.normal.png'),
+        liveClass: SampleLive
       })
     }
     SpotBuilder.lastUsedScene = scene

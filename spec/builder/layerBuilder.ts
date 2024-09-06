@@ -34,11 +34,12 @@ describe('LayerBuilder', () => {
     const lb = new LayerBuilder(scene)
     const layer = lb.build()
     expect(lb.field()).toEqual({ x: 100, y: 100, width: 1080, height: 520 })
-    for (const typ of ['field'] as LayerType[]) {
+    expect(lb.screen()).toEqual({ x: 100, y: 100, width: 1080, height: 520 })
+    for (const typ of ['field', 'screen'] as LayerType[]) {
       expect(layer[typ]).toBeDefined()
       expect(layer[typ]).toBeInstanceOf(g.E)
     }
-    expect(scene.children).toEqual([layer.field])
+    expect(scene.children).toEqual([layer.field, layer.screen])
 
     insertDebugView(layer)
     await gameContext.step()
@@ -48,9 +49,12 @@ describe('LayerBuilder', () => {
   it('各レイヤの大きさをカスタマイズできる', async () => {
     const lb = new LayerBuilder(scene)
       .field({ x: 100, y: 100, width: 500, height: 500 })
+      .screen({ x: 200, y: 200, width: 400, height: 400 })
     expect(lb.field()).toEqual({ x: 100, y: 100, width: 500, height: 500 })
+    expect(lb.screen()).toEqual({ x: 200, y: 200, width: 400, height: 400 })
     const layer = lb.build()
     expect(layer.field).toMatchObject({ x: 100, y: 100, width: 500, height: 500 })
+    expect(layer.screen).toMatchObject({ x: 200, y: 200, width: 400, height: 400 })
 
     insertDebugView(layer)
     await gameContext.step()

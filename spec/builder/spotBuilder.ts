@@ -1,4 +1,6 @@
 import { SpotAssetRecord, SpotBuilder } from '../../src'
+import { SampleLive } from '../../src/model/live'
+import { SimpleLive } from '../__helper'
 
 describe('spotBuilder', () => {
   let assetKeys: (keyof SpotAssetRecord)[]
@@ -12,6 +14,7 @@ describe('spotBuilder', () => {
       expect(SpotBuilder.getDefault(scene).image()[typ].path).toEqual(`./image/spot.default.${typ}.png`)
     }
     expect(SpotBuilder.getDefault(scene).location()).toEqual({ x: 0, y: 0 })
+    expect(SpotBuilder.getDefault(scene).liveClass()).toBe(SampleLive)
   })
   it('個別設定を参照できる', () => {
     const sb = new SpotBuilder(scene)
@@ -20,6 +23,7 @@ describe('spotBuilder', () => {
       expect(sb.image()[typ].path).toEqual(`./image/spot.default.${typ}.png`)
     }
     expect(sb.location()).toEqual({ x: 0, y: 0 })
+    expect(sb.liveClass()).toBe(SampleLive)
   })
   it('個別設定を上書きできる(location)', () => {
     const sb = new SpotBuilder(scene)
@@ -35,7 +39,7 @@ describe('spotBuilder', () => {
       unvisited: asset,
       disabled: asset,
       normal: asset
-    }).location({ x: 100, y: 200 })
+    }).location({ x: 100, y: 200 }).liveClass(SimpleLive)
 
     for (const typ of assetKeys) {
       expect(SpotBuilder.getDefault(scene).image()[typ].path).toEqual('./image/default.png')
@@ -45,6 +49,8 @@ describe('spotBuilder', () => {
     }
     expect(SpotBuilder.getDefault(scene).location()).toEqual({ x: 100, y: 200 })
     expect(sb.location()).toEqual({ x: 100, y: 200 })
+    expect(SpotBuilder.getDefault(scene).liveClass()).toBe(SimpleLive)
+    expect(sb.liveClass()).toBe(SimpleLive)
   })
   it('個別設定ができる', () => {
     const sb = new SpotBuilder(scene)

@@ -1,4 +1,4 @@
-import { SpotBuilder, Spot, PlayerBuilder, Player, Field, FieldBuilder } from '../../src'
+import { SpotBuilder, Spot, PlayerBuilder, Player, Field, FieldBuilder, ScreenBuilder } from '../../src'
 import { FieldImpl } from '../../src/model/field'
 
 describe('field', () => {
@@ -16,6 +16,9 @@ describe('field', () => {
     layer2 = new g.E({ scene, parent: scene, x: 520, y: 20, width: 600, height: 600 })
     layer1.append(new g.FilledRect({ scene, width: layer1.width, height: layer1.height, cssColor: '#ffaaaa', opacity: 0.25 }))
     layer2.append(new g.FilledRect({ scene, width: layer2.width, height: layer2.height, cssColor: '#aaffaa', opacity: 0.25 }))
+    const screen = new ScreenBuilder(scene).build()
+    spot1.attach(screen)
+    spot2.attach(screen)
   })
 
   it('スポットが自身に登録できる', () => {
