@@ -123,8 +123,8 @@ describe('field', () => {
   it('先にg.Eを登録してからspot,broadcasterを登録しても描画される', async () => {
     const field: Field = new FieldBuilder().build()
     field.container = layer1
-    field.addBroadcaster(broadcaster)
     field.addSpot(spot1)
+    field.addBroadcaster(broadcaster)
     field.addSpot(spot2)
     expect(spot1.view.parent).toBe(layer1)
     expect(spot2.view.parent).toBe(layer1)
