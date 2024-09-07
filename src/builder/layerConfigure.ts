@@ -6,7 +6,7 @@ import { Layer, LayerImpl } from '../model/layer'
  */
 export interface LayerConfigure {
   /**
-   * Spot, Broadcaster が配置されるマップを取得します.
+   * Spot, Broadcaster が配置されるマップの大きさを取得します.
    */
   field (): Readonly<g.CommonArea>
 
