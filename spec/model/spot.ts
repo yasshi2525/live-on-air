@@ -1,20 +1,20 @@
-import { PlayerBuilder, Field, Player, SpotBuilder, FieldBuilder, Screen, ScreenBuilder } from '../../src'
+import { BroadcasterBuilder, Field, Broadcaster, SpotBuilder, FieldBuilder, Screen, ScreenBuilder } from '../../src'
 import { waitFor } from '../__helper'
 
 describe('Spot', () => {
   let sb: SpotBuilder
   let field1: Field
   let field2: Field
-  let player: Player
+  let broadcaster: Broadcaster
   let screen: Screen
 
   beforeEach(() => {
     sb = new SpotBuilder(scene)
     field1 = new FieldBuilder().build()
-    field1.view = new g.FilledRect({ scene, parent: scene, x: 20, y: 20, width: 700, height: 500, cssColor: '#ffaaaa' })
+    field1.container = new g.FilledRect({ scene, parent: scene, x: 20, y: 20, width: 700, height: 500, cssColor: '#ffaaaa' })
     field2 = new FieldBuilder().build()
-    player = new PlayerBuilder(scene).build()
-    player.standOn(field1)
+    broadcaster = new BroadcasterBuilder(scene).build()
+    broadcaster.standOn(field1)
     screen = new ScreenBuilder(scene).build()
   })
 
@@ -22,14 +22,14 @@ describe('Spot', () => {
     const spot = sb.build()
     expect(spot.field).not.toBeDefined()
     expect(spot.location).not.toBeDefined()
-    expect(spot.status).toEqual('non-deployed')
+    expect(spot.status).toBe('non-deployed')
     spot.deployOn(field1)
     expect(spot.field).toBe(field1)
     expect(field1.spots).toContain(spot)
     expect(spot.location).toBeDefined()
-    expect(spot.status).toEqual('enabled')
+    expect(spot.status).toBe('enabled')
     expect(spot.view).toBeInstanceOf(g.Sprite)
-    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/spot.default.unvisited.png')
+    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toBe('./image/spot.default.unvisited.png')
     await gameContext.step()
     screenshot('spot.deploy.png')
   })
@@ -54,10 +54,13 @@ describe('Spot', () => {
   it('訪問不可能にする', async () => {
     const spot = sb.build()
     spot.deployOn(field1)
+    spot.attach(screen)
     spot.disable()
-    expect(spot.status).toEqual('disabled')
+    expect(spot.status).toBe('disabled')
     expect(spot.view).toBeInstanceOf(g.Sprite)
-    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/spot.default.disabled.png')
+    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toBe('./image/spot.default.disabled.png')
+    expect(() => broadcaster.departTo(spot)).toThrow()
+    expect(() => broadcaster.jumpTo(spot)).toThrow()
     await gameContext.step()
     screenshot('spot.disabled.png')
   })
@@ -66,9 +69,9 @@ describe('Spot', () => {
     const spot = sb.build()
     spot.deployOn(field1)
     spot.enable()
-    expect(spot.status).toEqual('enabled')
+    expect(spot.status).toBe('enabled')
     expect(spot.view).toBeInstanceOf(g.Sprite)
-    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/spot.default.unvisited.png')
+    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toBe('./image/spot.default.unvisited.png')
     await gameContext.step()
     screenshot('spot.enabled.png')
   })
@@ -77,38 +80,38 @@ describe('Spot', () => {
     const spot = sb.build()
     spot.deployOn(field1)
     spot.attach(screen)
-    player.jumpTo(spot)
+    broadcaster.jumpTo(spot)
     spot.enable()
-    expect(spot.status).toEqual('enabled')
+    expect(spot.status).toBe('enabled')
     expect(spot.view).toBeInstanceOf(g.Sprite)
-    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/spot.default.normal.png')
+    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toBe('./image/spot.default.normal.png')
     await gameContext.step()
     screenshot('spot.enabled.visited.png')
   })
 
-  it('playerを訪問させる', async () => {
+  it('broadcasterを訪問させる', async () => {
     const spot = sb.build()
     spot.deployOn(field1)
     spot.attach(screen)
     spot.setAsDestination()
-    expect(spot.status).toEqual('target')
-    expect(player.destination).toBe(spot)
+    expect(spot.status).toBe('target')
+    expect(broadcaster.destination).toBe(spot)
     expect(spot.view).toBeInstanceOf(g.Sprite)
-    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/spot.default.unvisited.png')
+    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toBe('./image/spot.default.unvisited.png')
     await gameContext.step()
     screenshot('spot.target.png')
   })
 
-  it('playerの訪問をキャンセルさせる', async () => {
+  it('broadcasterの訪問をキャンセルさせる', async () => {
     const spot = sb.build()
     spot.deployOn(field1)
     spot.attach(screen)
     spot.setAsDestination()
     spot.unsetAsDestination()
-    expect(spot.status).toEqual('enabled')
-    expect(player.destination).not.toBeDefined()
+    expect(spot.status).toBe('enabled')
+    expect(broadcaster.destination).not.toBeDefined()
     expect(spot.view).toBeInstanceOf(g.Sprite)
-    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/spot.default.unvisited.png')
+    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toBe('./image/spot.default.unvisited.png')
     await gameContext.step()
     screenshot('spot.cancel.png')
   })
@@ -122,7 +125,7 @@ describe('Spot', () => {
     expect(() => spot.markAsVisited()).toThrow()
   })
 
-  it('playerがいない場合、移動対象として設定できない', () => {
+  it('broadcasterがいない場合、移動対象として設定できない', () => {
     const freeField = new FieldBuilder().build()
     const spot = sb.build()
     spot.deployOn(freeField)
@@ -131,88 +134,95 @@ describe('Spot', () => {
     expect(() => spot.markAsVisited()).toThrow()
   })
 
-  it('playerが到達すると放送中状態に遷移する', async () => {
+  it('broadcasterが到達すると放送中状態に遷移する', async () => {
     const spot = sb.location({ x: 100, y: 100 }).build()
     spot.deployOn(field1)
     spot.attach(screen)
-    player.departTo(spot)
+    broadcaster.departTo(spot)
     expect(spot.visited).toBeFalsy()
-    expect(spot.status).toEqual('target')
-    expect(player.status).toEqual('moving')
-    await waitFor(player.onEnter)
+    expect(spot.status).toBe('target')
+    expect(broadcaster.status).toBe('moving')
+    await waitFor(broadcaster.onEnter)
     expect(spot.visited).toBeTruthy()
-    expect(spot.status).toEqual('enabled')
-    expect(player.status).toEqual('on-air')
+    expect(spot.status).toBe('disabled')
+    expect(broadcaster.status).toBe('on-air')
     await gameContext.step()
     screenshot('spot.visited.png')
   })
 
-  it('playerがゼロ距離移動で到達すると次stepで放送中状態に遷移する', async () => {
+  it('broadcasterがゼロ距離移動で到達すると次stepで放送中状態に遷移する', async () => {
     const spot = sb.build()
     spot.deployOn(field1)
     spot.attach(screen)
-    expect(player.location).toEqual(spot.location)
+    expect(broadcaster.location).toEqual(spot.location)
     expect(spot.visited).toBeFalsy()
-    player.departTo(spot)
+    broadcaster.departTo(spot)
     expect(spot.visited).toBeFalsy()
-    expect(spot.status).toEqual('target')
-    expect(player.status).toEqual('moving')
+    expect(spot.status).toBe('target')
+    expect(broadcaster.status).toBe('moving')
     await gameContext.step()
     expect(spot.visited).toBeTruthy()
-    expect(spot.status).toEqual('enabled')
-    expect(player.status).toEqual('on-air')
+    expect(spot.status).toBe('disabled')
+    expect(broadcaster.status).toBe('on-air')
     await gameContext.step()
     screenshot('spot.visited.zero-distance-moving.png')
   })
 
-  it('playerがjumpすると同一stepで放送中状態に遷移する', async () => {
+  it('broadcasterがjumpすると同一stepで放送中状態に遷移する', async () => {
     const spot = sb.location({ x: 100, y: 100 }).build()
     spot.deployOn(field1)
     spot.attach(screen)
     expect(spot.visited).toBeFalsy()
-    player.jumpTo(spot)
+    broadcaster.jumpTo(spot)
     expect(spot.visited).toBeTruthy()
-    expect(spot.status).toEqual('enabled')
-    expect(player.status).toEqual('on-air')
+    expect(spot.status).toBe('disabled')
+    expect(broadcaster.status).toBe('on-air')
     await gameContext.step()
     screenshot('spot.visited.jump.png')
   })
 
-  it('playerが到着する前は、訪問済みマークに失敗する', () => {
+  it('broadcasterが到着する前は、訪問済みマークに失敗する', () => {
     const spot = sb.location({ x: 100, y: 100 }).build()
     spot.deployOn(field1)
     spot.attach(screen)
-    player.departTo(spot)
-    expect(player.location).not.toEqual(spot.location)
+    broadcaster.departTo(spot)
+    expect(broadcaster.location).not.toEqual(spot.location)
     expect(spot.visited).toBeFalsy()
     expect(() => spot.markAsVisited()).toThrow()
-    expect(player.location).not.toEqual(spot.location)
+    expect(broadcaster.location).not.toEqual(spot.location)
     expect(spot.visited).toBeFalsy()
-    expect(spot.status).toEqual('target')
-    expect(player.status).toEqual('moving')
+    expect(spot.status).toBe('target')
+    expect(broadcaster.status).toBe('moving')
   })
 
-  it('playerが停止状態のとき、訪問済みマークに失敗する', () => {
+  it('broadcasterが停止状態のとき、訪問済みマークに失敗する', () => {
     const spot = sb.build()
     spot.deployOn(field1)
-    expect(player.status).toEqual('stopping')
+    expect(broadcaster.status).toBe('stopping-on-ground')
     expect(spot.visited).toBeFalsy()
-    expect(player.destination).not.toBeDefined()
+    expect(broadcaster.destination).not.toBeDefined()
     expect(() => spot.markAsVisited()).toThrow()
-    expect(player.status).toEqual('stopping')
+    expect(broadcaster.status).toBe('stopping-on-ground')
     expect(spot.visited).toBeFalsy()
-    expect(spot.status).toEqual('enabled')
+    expect(spot.status).toBe('enabled')
   })
 
-  it('playerが他のspotを目指しているとき、訪問済みマークに失敗する', () => {
+  it('broadcasterが他のspotを目指しているとき、訪問済みマークに失敗する', () => {
     const spot = sb.build()
     spot.deployOn(field1)
     const destination = sb.build()
     field1.addSpot(destination)
     destination.attach(screen)
-    player.departTo(destination)
+    broadcaster.departTo(destination)
     expect(spot.visited).toBeFalsy()
     expect(() => spot.markAsVisited()).toThrow()
     expect(spot.visited).toBeFalsy()
+  })
+
+  it('自由に値を追加・参照できる', () => {
+    const spot = sb.build()
+    expect(spot.vars).not.toBeDefined()
+    spot.vars = 'Hello'
+    expect(spot.vars).toBe('Hello')
   })
 })

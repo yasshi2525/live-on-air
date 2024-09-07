@@ -6,12 +6,12 @@ import { Layer, LayerImpl } from '../model/layer'
  */
 export interface LayerConfigure {
   /**
-   * Spot, Player が配置されるマップを取得します.
+   * Spot, Broadcaster が配置されるマップの大きさを取得します.
    */
   field (): Readonly<g.CommonArea>
 
   /**
-   * Spot, Player が配置されるマップの大きさを設定します.
+   * Spot, Broadcaster が配置されるマップの大きさを設定します.
    *
    * @param area 設定する領域
    */
@@ -50,7 +50,7 @@ export class LayerConfigureImpl implements LayerConfigure {
 
   field (args?: g.CommonArea): LayerConfigure | Readonly<g.CommonArea> {
     if (args) {
-      this.setter({ field: args })
+      this.setter({ field: { x: args.x, y: args.y, width: args.width, height: args.height } })
       return this
     }
     return this.getter().field
@@ -62,7 +62,7 @@ export class LayerConfigureImpl implements LayerConfigure {
 
   screen (args?: g.CommonArea): LayerConfigure | Readonly<g.CommonArea> {
     if (args) {
-      this.setter({ screen: args })
+      this.setter({ screen: { x: args.x, y: args.y, width: args.width, height: args.height } })
       return this
     }
     return this.getter().screen

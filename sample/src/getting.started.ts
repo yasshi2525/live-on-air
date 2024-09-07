@@ -11,10 +11,10 @@ export const main = (param: GameMainParameterObject) => {
   g.game.random = param.random
 
   const scene = new SceneBuilder(g.game)
-    .spot({ x: 200, y: 0 })
-    .spot({ x: 400, y: 0 })
-    .spot({ x: 600, y: 0 })
-    .spot({ x: 800, y: 0 })
+    .spot({ x: 300, y: 0 })
+    .spot({ x: 500, y: 0 })
+    .spot({ x: 700, y: 0 })
+    .spot({ x: 900, y: 0 })
     .build()
 
   g.game.pushScene(scene)

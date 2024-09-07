@@ -1,10 +1,10 @@
 import { Spot } from './spot'
 import { Live } from './live'
-import { Player } from './player'
+import { Broadcaster } from './broadcaster'
 import { LiveContext } from './liveContext'
 
 /**
- * {@link Player} が {@link Spot} を訪問すると開始される 生放送 ({@link Live}) を
+ * {@link Broadcaster} が {@link Spot} を訪問すると開始される 生放送 ({@link Live}) を
  * 画面に描画します.
  *
  * {@link ScreenBuilder} を使ってインスタンスを作成してください.
@@ -13,7 +13,7 @@ export interface Screen {
   /**
    * 生放送スクリーンの領域座標.
    *
-   * {@link view} に値が登録されているとき値を返します.
+   * {@link container} に値が登録されているとき値を返します.
    */
   readonly area?: Readonly<g.CommonArea>
 
@@ -29,7 +29,12 @@ export interface Screen {
    *
    * 生放送時の描画内容は本エンティティの子に格納されます.
    */
-  view?: g.E
+  container?: g.E
+
+  /**
+   * ライブラリ利用者が自由に使えるフィールドです.
+   */
+  vars?: unknown
 
   /**
    * Spot を登録します.
@@ -39,20 +44,23 @@ export interface Screen {
   addSpot (spot: Spot): void
 
   /**
-   * Player が Spot を訪問したため、登録された生放送を開始します.
+   * Broadcaster が Spot を訪問したため、登録された生放送を開始します.
+   *
+   * Broadcaster は Spot に滞在している必要があります.
    *
    * 本メソッドは Spot 到着時に自動で呼び出されるため、
    * ライブラリ利用者が実行する必要はありません.
    *
-   * @param player Spot を訪問した Player
+   * @param broadcaster Spot を訪問した Broadcaster
    * @internal
    */
-  startLive (player: Player): void
+  startLive (broadcaster: Broadcaster): void
 
 }
 
 export class ScreenImpl implements Screen {
-  private container?: g.E
+  vars?: unknown
+  private _container?: g.E
   private readonly _view: g.E
   private _now?: Live
 
@@ -67,11 +75,11 @@ export class ScreenImpl implements Screen {
     spot.attach(this)
   }
 
-  startLive (player: Player): void {
-    if (player.status !== 'on-air' || !player.staying) {
-      throw new Error('playerが放送準備ができていません. playerがspotに到着してから実行してください')
+  startLive (broadcaster: Broadcaster): void {
+    if (!broadcaster.staying) {
+      throw new Error('broadcasterが放送準備ができていません. broadcasterがspotに到着してから実行してください')
     }
-    if (this._now) {
+    if (broadcaster.live || this._now) {
       throw new Error('放送中にもかかわらず、新規放送を開始しようとしました. 放送終了後に実行してください')
     }
     const liveContainer = new g.E({
@@ -83,31 +91,33 @@ export class ScreenImpl implements Screen {
     const context: LiveContext = {
       scene: this.scene,
       screen: this,
-      spot: player.staying,
-      player,
-      view: liveContainer
+      spot: broadcaster.staying,
+      broadcaster,
+      view: liveContainer,
+      vars: undefined
     }
-    const live = new (player.staying.liveClass!)()
+    const live = new (broadcaster.staying.liveClass!)()
     this._now = live
     live.onEnd.addOnce(() => {
       this._now = undefined
       liveContainer.destroy()
-      player.backFromLive()
+      broadcaster.backFromLive()
     })
+    broadcaster.goToLive(live)
     live.start(context)
   }
 
-  get view (): g.E | undefined {
-    return this.container
+  get container (): g.E | undefined {
+    return this._container
   }
 
-  set view (view: g.E | undefined) {
-    this.container = view
-    if (this.container) {
-      this._view.width = this.container.width
-      this._view.height = this.container.height
+  set container (view: g.E | undefined) {
+    this._container = view
+    if (this._container) {
+      this._view.width = this._container.width
+      this._view.height = this._container.height
       this._view.modified()
-      this.container.append(this._view)
+      this._container.append(this._view)
     } else {
       this._view.remove()
     }
@@ -118,12 +128,12 @@ export class ScreenImpl implements Screen {
   }
 
   get area (): Readonly<g.CommonArea> | undefined {
-    return this.container
+    return this._container
       ? {
-          x: this.container.x,
-          y: this.container.y,
-          width: this.container.width,
-          height: this.container.height
+          x: this._container.x,
+          y: this._container.y,
+          width: this._container.width,
+          height: this._container.height
         }
       : undefined
   }

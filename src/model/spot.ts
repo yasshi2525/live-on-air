@@ -7,18 +7,18 @@ import { Live } from './live'
  *
  * "non-deployed": マップ上に配置されていない.
  *
- * "enabled": プレイヤーが訪問可能である.
+ * "enabled": 放送者（プレイヤー）が訪問可能である.
  *
- * "target": プレイヤーの目的地に設定されている.
+ * "target": 放送者（プレイヤー）の目的地に設定されている.
  *
- * "disabled": プレイヤーの訪問を受け付けない.
+ * "disabled": 放送者（プレイヤー）の訪問を受け付けない.
  */
 export type SpotStatus = 'non-deployed' | 'enabled' | 'target' | 'disabled'
 
 /**
  * スポット.
  *
- * スポットはマップ ({@link Field}) の上に存在し、プレイヤー ({@link Player}) が訪問すると生放送が始まります.
+ * スポットはマップ ({@link Field}) の上に存在し、放送者（プレイヤー） ({@link Broadcaster}) が訪問すると生放送が始まります.
  */
 export interface Spot {
   /**
@@ -51,7 +51,12 @@ export interface Spot {
   readonly status: SpotStatus
 
   /**
-   * 過去にプレイヤーが訪問したかどうか取得します.
+   * ライブラリ利用者が自由に使えるフィールドです.
+   */
+  vars?: unknown
+
+  /**
+   * 過去に放送者（プレイヤー）が訪問したかどうか取得します.
    */
   readonly visited: boolean
 
@@ -64,13 +69,15 @@ export interface Spot {
 
   /**
    * 訪問時に開始する生放送を取得します.
+   *
+   * @return 生放送処理が定義されたクラス名
    */
   readonly liveClass: new () => Live
 
   /**
    * 指定したマップ (Field) に登録します.
    *
-   * 登録することで Player は Spot を訪問し、生放送できるようになります.
+   * 登録することで Broadcaster は Spot を訪問し、生放送できるようになります.
    * 登録すると Spot は画面に描画されるようになります.
    *
    * @param field 登録先のマップ
@@ -78,7 +85,7 @@ export interface Spot {
   deployOn(field: Field): void
 
   /**
-   * プレイヤーが目的地としていると設定します.
+   * 放送者（プレイヤー）が目的地としていると設定します.
    */
   setAsDestination(): void
 
@@ -88,26 +95,28 @@ export interface Spot {
   unsetAsDestination(): void
 
   /**
-   * プレイヤーが訪問した際、生放送を開始するためのスクリーン環境情報を登録します.
+   * 放送者（プレイヤー）が訪問した際、生放送を開始するためのスクリーン環境情報を登録します.
    *
    * @param screen
    */
   attach(screen: Screen): void
 
   /**
-   * プレイヤーが目的地として選択できない状態にします.
+   * 放送者（プレイヤー）が目的地として選択できない状態にします.
    */
   disable(): void
 
   /**
-   * プレイヤーが目的地として選択できる状態にします.
+   * 放送者（プレイヤー）が目的地として選択できる状態にします.
    */
   enable(): void
 
   /**
-   * プレイヤーが訪問済であると登録します.
+   * 放送者（プレイヤー）が訪問済であると登録します.
    *
-   * 本メソッドはプレイヤー移動完了時に自動で呼び出されるため、
+   * 放送者（プレイヤー）が滞在している必要があります.
+   *
+   * 本メソッドは放送者（プレイヤー）移動完了時に自動で呼び出されるため、
    * 本ライブラリ利用者が利用する必要はありません.
    *
    * @internal
@@ -116,20 +125,21 @@ export interface Spot {
 }
 
 export class SpotImpl implements Spot {
+  vars?: unknown
+
   private readonly _view: g.Sprite
   private _field?: Field
   private _status: SpotStatus = 'non-deployed'
   private _visited = false
   private _screen?: Screen
 
-  // eslint-disable-next-line no-useless-constructor
   constructor (
     scene: g.Scene,
     readonly assets: Readonly<SpotAssetRecord>,
     private readonly _location: g.CommonOffset,
     private readonly _liveClass: new () => Live
   ) {
-    this._view = new g.Sprite({ scene, src: assets.normal, ..._location })
+    this._view = new g.Sprite({ scene, src: assets.normal, x: _location.x, y: _location.y })
   }
 
   deployOn (field: Field): void {
@@ -152,14 +162,14 @@ export class SpotImpl implements Spot {
     if (!this._field) {
       throw new Error('spotがfieldに配置されていないため移動先としての設定に失敗しました. spotをfieldに配置してください')
     }
-    if (!this._field.player) {
-      throw new Error('playerがfieldに配置されていないため移動先としての設定に失敗しました. playerをfieldに配置してください')
+    if (!this._field.broadcaster) {
+      throw new Error('broadcasterがfieldに配置されていないため移動先としての設定に失敗しました. broadcasterをfieldに配置してください')
     }
 
     this._status = 'target'
 
-    if (this._field.player.destination !== this) {
-      this._field.player.departTo(this)
+    if (this._field.broadcaster.destination !== this) {
+      this._field.broadcaster.departTo(this)
     }
   }
 
@@ -172,18 +182,18 @@ export class SpotImpl implements Spot {
         ' 移動先として設定されているspotに対して解除命令を実行してください')
     }
 
-    // status が target になった時点でplayerが存在するはずなので下記は非到達
+    // status が target になった時点でbroadcasterが存在するはずなので下記は非到達
     // istanbul ignore if
-    if (!this._field.player) {
-      throw new Error('playerがfieldに配置されていないため移動先としての設定に失敗しました. playerをfieldに配置してください')
+    if (!this._field.broadcaster) {
+      throw new Error('broadcasterがfieldに配置されていないため移動先としての設定に失敗しました. broadcasterをfieldに配置してください')
     }
 
     this._status = 'enabled'
     this._view.src = this._visited ? this.assets.normal : this.assets.unvisited
     this._view.invalidate()
 
-    if (this._field.player.destination === this) {
-      this._field.player.stop()
+    if (this._field.broadcaster.destination === this) {
+      this._field.broadcaster.stop()
     }
   }
 
@@ -216,14 +226,14 @@ export class SpotImpl implements Spot {
     if (!this._field || !this.location) {
       throw new Error('spotがfieldに配置されていないため訪問済みステータスへの遷移に失敗しました. spotをfieldに配置してください')
     }
-    if (!this._field.player || !this._field.player.location) {
-      throw new Error('playerがfieldに配置されていないため訪問済みステータスへの遷移に失敗しました. playerをfieldに配置してください')
+    if (!this._field.broadcaster || !this._field.broadcaster.location) {
+      throw new Error('broadcasterがfieldに配置されていないため訪問済みステータスへの遷移に失敗しました. broadcasterをfieldに配置してください')
     }
-    if (this._field.player.destination !== this) {
-      throw new Error('playerは異なるspotへ移動中のため訪問済みステータスへの遷移に失敗しました. playerの目的地を変更してください')
+    if (this._field.broadcaster.destination !== this) {
+      throw new Error('broadcasterは異なるspotへ移動中のため訪問済みステータスへの遷移に失敗しました. broadcasterの目的地を変更してください')
     }
-    if (g.Util.distanceBetweenOffsets(this.location, this._field.player.location) > 0) {
-      throw new Error('playerがspotに到着していないため訪問済みステータスへの遷移に失敗しました. playerがspotに到着してから実行してください')
+    if (g.Util.distanceBetweenOffsets(this.location, this._field.broadcaster.location) > 0) {
+      throw new Error('broadcasterがspotに到着していないため訪問済みステータスへの遷移に失敗しました. broadcasterがspotに到着してから実行してください')
     }
 
     this._visited = true
@@ -239,7 +249,7 @@ export class SpotImpl implements Spot {
 
   get location (): Readonly<g.CommonOffset> | undefined {
     if (this._field) {
-      return { ...this._location }
+      return { x: this._location.x, y: this._location.y }
     }
     return undefined
   }

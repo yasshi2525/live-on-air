@@ -1,36 +1,36 @@
 import { ObjectSupplier, PrimitiveValueSupplier, ValueSupplier, ValueValidator } from './value'
 
 /**
- * {@link Player} 生成時に利用する設定値
+ * {@link Broadcaster} 生成時に利用する設定値
  */
-export interface PlayerConfig {
+export interface BroadcasterConfig {
   /**
-   * 作成する Player に設定する移動速度
+   * 作成する Broadcaster に設定する移動速度
    */
   speed: number
   /**
-   * 作成する Player に設定するx座標
+   * 作成する Broadcaster に設定するx座標
    */
   x: number
   /**
-   * 作成する Player に設定するy座標
+   * 作成する Broadcaster に設定するy座標
    */
   y: number
   /**
-   * 作成する Player に使用される画像アセット
+   * 作成する Broadcaster に使用される画像アセット
    */
   asset: g.ImageAsset
 }
 
 /**
- * {@link Player} 生成に必要な属性値を設定します.
+ * {@link Broadcaster} 生成に必要な属性値を設定します.
  */
-export class PlayerConfigSupplier implements ValueSupplier<PlayerConfig> {
+export class BroadcasterConfigSupplier implements ValueSupplier<BroadcasterConfig> {
   private readonly speed: PrimitiveValueSupplier<number>
   private readonly location: ObjectSupplier<g.CommonOffset>
   private readonly asset: PrimitiveValueSupplier<g.ImageAsset>
 
-  constructor (initial: PlayerConfig) {
+  constructor (initial: BroadcasterConfig) {
     this.speed = PrimitiveValueSupplier.create(initial.speed, new class extends ValueValidator<number> {
       override isInvalid (value: number): boolean {
         return value <= 0
@@ -44,13 +44,13 @@ export class PlayerConfigSupplier implements ValueSupplier<PlayerConfig> {
     this.asset = PrimitiveValueSupplier.create(initial.asset)
   }
 
-  setIf (obj: Partial<PlayerConfig>): void {
+  setIf (obj: Partial<BroadcasterConfig>): void {
     this.speed.setIf(obj.speed)
     this.location.setIf(obj)
     this.asset.setIf(obj.asset)
   }
 
-  get (): PlayerConfig {
+  get (): BroadcasterConfig {
     return {
       speed: this.speed.get(),
       ...this.location.get(),
@@ -58,7 +58,7 @@ export class PlayerConfigSupplier implements ValueSupplier<PlayerConfig> {
     }
   }
 
-  default (): PlayerConfig {
+  default (): BroadcasterConfig {
     return {
       speed: this.speed.default(),
       ...this.location.default(),
@@ -66,7 +66,7 @@ export class PlayerConfigSupplier implements ValueSupplier<PlayerConfig> {
     }
   }
 
-  defaultIf (obj: Partial<PlayerConfig>): void {
+  defaultIf (obj: Partial<BroadcasterConfig>): void {
     this.speed.defaultIf(obj.speed)
     this.location.defaultIf(obj)
     this.asset.defaultIf(obj.asset)

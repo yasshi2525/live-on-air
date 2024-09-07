@@ -1,8 +1,8 @@
 import { Spot } from './spot'
-import { Player } from './player'
+import { Broadcaster } from './broadcaster'
 
 /**
- * プレイヤー ({@link Player}) とスポット ({@link Spot}) が配置され、ゲームがプレイされる舞台.
+ * 放送者（プレイヤー） ({@link Broadcaster}) とスポット ({@link Spot}) が配置され、ゲームがプレイされる舞台.
  *
  * {@link FieldBuilder} を使ってインスタンスを作成してください.
  */
@@ -10,21 +10,21 @@ export interface Field {
   /**
    * マップの領域座標.
    *
-   * {@link view} に値が登録されているとき値を返します.
+   * {@link container} に値が登録されているとき値を返します.
    */
   readonly area?: Readonly<g.CommonArea>
 
   /**
-   * Player, Spot を描画するエンティティ.
+   * Broadcaster, Spot を描画するエンティティ.
    *
-   * 登録されている Player, Spot は本エンティティの子として描画されます
+   * 登録されている Broadcaster, Spot は本エンティティの子として描画されます
    */
-  view?: g.E
+  container?: g.E
 
   /**
-   * マップ上に存在する Player を取得します
+   * マップ上に存在する Broadcaster を取得します
    */
-  readonly player?: Player
+  readonly broadcaster?: Broadcaster
 
   /**
    * マップ上に存在する Spot 一覧を取得します
@@ -32,58 +32,65 @@ export interface Field {
   readonly spots: readonly Spot[]
 
   /**
-   * 指定した Player をマップに配置します
-   *
-   * 配置すると Player ーはマップ上を移動可能になります.
-   *
-   * @param player 配置する Player
+   * ライブラリ利用者が自由に使えるフィールドです.
    */
-  addPlayer(player: Player): void
+  vars?: unknown
+
+  /**
+   * 指定した Broadcaster をマップに配置します
+   *
+   * 配置すると Broadcaster ーはマップ上を移動可能になります.
+   * 放送者（プレイヤー）は一人のみ配置可能です.
+   *
+   * @param broadcaster 配置する Broadcaster
+   */
+  addBroadcaster(broadcaster: Broadcaster): void
 
   /**
    * 指定した Spot をマップに配置します.
    *
-   * 配置すると Player は Spot を目的地として選択できるようになります.
+   * 配置すると Broadcaster は Spot を目的地として選択できるようになります.
    *
    * @param spot 配置する Spot
    */
   addSpot(spot: Spot): void
 
   /**
-   * 指定した Spot 以外を Player が目的地に選択できないようにします.
+   * 指定した Spot 以外を Broadcaster が目的地に選択できないようにします.
    *
    * @param spot 目的地に設定する Spot
    */
   disableSpotExcept(spot: Spot): void
 
   /**
-   * 指定した Spot 以外を Player が目的地として選択できるようにします.
+   * 指定した Spot 以外を Broadcaster が目的地として選択できるようにします.
    */
   enableSpotExcept(spot: Spot): void
 }
 
 export class FieldImpl implements Field {
-  private _view?: g.E
+  vars?: unknown
+  private _container?: g.E
   private readonly _spots: Set<Spot> = new Set<Spot>()
-  private _player?: Player
+  private _broadcaster?: Broadcaster
 
-  addPlayer (player: Player): void {
-    if (this._player && this._player !== player) {
-      throw new Error('このfieldにはすでに異なるplayerが配置されているので、指定のplayerを配置できません.' +
-        ' playerはただ一人である必要があり、fieldには複数のplayerを配置できません')
+  addBroadcaster (broadcaster: Broadcaster): void {
+    if (this._broadcaster && this._broadcaster !== broadcaster) {
+      throw new Error('このfieldにはすでに異なるbroadcasterが配置されているので、指定のbroadcasterを配置できません.' +
+        ' broadcasterはただ一人である必要があり、fieldには複数のbroadcasterを配置できません')
     }
-    if (player.field && player.field !== this) {
-      throw new Error('指定のplayerはすでに異なるfieldに配置されているので、このfieldに配置できません.' +
-        ' playerはただ一人である必要があり、playerは複数のfieldに配置できません')
-    }
-
-    this._player = player
-    if (this._view) {
-      this._view.append(player.view)
+    if (broadcaster.field && broadcaster.field !== this) {
+      throw new Error('指定のbroadcasterはすでに異なるfieldに配置されているので、このfieldに配置できません.' +
+        ' broadcasterはただ一人である必要があり、broadcasterは複数のfieldに配置できません')
     }
 
-    if (!player.field) {
-      player.standOn(this)
+    this._broadcaster = broadcaster
+    if (this._container) {
+      this._container.append(broadcaster.view)
+    }
+
+    if (!broadcaster.field) {
+      broadcaster.standOn(this)
     }
   }
 
@@ -94,8 +101,8 @@ export class FieldImpl implements Field {
     }
 
     this._spots.add(spot)
-    if (this._view) {
-      this._view.append(spot.view)
+    if (this._container) {
+      this._container.insertBefore(spot.view, this._broadcaster?.view)
     }
 
     if (!spot.field) {
@@ -115,41 +122,41 @@ export class FieldImpl implements Field {
     }
   }
 
-  get view (): g.E | undefined {
-    return this._view
+  get container (): g.E | undefined {
+    return this._container
   }
 
-  set view (view: g.E | undefined) {
-    this._view = view
+  set container (view: g.E | undefined) {
+    this._container = view
     for (const s of this._spots) {
-      if (this._view) {
-        this._view.append(s.view)
+      if (this._container) {
+        this._container.append(s.view)
       } else {
         s.view.remove()
       }
     }
-    if (this._player) {
-      if (this._view) {
-        this._view.append(this._player.view)
+    if (this._broadcaster) {
+      if (this._container) {
+        this._container.append(this._broadcaster.view)
       } else {
-        this._player.view.remove()
+        this._broadcaster.view.remove()
       }
     }
   }
 
   get area (): Readonly<g.CommonArea> | undefined {
-    return this._view
+    return this._container
       ? {
-          x: this._view.x,
-          y: this._view.y,
-          width: this._view.width,
-          height: this._view.height
+          x: this._container.x,
+          y: this._container.y,
+          width: this._container.width,
+          height: this._container.height
         }
       : undefined
   }
 
-  get player (): Player | undefined {
-    return this._player
+  get broadcaster (): Broadcaster | undefined {
+    return this._broadcaster
   }
 
   get spots (): readonly Spot[] {

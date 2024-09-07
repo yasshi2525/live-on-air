@@ -15,7 +15,7 @@ export type LayerType = typeof layerTypes[number]
  */
 export interface LayerConfig {
   /**
-   * {@link Spot}, {@link Player} が配置されるマップの大きさ.
+   * {@link Spot}, {@link Broadcaster} が配置されるマップの大きさ.
    */
   field: g.CommonArea
   /**

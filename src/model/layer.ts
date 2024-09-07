@@ -9,7 +9,7 @@ export interface Layer {
   /**
    * マップ層.
    *
-   * {@link Spot}, {@link Player} を配置するためのレイヤ.
+   * {@link Spot}, {@link Broadcaster} を配置するためのレイヤ.
    */
   readonly field: g.E
   /**
@@ -18,11 +18,16 @@ export interface Layer {
    * {@link Live}, を配置するためのレイヤ.
    */
   readonly screen: g.E
+  /**
+   * ライブラリ利用者が自由に使えるフィールドです.
+   */
+  vars?: unknown
 }
 
 export class LayerImpl implements Layer {
   readonly field: g.E
   readonly screen: g.E
+  vars?: unknown
 
   constructor (private readonly scene: g.Scene, private readonly config: LayerConfig) {
     this.field = this.createEntity('field')
@@ -30,6 +35,13 @@ export class LayerImpl implements Layer {
   }
 
   private createEntity (typ: LayerType) {
-    return new g.E({ scene: this.scene, parent: this.scene, ...this.config[typ] })
+    return new g.E({
+      scene: this.scene,
+      parent: this.scene,
+      x: this.config[typ].x,
+      y: this.config[typ].y,
+      width: this.config[typ].width,
+      height: this.config[typ].height
+    })
   }
 }
