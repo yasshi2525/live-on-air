@@ -21,7 +21,7 @@ describe('Broadcaster', () => {
     const layer = new LayerBuilder(scene)
       .field({ x: 0, y: 0, width: 1280, height: 720 })
       .build()
-    field1.view = layer.field
+    field1.container = layer.field
     screen = new ScreenBuilder(scene).build()
     screen.addSpot(spot1)
     screen.addSpot(spot2)

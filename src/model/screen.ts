@@ -13,7 +13,7 @@ export interface Screen {
   /**
    * 生放送スクリーンの領域座標.
    *
-   * {@link view} に値が登録されているとき値を返します.
+   * {@link container} に値が登録されているとき値を返します.
    */
   readonly area?: Readonly<g.CommonArea>
 
@@ -29,7 +29,7 @@ export interface Screen {
    *
    * 生放送時の描画内容は本エンティティの子に格納されます.
    */
-  view?: g.E
+  container?: g.E
 
   /**
    * ライブラリ利用者が自由に使えるフィールドです.
@@ -60,7 +60,7 @@ export interface Screen {
 
 export class ScreenImpl implements Screen {
   vars?: unknown
-  private container?: g.E
+  private _container?: g.E
   private readonly _view: g.E
   private _now?: Live
 
@@ -107,17 +107,17 @@ export class ScreenImpl implements Screen {
     live.start(context)
   }
 
-  get view (): g.E | undefined {
-    return this.container
+  get container (): g.E | undefined {
+    return this._container
   }
 
-  set view (view: g.E | undefined) {
-    this.container = view
-    if (this.container) {
-      this._view.width = this.container.width
-      this._view.height = this.container.height
+  set container (view: g.E | undefined) {
+    this._container = view
+    if (this._container) {
+      this._view.width = this._container.width
+      this._view.height = this._container.height
       this._view.modified()
-      this.container.append(this._view)
+      this._container.append(this._view)
     } else {
       this._view.remove()
     }
@@ -128,12 +128,12 @@ export class ScreenImpl implements Screen {
   }
 
   get area (): Readonly<g.CommonArea> | undefined {
-    return this.container
+    return this._container
       ? {
-          x: this.container.x,
-          y: this.container.y,
-          width: this.container.width,
-          height: this.container.height
+          x: this._container.x,
+          y: this._container.y,
+          width: this._container.width,
+          height: this._container.height
         }
       : undefined
   }

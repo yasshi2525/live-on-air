@@ -108,11 +108,11 @@ describe('field', () => {
     field.addSpot(spot1)
     field.addSpot(spot2)
     field.addBroadcaster(broadcaster)
-    expect(field.view).not.toBeDefined()
+    expect(field.container).not.toBeDefined()
     expect(field.area).not.toBeDefined()
     await gameContext.step()
     screenshot('field.view.initial.png')
-    field.view = layer1
+    field.container = layer1
     expect(spot1.view.parent).toBe(layer1)
     expect(spot2.view.parent).toBe(layer1)
     expect(broadcaster.view.parent).toBe(layer1)
@@ -123,7 +123,7 @@ describe('field', () => {
 
   it('先にg.Eを登録してからspot,broadcasterを登録しても描画される', async () => {
     const field: Field = new FieldImpl()
-    field.view = layer1
+    field.container = layer1
     field.addSpot(spot1)
     field.addSpot(spot2)
     field.addBroadcaster(broadcaster)
@@ -140,8 +140,8 @@ describe('field', () => {
     field.addSpot(spot1)
     field.addSpot(spot2)
     field.addBroadcaster(broadcaster)
-    field.view = layer1
-    field.view = layer2
+    field.container = layer1
+    field.container = layer2
     expect(spot1.view.parent).toBe(layer2)
     expect(spot2.view.parent).toBe(layer2)
     expect(broadcaster.view.parent).toBe(layer2)
@@ -155,8 +155,8 @@ describe('field', () => {
     field.addSpot(spot1)
     field.addSpot(spot2)
     field.addBroadcaster(broadcaster)
-    field.view = layer1
-    field.view = undefined
+    field.container = layer1
+    field.container = undefined
     expect(spot1.view.parent).not.toBeDefined()
     expect(spot2.view.parent).not.toBeDefined()
     expect(broadcaster.view.parent).not.toBeDefined()

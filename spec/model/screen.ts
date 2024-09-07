@@ -83,10 +83,10 @@ describe('screen', () => {
     scb = new ScreenBuilder(scene)
     field = new FieldBuilder().build()
     const layer = new LayerBuilder(scene).build()
-    field.view = layer.field
+    field.container = layer.field
     broadcaster.standOn(field)
     screen = scb.build()
-    screen.view = layer.screen
+    screen.container = layer.screen
   })
 
   afterEach(() => {
@@ -198,12 +198,12 @@ describe('screen', () => {
     spot.deployOn(field)
     spot.attach(screen2)
     broadcaster.jumpTo(spot)
-    expect(screen2.view).not.toBeDefined()
+    expect(screen2.container).not.toBeDefined()
     expect(screen2.area).not.toBeDefined()
     await gameContext.step()
     screenshot('screen.view.init.png')
-    screen2.view = new g.E({ scene, parent: scene, width: 500, height: 500 })
-    expect(screen2.view.parent).toBe(scene)
+    screen2.container = new g.E({ scene, parent: scene, width: 500, height: 500 })
+    expect(screen2.container.parent).toBe(scene)
     expect(screen2.area).toEqual({ x: 0, y: 0, width: 500, height: 500 })
     await gameContext.step()
     screenshot('screen.view.register.png')
@@ -215,9 +215,9 @@ describe('screen', () => {
     spot.deployOn(field)
     spot.attach(screen2)
     broadcaster.jumpTo(spot)
-    screen2.view = new g.E({ scene, parent: scene, width: 500, height: 500 })
-    const view = screen2.view.children![0]
-    screen2.view = undefined
+    screen2.container = new g.E({ scene, parent: scene, width: 500, height: 500 })
+    const view = screen2.container.children![0]
+    screen2.container = undefined
     expect(view.parent).not.toBeDefined()
     expect(screen2.area).not.toBeDefined()
     await gameContext.step()

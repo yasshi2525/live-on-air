@@ -10,7 +10,7 @@ export interface Field {
   /**
    * マップの領域座標.
    *
-   * {@link view} に値が登録されているとき値を返します.
+   * {@link container} に値が登録されているとき値を返します.
    */
   readonly area?: Readonly<g.CommonArea>
 
@@ -19,7 +19,7 @@ export interface Field {
    *
    * 登録されている Broadcaster, Spot は本エンティティの子として描画されます
    */
-  view?: g.E
+  container?: g.E
 
   /**
    * マップ上に存在する Broadcaster を取得します
@@ -70,7 +70,7 @@ export interface Field {
 
 export class FieldImpl implements Field {
   vars?: unknown
-  private _view?: g.E
+  private _container?: g.E
   private readonly _spots: Set<Spot> = new Set<Spot>()
   private _broadcaster?: Broadcaster
 
@@ -85,8 +85,8 @@ export class FieldImpl implements Field {
     }
 
     this._broadcaster = broadcaster
-    if (this._view) {
-      this._view.append(broadcaster.view)
+    if (this._container) {
+      this._container.append(broadcaster.view)
     }
 
     if (!broadcaster.field) {
@@ -101,8 +101,8 @@ export class FieldImpl implements Field {
     }
 
     this._spots.add(spot)
-    if (this._view) {
-      this._view.append(spot.view)
+    if (this._container) {
+      this._container.append(spot.view)
     }
 
     if (!spot.field) {
@@ -122,22 +122,22 @@ export class FieldImpl implements Field {
     }
   }
 
-  get view (): g.E | undefined {
-    return this._view
+  get container (): g.E | undefined {
+    return this._container
   }
 
-  set view (view: g.E | undefined) {
-    this._view = view
+  set container (view: g.E | undefined) {
+    this._container = view
     for (const s of this._spots) {
-      if (this._view) {
-        this._view.append(s.view)
+      if (this._container) {
+        this._container.append(s.view)
       } else {
         s.view.remove()
       }
     }
     if (this._broadcaster) {
-      if (this._view) {
-        this._view.append(this._broadcaster.view)
+      if (this._container) {
+        this._container.append(this._broadcaster.view)
       } else {
         this._broadcaster.view.remove()
       }
@@ -145,12 +145,12 @@ export class FieldImpl implements Field {
   }
 
   get area (): Readonly<g.CommonArea> | undefined {
-    return this._view
+    return this._container
       ? {
-          x: this._view.x,
-          y: this._view.y,
-          width: this._view.width,
-          height: this._view.height
+          x: this._container.x,
+          y: this._container.y,
+          width: this._container.width,
+          height: this._container.height
         }
       : undefined
   }

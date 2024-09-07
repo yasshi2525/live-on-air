@@ -11,7 +11,7 @@ describe('Spot', () => {
   beforeEach(() => {
     sb = new SpotBuilder(scene)
     field1 = new FieldBuilder().build()
-    field1.view = new g.FilledRect({ scene, parent: scene, x: 20, y: 20, width: 700, height: 500, cssColor: '#ffaaaa' })
+    field1.container = new g.FilledRect({ scene, parent: scene, x: 20, y: 20, width: 700, height: 500, cssColor: '#ffaaaa' })
     field2 = new FieldBuilder().build()
     broadcaster = new BroadcasterBuilder(scene).build()
     broadcaster.standOn(field1)

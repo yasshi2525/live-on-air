@@ -51,7 +51,7 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
         .build()
       const field = new FieldBuilder()
         .build()
-      field.view = layer.field
+      field.container = layer.field
       const broadcaster = new BroadcasterBuilder(this)
         .location({ x: param.broadcaster.x, y: param.broadcaster.y })
         .speed(param.broadcaster.speed)
@@ -60,7 +60,7 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
       broadcaster.standOn(field)
       const screen = new ScreenBuilder(this)
         .build()
-      screen.view = layer.screen
+      screen.container = layer.screen
       const spots = new Set<Spot>()
       for (const spot of param.spots) {
         const inst = new SpotBuilder(this)
