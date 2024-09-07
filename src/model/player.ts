@@ -11,11 +11,11 @@ import { Live } from './live'
  *
  * "moving": ある Spot に向かって移動中である.
  *
- * "stopping": マップ上で待機中である.
+ * "stopping-on-ground": マップ上で待機中である.
  *
  * "on-air": スポットにて生放送中
  */
-export type PlayerStatus = 'non-field' | 'staying' | 'moving' | 'stopping' | 'on-air'
+export type PlayerStatus = 'non-field' | 'staying-in-spot' | 'moving' | 'stopping-on-ground' | 'on-air'
 
 /**
  * プレイヤー.
@@ -188,7 +188,7 @@ export class PlayerImpl implements Player {
     }
 
     this._field = field
-    this._status = 'stopping'
+    this._status = 'stopping-on-ground'
 
     if (!field.player) {
       field.addPlayer(this)
@@ -281,7 +281,7 @@ export class PlayerImpl implements Player {
     this._destination = undefined
     this._tween.cancel()
     this._tween = undefined
-    this._status = 'stopping'
+    this._status = 'stopping-on-ground'
 
     if (oldDestination.status === 'target') {
       oldDestination.unsetAsDestination()
@@ -318,7 +318,7 @@ export class PlayerImpl implements Player {
     }
     this._view.show()
     this._live = undefined
-    this._status = 'staying'
+    this._status = 'staying-in-spot'
     this.onLiveEnd.fire()
   }
 

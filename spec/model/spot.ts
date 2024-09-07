@@ -195,11 +195,11 @@ describe('Spot', () => {
   it('playerが停止状態のとき、訪問済みマークに失敗する', () => {
     const spot = sb.build()
     spot.deployOn(field1)
-    expect(player.status).toEqual('stopping')
+    expect(player.status).toEqual('stopping-on-ground')
     expect(spot.visited).toBeFalsy()
     expect(player.destination).not.toBeDefined()
     expect(() => spot.markAsVisited()).toThrow()
-    expect(player.status).toEqual('stopping')
+    expect(player.status).toEqual('stopping-on-ground')
     expect(spot.visited).toBeFalsy()
     expect(spot.status).toEqual('enabled')
   })

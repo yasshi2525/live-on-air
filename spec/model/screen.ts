@@ -128,7 +128,7 @@ describe('screen', () => {
     await gameContext.step()
     screenshot('live.player.on-air.png')
     await waitFor(live.onEnd)
-    expect(player.status).toBe('staying')
+    expect(player.status).toBe('staying-in-spot')
     expect(player.view.visible()).toBeTruthy()
     expect(logger).toHaveBeenCalledWith('end 1th live')
     screenshot('live.player.off-air.png')
@@ -149,7 +149,7 @@ describe('screen', () => {
     spot.deployOn(field)
     player.jumpTo(spot)
     expect(screen.nowOnAir).not.toBeDefined()
-    expect(player.status).toBe('staying')
+    expect(player.status).toBe('staying-in-spot')
     expect(player.view.visible()).toBeTruthy()
   })
 

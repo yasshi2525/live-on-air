@@ -35,7 +35,7 @@ describe('Player', () => {
     player.standOn(field1)
     expect(player.field).toBe(field1)
     expect(player.location).toBeDefined()
-    expect(player.status).toEqual('stopping')
+    expect(player.status).toEqual('stopping-on-ground')
   })
 
   it('同じFieldへの二重登録時は警告だけで何もしない', () => {
@@ -68,7 +68,7 @@ describe('Player', () => {
   it('目的地が設定されると、それに向かって移動を開始する', async () => {
     const player = new PlayerBuilder(scene).build()
     player.standOn(field1)
-    expect(player.status).toBe('stopping')
+    expect(player.status).toBe('stopping-on-ground')
     expect(player.location).toEqual({ x: 0, y: 0 })
     player.departTo(spot1)
     await gameContext.step()
@@ -104,7 +104,7 @@ describe('Player', () => {
     expect(s).toEqual(spot1)
     expect(player.status).toBe('on-air')
     await waitFor(player.onLiveEnd)
-    expect(player.status).toBe('staying')
+    expect(player.status).toBe('staying-in-spot')
     player.departTo(spot2)
     await gameContext.step()
     expect(player.status).toBe('moving')
@@ -142,7 +142,7 @@ describe('Player', () => {
     player.departTo(spot1)
     player.stop()
     expect(player.destination).not.toBeDefined()
-    expect(player.status).toEqual('stopping')
+    expect(player.status).toEqual('stopping-on-ground')
     expect(spot1.status).toEqual('enabled')
     expect(spot2.status).toEqual('enabled')
   })
@@ -218,7 +218,7 @@ describe('Player', () => {
     const player = new PlayerBuilder(scene).build()
     player.standOn(field1)
     expect(() => player.stop()).toThrow()
-    expect(player.status).toBe('stopping')
+    expect(player.status).toBe('stopping-on-ground')
   })
 
   it('移動速度を設定できる', () => {
