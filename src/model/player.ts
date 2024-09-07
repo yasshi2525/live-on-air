@@ -1,6 +1,7 @@
 import { Field } from './field'
 import { Spot } from './spot'
 import { Easing, Timeline, Tween } from '@akashic-extension/akashic-timeline'
+import { Live } from './live'
 /**
  * プレイヤー ({@link Player}) の状態を表します.
  *
@@ -71,6 +72,13 @@ export interface Player {
   readonly destination?: Spot
 
   /**
+   * プレイヤーが現在している生放送.
+   *
+   * 生放送中でない場合、 undefined を返します
+   */
+  readonly live?: Live
+
+  /**
    * プレイヤーの現在の状態を取得します.
    */
   readonly status: PlayerStatus
@@ -125,9 +133,23 @@ export interface Player {
   stop(): void
 
   /**
+   * 生放送が開始したことを通知します.
+   *
+   * Spot に滞在している必要があります
+   *
+   * 本メソッドは自動で呼び出されるため、
+   * 本ライブラリ利用者が実行する必要はありません.
+   *
+   * @param live 開始された生放送
+   * @internal
+   */
+  goToLive(live: Live): void
+
+  /**
    * 生放送が終わったため、再びマップで移動可能状態にします.
    *
    * 生放送中でない場合、実行に失敗します.
+   * Spot に滞在している必要があります.
    *
    * 本メソッドは自動で呼び出されるため、
    * 本ライブラリ利用者が実行する必要はありません.
@@ -147,6 +169,7 @@ export class PlayerImpl implements Player {
   private _destination?: Spot
   private _status: PlayerStatus = 'non-field'
   private _tween?: Tween
+  private _live?: Live
 
   constructor (_scene: g.Scene, _asset: g.ImageAsset, private _speed: number, location: g.CommonOffset) {
     this._view = new g.Sprite({ scene: _scene, src: _asset, x: location.x, y: location.y })
@@ -189,7 +212,6 @@ export class PlayerImpl implements Player {
     this._destination = spot
     spot.markAsVisited()
     this._destination = undefined
-    this._status = 'on-air'
     this._staying = spot
 
     this._view.hide()
@@ -231,7 +253,6 @@ export class PlayerImpl implements Player {
       this._field!.enableSpotExcept(spot)
       spot.unsetAsDestination()
       this.onEnter.fire(spot)
-      this._view.hide()
       spot.screen!.startLive(this)
     })
     this._status = 'moving'
@@ -261,11 +282,36 @@ export class PlayerImpl implements Player {
     }
   }
 
+  goToLive (live: Live): void {
+    if (!this._field) {
+      throw new Error('playerがfieldに配置されていないため生放送の開始に失敗しました. playerをfieldに配置してください')
+    }
+    if (!this._staying) {
+      throw new Error('spotに滞在していない状態で生放送を開始しようとしました. spotに到着してから実行してください')
+    }
+    if (!(live instanceof this._staying.liveClass)) {
+      throw new Error('開始した生放送がspotに紐づけられたものと異なります. 滞在中のspotで開始した生放送を指定してください')
+    }
+    if (this._live) {
+      throw new Error('生放送中の状態で別の生放送を開始しようとしました. 生放送が終了してから実行してください')
+    }
+    this._view.hide()
+    this._live = live
+    this._status = 'on-air'
+  }
+
   backFromLive (): void {
+    if (!this._field) {
+      throw new Error('playerがfieldに配置されていないため生放送の終了に失敗しました. playerをfieldに配置してください')
+    }
+    if (!this._staying) {
+      throw new Error('spotに滞在していない状態で生放送を終了しようとしました. spotから離れる前に実行してください')
+    }
     if (this._status !== 'on-air') {
       throw new Error('生放送中でない状態で生放送終了後処理を実行しようとしました. playerが生放送中であることを確認してください')
     }
     this._view.show()
+    this._live = undefined
     this._status = 'staying'
     this.onLiveEnd.fire()
   }
@@ -302,6 +348,10 @@ export class PlayerImpl implements Player {
 
   get staying (): Spot | undefined {
     return this._staying
+  }
+
+  get live (): Live | undefined {
+    return this._live
   }
 
   get status (): PlayerStatus {

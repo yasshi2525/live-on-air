@@ -70,10 +70,10 @@ export class ScreenImpl implements Screen {
   }
 
   startLive (player: Player): void {
-    if (player.status !== 'on-air' || !player.staying) {
+    if (!player.staying) {
       throw new Error('playerが放送準備ができていません. playerがspotに到着してから実行してください')
     }
-    if (this._now) {
+    if (player.live || this._now) {
       throw new Error('放送中にもかかわらず、新規放送を開始しようとしました. 放送終了後に実行してください')
     }
     const liveContainer = new g.E({
@@ -96,6 +96,7 @@ export class ScreenImpl implements Screen {
       liveContainer.destroy()
       player.backFromLive()
     })
+    player.goToLive(live)
     live.start(context)
   }
 

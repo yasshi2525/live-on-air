@@ -1,5 +1,6 @@
 import { FieldBuilder, Field, PlayerBuilder, Spot, SpotBuilder, LayerBuilder, ScreenBuilder, Screen } from '../../src'
-import { waitFor } from '../__helper'
+import { SimpleLive, waitFor } from '../__helper'
+import { SampleLive } from '../../src/model/live'
 
 describe('Player', () => {
   let field1: Field
@@ -238,8 +239,40 @@ describe('Player', () => {
     expect(player.speed).toBe(1)
   })
 
-  it('放送中でない場合、放送からの復帰に失敗する', () => {
+  it('fieldに配置されていないと生放送できない', () => {
     const player = new PlayerBuilder(scene).build()
+    expect(() => player.goToLive(new SampleLive())).toThrow()
+    expect(() => player.backFromLive()).toThrow()
+  })
+
+  it('移動中は生放送を開始できない', () => {
+    const player = new PlayerBuilder(scene).build()
+    player.standOn(field1)
+    player.departTo(spot1)
+    expect(() => player.goToLive(new SimpleLive())).toThrow()
+  })
+
+  it('stayingと型が違う生放送は開始できない', () => {
+    const player = new PlayerBuilder(scene).build()
+    player.standOn(field1)
+    player.jumpTo(spot1)
+    expect(() => player.goToLive(new SimpleLive())).toThrow()
+  })
+
+  it('放送中の場合、放送への遷移に失敗する', () => {
+    const player = new PlayerBuilder(scene).build()
+    player.standOn(field1)
+    player.jumpTo(spot1)
+    expect(player.live).toBeDefined()
+    expect(() => player.goToLive(new SampleLive())).toThrow()
+  })
+
+  it('放送中でない場合、放送からの復帰に失敗する', async () => {
+    const player = new PlayerBuilder(scene).build()
+    player.standOn(field1)
+    expect(() => player.backFromLive()).toThrow()
+    player.jumpTo(spot1)
+    await waitFor(player.onLiveEnd)
     expect(() => player.backFromLive()).toThrow()
   })
 })
