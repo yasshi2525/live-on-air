@@ -302,6 +302,8 @@ export class BroadcasterImpl implements Broadcaster {
       throw new Error('生放送中の状態で別の生放送を開始しようとしました. 生放送が終了してから実行してください')
     }
     this._view.hide()
+    this._field.disableSpotExcept(this._staying)
+    this._staying.disable()
     this._live = live
     this._status = 'on-air'
   }
@@ -317,6 +319,8 @@ export class BroadcasterImpl implements Broadcaster {
       throw new Error('生放送中でない状態で生放送終了後処理を実行しようとしました. broadcasterが生放送中であることを確認してください')
     }
     this._view.show()
+    this._field.enableSpotExcept(this._staying)
+    this._staying.enable()
     this._live = undefined
     this._status = 'staying-in-spot'
     this.onLiveEnd.fire()

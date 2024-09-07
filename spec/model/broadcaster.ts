@@ -87,11 +87,14 @@ describe('Broadcaster', () => {
     screenshot('broadcaster.moving.entered.png')
   })
 
-  it('目的地に到達すると他のスポットへも移動可能になる', async () => {
+  it('目的地に到達すると放送開始のため無効になる。放送終了後、他のスポットへも移動可能になる', async () => {
     const broadcaster = new BroadcasterBuilder(scene).build()
     broadcaster.standOn(field1)
     broadcaster.departTo(spot1)
     await waitFor(broadcaster.onEnter)
+    expect(spot1.status).toBe('disabled')
+    expect(spot2.status).toBe('disabled')
+    await waitFor(broadcaster.onLiveEnd)
     expect(spot1.status).toBe('enabled')
     expect(spot2.status).toBe('enabled')
   })
@@ -132,8 +135,8 @@ describe('Broadcaster', () => {
     await gameContext.step()
     expect(goal).toBe(spot1)
     expect(broadcaster.status).toBe('on-air')
-    expect(spot1.status).toBe('enabled')
-    expect(spot2.status).toBe('enabled')
+    expect(spot1.status).toBe('disabled')
+    expect(spot2.status).toBe('disabled')
   })
 
   it('移動中の場合、移動をキャンセルできる', () => {
