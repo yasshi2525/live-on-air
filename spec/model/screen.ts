@@ -17,15 +17,13 @@ const logger = jest.spyOn(console, 'log').mockImplementation()
 
 class SimpleLive implements Live {
   vars?: unknown
-  readonly onEnd = new g.Trigger()
-
   static numOfLive = 0
 
   constructor () {
     SimpleLive.numOfLive++
   }
 
-  start (context: LiveContext) {
+  start (context: LiveContext, end: () => void): void {
     console.log(`start ${SimpleLive.numOfLive}th live`)
     context.view.append(new g.FilledRect({
       scene,
@@ -36,37 +34,24 @@ class SimpleLive implements Live {
     }))
     scene.setTimeout(() => {
       console.log(`end ${SimpleLive.numOfLive}th live`)
-      this.onEnd.fire()
+      end()
     }, 5000)
   }
 }
 
 class LiveNoConstructor implements Live {
-  readonly onEnd = new g.Trigger()
-  start () {
+  start (_: LiveContext, end: () => void): void {
     console.log('start LiveNoConstructor live')
     scene.setTimeout(() => {
       console.log('end LiveNoConstructor live')
-      this.onEnd.fire()
+      end()
     }, 5000)
   }
 }
 
 class FlushLive implements Live {
-  readonly onEnd = new g.Trigger()
-  start () {
-    this.onEnd.fire()
-  }
-}
-
-class FlyingLive implements Live {
-  readonly onEnd = new g.Trigger()
-  constructor () {
-    this.onEnd.fire()
-  }
-
-  start () {
-    this.onEnd.fire()
+  start (_: LiveContext, end: () => void): void {
+    end()
   }
 }
 
@@ -124,10 +109,9 @@ describe('screen', () => {
     broadcaster.jumpTo(spot)
     expect(broadcaster.status).toBe('on-air')
     expect(broadcaster.view.visible()).toBeFalsy()
-    const live: Live = screen.nowOnAir!
     await gameContext.step()
     screenshot('live.broadcaster.on-air.png')
-    await waitFor(live.onEnd)
+    await waitFor(broadcaster.onLiveEnd)
     expect(broadcaster.status).toBe('staying-in-spot')
     expect(broadcaster.view.visible()).toBeTruthy()
     expect(logger).toHaveBeenCalledWith('end 1th live')
@@ -151,13 +135,6 @@ describe('screen', () => {
     expect(screen.nowOnAir).not.toBeDefined()
     expect(broadcaster.status).toBe('staying-in-spot')
     expect(broadcaster.view.visible()).toBeTruthy()
-  })
-
-  it('放送開始前にonEnd.fireしても無視', () => {
-    const spot: Spot = sb.liveClass(FlyingLive).build()
-    screen.addSpot(spot)
-    spot.deployOn(field)
-    expect(() => broadcaster.jumpTo(spot)).not.toThrow()
   })
 
   it('同じクラスインスタンスなら二重登録しても無視', () => {

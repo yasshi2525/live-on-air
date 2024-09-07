@@ -98,13 +98,12 @@ export class ScreenImpl implements Screen {
     }
     const live = new (broadcaster.staying.liveClass!)()
     this._now = live
-    live.onEnd.addOnce(() => {
+    broadcaster.goToLive(live)
+    live.start(context, () => {
       this._now = undefined
       liveContainer.destroy()
       broadcaster.backFromLive()
     })
-    broadcaster.goToLive(live)
-    live.start(context)
   }
 
   get container (): g.E | undefined {
