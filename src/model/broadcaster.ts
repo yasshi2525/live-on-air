@@ -220,7 +220,7 @@ export class BroadcasterImpl implements Broadcaster {
     this._destination = undefined
     this._staying = spot
 
-    this._view.hide()
+    this.onEnter.fire(spot)
     spot.screen.startLive(this)
   }
 

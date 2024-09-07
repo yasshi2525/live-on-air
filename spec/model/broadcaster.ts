@@ -169,9 +169,12 @@ describe('Broadcaster', () => {
   })
 
   it('指定した位置に即時移動できる', () => {
+    let goal: Spot | undefined
     const broadcaster = new BroadcasterBuilder(scene).build()
+    broadcaster.onEnter.add(s => { goal = s })
     broadcaster.standOn(field1)
     broadcaster.jumpTo(spot1)
+    expect(goal).toBe(spot1)
     expect(broadcaster.staying).toBe(spot1)
     expect(broadcaster.location).toEqual(spot1.location)
     expect(broadcaster.status).toBe('on-air')
