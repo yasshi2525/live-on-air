@@ -123,13 +123,14 @@ describe('field', () => {
   it('先にg.Eを登録してからspot,broadcasterを登録しても描画される', async () => {
     const field: Field = new FieldBuilder().build()
     field.container = layer1
+    field.addBroadcaster(broadcaster)
     field.addSpot(spot1)
     field.addSpot(spot2)
-    field.addBroadcaster(broadcaster)
     expect(spot1.view.parent).toBe(layer1)
     expect(spot2.view.parent).toBe(layer1)
     expect(broadcaster.view.parent).toBe(layer1)
     expect(field.area).toEqual({ x: 10, y: 10, width: 500, height: 300 })
+    expect(layer1.children?.slice(1)).toEqual([spot1.view, spot2.view, broadcaster.view])
     await gameContext.step()
     screenshot('field.view.register.png')
   })

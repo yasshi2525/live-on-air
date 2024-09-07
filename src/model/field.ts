@@ -102,7 +102,7 @@ export class FieldImpl implements Field {
 
     this._spots.add(spot)
     if (this._container) {
-      this._container.append(spot.view)
+      this._container.insertBefore(spot.view, this._broadcaster?.view)
     }
 
     if (!spot.field) {
