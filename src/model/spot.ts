@@ -138,7 +138,7 @@ export class SpotImpl implements Spot {
     private readonly _location: g.CommonOffset,
     private readonly _liveClass: new () => Live
   ) {
-    this._view = new g.Sprite({ scene, src: assets.normal, ..._location })
+    this._view = new g.Sprite({ scene, src: assets.normal, x: _location.x, y: _location.y })
   }
 
   deployOn (field: Field): void {
@@ -248,7 +248,7 @@ export class SpotImpl implements Spot {
 
   get location (): Readonly<g.CommonOffset> | undefined {
     if (this._field) {
-      return { ...this._location }
+      return { x: this._location.x, y: this._location.y }
     }
     return undefined
   }

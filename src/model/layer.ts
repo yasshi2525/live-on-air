@@ -35,6 +35,13 @@ export class LayerImpl implements Layer {
   }
 
   private createEntity (typ: LayerType) {
-    return new g.E({ scene: this.scene, parent: this.scene, ...this.config[typ] })
+    return new g.E({
+      scene: this.scene,
+      parent: this.scene,
+      x: this.config[typ].x,
+      y: this.config[typ].y,
+      width: this.config[typ].width,
+      height: this.config[typ].height
+    })
   }
 }
