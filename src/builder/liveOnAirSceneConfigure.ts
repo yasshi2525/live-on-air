@@ -2,22 +2,22 @@ import { LayerConfig, LayerConfigSupplier } from '../value/layerConfig'
 import { BroadcasterConfig, BroadcasterConfigSupplier } from '../value/broadcasterConfig'
 import { SpotConfig, SpotConfigSupplier } from '../value/spotConfig'
 import { FieldConfigSupplier } from '../value/fieldConfig'
-import { Scene, SceneImpl } from '../model/scene'
+import { LiveOnAirScene, LiveOnAirSceneImpl } from '../model/liveOnAirScene'
 import { ScreenConfigSupplier } from '../value/screenConfig'
 
 /**
- * {@link Scene} を新規作成する際の各種設定を格納します.
+ * {@link LiveOnAirScene} を新規作成する際の各種設定を格納します.
  */
-export interface SceneConfigure {
+export interface LiveOnAirSceneConfigure {
   /**
-   * Scene 上に配置される各レイヤーの領域値を設定します.
+   * g.Scene 上に配置される各レイヤーの領域値を設定します.
    *
    * @param config 設定されている各レイヤーについての領域の位置・大きさ
    */
-  layer(config: Partial<LayerConfig>): SceneConfigure
+  layer(config: Partial<LayerConfig>): LiveOnAirSceneConfigure
 
   /**
-   * Scene 上に配置される各レイヤーの領域値を取得します.
+   * g.Scene 上に配置される各レイヤーの領域値を取得します.
    *
    */
   layer(): Readonly<LayerConfig>
@@ -27,7 +27,7 @@ export interface SceneConfigure {
    *
    * @param config Field の設定値
    */
-  field(config: object): SceneConfigure
+  field(config: object): LiveOnAirSceneConfigure
 
   /**
    * マップ ({@link Field}) の属性情報を取得します.
@@ -39,7 +39,7 @@ export interface SceneConfigure {
    *
    * @param config Broadcaster の設定値
    */
-  broadcaster(config: Partial<BroadcasterConfig>): SceneConfigure
+  broadcaster(config: Partial<BroadcasterConfig>): LiveOnAirSceneConfigure
 
   /**
    * 作成する {@link Broadcaster} の属性情報を取得します.
@@ -51,7 +51,7 @@ export interface SceneConfigure {
    *
    * @param config Field の設定値
    */
-  screen(config: object): SceneConfigure
+  screen(config: object): LiveOnAirSceneConfigure
 
   /**
    * 生放送の画面 ({@link Screen}) の属性情報を取得します.
@@ -63,7 +63,7 @@ export interface SceneConfigure {
    *
    * @param config Spot の設定値
    */
-  spot(config: Partial<SpotConfig>): SceneConfigure
+  spot(config: Partial<SpotConfig>): LiveOnAirSceneConfigure
 
   /**
    * 作成する {@link Spot} の属性情報を取得します.
@@ -71,12 +71,12 @@ export interface SceneConfigure {
   spot(): readonly SpotConfig[]
 
   /**
-   * 指定された設定で {@link Scene} を作成します.
+   * 指定された設定で {@link LiveOnAirScene} を作成します.
    */
-  build (): Scene & g.Scene
+  build (): LiveOnAirScene & g.Scene
 }
 
-export interface SceneConfigSupplierOptions {
+export interface LiveOnAirSceneConfigSupplierOptions {
   game: g.Game
   layer: LayerConfigSupplier
   field: FieldConfigSupplier
@@ -86,7 +86,7 @@ export interface SceneConfigSupplierOptions {
   isDefault: boolean
 }
 
-export class SceneConfigureImpl implements SceneConfigure {
+export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
   private readonly isDefault: boolean
   private readonly game: g.Game
   private readonly spotConfig: SpotConfigSupplier
@@ -103,7 +103,7 @@ export class SceneConfigureImpl implements SceneConfigure {
   private readonly broadcasterSetter: (obj: Partial<BroadcasterConfig>) => void
   private readonly screenSetter: (obj: object) => void
 
-  constructor ({ game, layer, field, broadcaster, screen, spot, isDefault }: SceneConfigSupplierOptions) {
+  constructor ({ game, layer, field, broadcaster, screen, spot, isDefault }: LiveOnAirSceneConfigSupplierOptions) {
     this.isDefault = isDefault
     this.game = game
     this.spotConfig = spot
@@ -120,11 +120,11 @@ export class SceneConfigureImpl implements SceneConfigure {
     this.screenSetter = obj => isDefault ? screen.defaultIf(obj) : screen.setIf(obj)
   }
 
-  layer (config: Partial<LayerConfig>): SceneConfigure
+  layer (config: Partial<LayerConfig>): LiveOnAirSceneConfigure
 
   layer (): Readonly<LayerConfig>
 
-  layer (args?: Partial<LayerConfig>): SceneConfigure | Readonly<LayerConfig> {
+  layer (args?: Partial<LayerConfig>): LiveOnAirSceneConfigure | Readonly<LayerConfig> {
     if (args) {
       this.layerSetter(args)
       return this
@@ -132,11 +132,11 @@ export class SceneConfigureImpl implements SceneConfigure {
     return this.layerGetter()
   }
 
-  field (config: object): SceneConfigure
+  field (config: object): LiveOnAirSceneConfigure
 
   field (): Readonly<object>
 
-  field (args?: object): SceneConfigure | Readonly<object> {
+  field (args?: object): LiveOnAirSceneConfigure | Readonly<object> {
     if (args) {
       this.fieldSetter(args)
       return this
@@ -144,11 +144,11 @@ export class SceneConfigureImpl implements SceneConfigure {
     return this.fieldGetter()
   }
 
-  broadcaster (config: Partial<BroadcasterConfig>): SceneConfigure
+  broadcaster (config: Partial<BroadcasterConfig>): LiveOnAirSceneConfigure
 
   broadcaster (): Readonly<BroadcasterConfig>
 
-  broadcaster (args?: Partial<BroadcasterConfig>): SceneConfigure | Readonly<BroadcasterConfig> {
+  broadcaster (args?: Partial<BroadcasterConfig>): LiveOnAirSceneConfigure | Readonly<BroadcasterConfig> {
     if (args) {
       this.broadcasterSetter(args)
       return this
@@ -156,11 +156,11 @@ export class SceneConfigureImpl implements SceneConfigure {
     return this.broadcasterGetter()
   }
 
-  screen (config: object): SceneConfigure
+  screen (config: object): LiveOnAirSceneConfigure
 
   screen (): Readonly<object>
 
-  screen (args?: object): SceneConfigure | Readonly<object> {
+  screen (args?: object): LiveOnAirSceneConfigure | Readonly<object> {
     if (args) {
       this.screenSetter(args)
       return this
@@ -168,11 +168,11 @@ export class SceneConfigureImpl implements SceneConfigure {
     return this.screenGetter()
   }
 
-  spot (config: Partial<SpotConfig>): SceneConfigure
+  spot (config: Partial<SpotConfig>): LiveOnAirSceneConfigure
 
   spot (): readonly SpotConfig[]
 
-  spot (args?: Partial<SpotConfig>): SceneConfigure | readonly SpotConfig[] {
+  spot (args?: Partial<SpotConfig>): LiveOnAirSceneConfigure | readonly SpotConfig[] {
     if (args) {
       if (!this.isDefault) {
         const spotConfig = new SpotConfigSupplier(this.spotConfig.default())
@@ -186,7 +186,7 @@ export class SceneConfigureImpl implements SceneConfigure {
     return this.isDefault ? [this.spotConfig.default()] : [...this.spotConfigs.map(config => config.get())]
   }
 
-  build (): Scene & g.Scene {
-    return new SceneImpl({ game: this.game, layer: this.layer(), broadcaster: this.broadcaster(), spots: this.spot() })
+  build (): LiveOnAirScene & g.Scene {
+    return new LiveOnAirSceneImpl({ game: this.game, layer: this.layer(), broadcaster: this.broadcaster(), spots: this.spot() })
   }
 }

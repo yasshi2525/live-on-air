@@ -15,7 +15,7 @@ import { ScreenBuilder } from '../builder/screenBuilder'
 /**
  * 本ゲームが動作する g.Scene が持つゲーム情報を格納したパラメタ一覧です.
  */
-export interface Scene{
+export interface LiveOnAirScene {
   /**
    * レイアウト情報.
    */
@@ -38,7 +38,7 @@ export interface Scene{
   readonly spots: Spot[]
 }
 
-export class SceneImpl extends g.Scene implements Scene {
+export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
   private context: { loaded: false } | { loaded: true, layer: Layer, field: Field, broadcaster: Broadcaster, screen: Screen, spots: Set<Spot> }
 
   constructor (param: g.SceneParameterObject & { layer: LayerConfig, broadcaster: BroadcasterConfig, spots: readonly SpotConfig[] }) {

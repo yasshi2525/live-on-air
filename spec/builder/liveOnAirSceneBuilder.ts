@@ -1,13 +1,13 @@
-import { SceneBuilder, SceneConfigure, SpotAssetRecord, SpotAssetType } from '../../src'
-import { SceneImpl } from '../../src/model/scene'
+import { LiveOnAirSceneBuilder, LiveOnAirSceneConfigure, SpotAssetRecord, SpotAssetType } from '../../src'
+import { LiveOnAirSceneImpl } from '../../src/model/liveOnAirScene'
 
-describe('sceneBuilder', () => {
-  let _default: SceneConfigure
+describe('liveOnAirSceneBuilder', () => {
+  let _default: LiveOnAirSceneConfigure
   let spotAssets: SpotAssetRecord
   let matchSpotAssets: Record<SpotAssetType, { path: string }>
 
   beforeEach(() => {
-    _default = SceneBuilder.getDefault(g.game)
+    _default = LiveOnAirSceneBuilder.getDefault(g.game)
     spotAssets = {
       locked: scene.asset.getImageById('spot.default.locked'),
       unvisited: scene.asset.getImageById('spot.default.unvisited'),
@@ -23,7 +23,7 @@ describe('sceneBuilder', () => {
   })
 
   afterEach(async () => {
-    if (g.game.scene() instanceof SceneImpl) {
+    if (g.game.scene() instanceof LiveOnAirSceneImpl) {
       g.game.popScene()
       await gameContext.step()
     }
@@ -73,7 +73,7 @@ describe('sceneBuilder', () => {
     expect(_default.broadcaster()).toMatchObject({ x: 300, y: 400, speed: 2, asset: { path: './image/broadcaster.default.png' } })
     expect(_default.screen()).toEqual({})
     expect(_default.spot()).toMatchObject([{ x: 500, y: 600, ...matchSpotAssets }])
-    const sb = new SceneBuilder(g.game)
+    const sb = new LiveOnAirSceneBuilder(g.game)
     expect(sb.layer()).toEqual({
       field: { x: 150, y: 200, width: 1000, height: 800 },
       screen: { x: 250, y: 300, width: 1500, height: 1800 }
@@ -84,7 +84,7 @@ describe('sceneBuilder', () => {
     expect(sb.spot()).toHaveLength(0)
   })
   it('すべて未指定で定義した構成要素を参照できる', async () => {
-    const sb = new SceneBuilder(g.game)
+    const sb = new LiveOnAirSceneBuilder(g.game)
       .layer({})
       .field({})
       .screen({})
@@ -114,7 +114,7 @@ describe('sceneBuilder', () => {
     screenshot('scene.default.png')
   })
   it('定義したカスタム構成要素（すべて指定）を参照できる', async () => {
-    const sb = new SceneBuilder(g.game)
+    const sb = new LiveOnAirSceneBuilder(g.game)
       .layer({
         field: { x: 150, y: 200, width: 1000, height: 800 },
         screen: { x: 250, y: 300, width: 1200, height: 500 }
@@ -145,7 +145,7 @@ describe('sceneBuilder', () => {
     screenshot('scene.custom.png')
   })
   it('一度定義したカスタム構成要素を更新できる', () => {
-    const sb = new SceneBuilder(g.game)
+    const sb = new LiveOnAirSceneBuilder(g.game)
       .layer({
         field: { x: 150, y: 200, width: 1000, height: 800 },
         screen: { x: 250, y: 300, width: 1500, height: 1800 }
@@ -163,7 +163,7 @@ describe('sceneBuilder', () => {
     expect(sb.broadcaster()).toMatchObject({ x: 300, y: 400 })
   })
   it('無効な値は設定できない', () => {
-    const sb = new SceneBuilder(g.game)
+    const sb = new LiveOnAirSceneBuilder(g.game)
     expect(() => _default.broadcaster({ speed: -1 })).toThrow()
     expect(_default.broadcaster().speed).toBe(1)
     expect(() => sb.broadcaster({ speed: -1 })).toThrow()

@@ -1,8 +1,8 @@
-import { SceneBuilder } from '../../src'
+import { LiveOnAirSceneBuilder } from '../../src'
 
-describe('Scene', () => {
+describe('LiveOnAirScene', () => {
   it('load 前は 要素にアクセスできない', () => {
-    const scene = new SceneBuilder(g.game).build()
+    const scene = new LiveOnAirSceneBuilder(g.game).build()
     expect(() => scene.layer).toThrow()
     expect(() => scene.field).toThrow()
     expect(() => scene.broadcaster).toThrow()

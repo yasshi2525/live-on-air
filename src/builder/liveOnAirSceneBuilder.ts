@@ -1,4 +1,4 @@
-import { SceneConfigSupplierOptions, SceneConfigure, SceneConfigureImpl } from './sceneConfigure'
+import { LiveOnAirSceneConfigSupplierOptions, LiveOnAirSceneConfigure, LiveOnAirSceneConfigureImpl } from './liveOnAirSceneConfigure'
 import { image } from '../util/loader'
 import { BroadcasterConfigSupplier } from '../value/broadcasterConfig'
 import { LayerConfigSupplier } from '../value/layerConfig'
@@ -10,13 +10,13 @@ import { SampleLive } from '../model/live'
 /**
  * ゲームが動作する g.Scene を簡便に作るためのクラス.
  */
-export class SceneBuilder extends SceneConfigureImpl {
+export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
   private static lastUsedScene?: g.Scene
-  private static defaultConfig?: Omit<SceneConfigSupplierOptions, 'isDefault'>
-  private static defaultConfigure?: SceneConfigure
+  private static defaultConfig?: Omit<LiveOnAirSceneConfigSupplierOptions, 'isDefault'>
+  private static defaultConfigure?: LiveOnAirSceneConfigure
 
   constructor (game: g.Game) {
-    super({ isDefault: false, ...SceneBuilder.getDefaultConfig(game) })
+    super({ isDefault: false, ...LiveOnAirSceneBuilder.getDefaultConfig(game) })
   }
 
   /**
@@ -24,22 +24,22 @@ export class SceneBuilder extends SceneConfigureImpl {
    *
    * @param game g.game を指定してください.
    */
-  static getDefault (game: g.Game): SceneConfigure {
-    if (SceneBuilder.lastUsedScene !== game.scene()) {
-      SceneBuilder.resetDefault()
+  static getDefault (game: g.Game): LiveOnAirSceneConfigure {
+    if (LiveOnAirSceneBuilder.lastUsedScene !== game.scene()) {
+      LiveOnAirSceneBuilder.resetDefault()
     }
-    if (!SceneBuilder.defaultConfigure) {
-      SceneBuilder.defaultConfigure = new SceneConfigureImpl({ isDefault: true, ...SceneBuilder.getDefaultConfig(game) })
+    if (!LiveOnAirSceneBuilder.defaultConfigure) {
+      LiveOnAirSceneBuilder.defaultConfigure = new LiveOnAirSceneConfigureImpl({ isDefault: true, ...LiveOnAirSceneBuilder.getDefaultConfig(game) })
     }
     this.lastUsedScene = game.scene()
-    return SceneBuilder.defaultConfigure
+    return LiveOnAirSceneBuilder.defaultConfigure
   }
 
-  private static getDefaultConfig (game: g.Game): Omit<SceneConfigSupplierOptions, 'isDefault'> {
-    if (SceneBuilder.lastUsedScene !== game.scene()) {
-      SceneBuilder.resetDefault()
+  private static getDefaultConfig (game: g.Game): Omit<LiveOnAirSceneConfigSupplierOptions, 'isDefault'> {
+    if (LiveOnAirSceneBuilder.lastUsedScene !== game.scene()) {
+      LiveOnAirSceneBuilder.resetDefault()
     }
-    if (!SceneBuilder.defaultConfig) {
+    if (!LiveOnAirSceneBuilder.defaultConfig) {
       const layer = new LayerConfigSupplier({
         field: { x: 100, y: 100, width: game.width - 200, height: game.height - 200 },
         screen: { x: 100, y: 100, width: game.width - 200, height: game.height - 200 }
@@ -58,10 +58,10 @@ export class SceneBuilder extends SceneConfigureImpl {
         normal: image(game.scene()!, 'image/spot.default.normal.png'),
         liveClass: SampleLive
       })
-      SceneBuilder.defaultConfig = { game, layer, field, broadcaster, screen, spot }
+      LiveOnAirSceneBuilder.defaultConfig = { game, layer, field, broadcaster, screen, spot }
     }
     this.lastUsedScene = game.scene()
-    return SceneBuilder.defaultConfig
+    return LiveOnAirSceneBuilder.defaultConfig
   }
 
   /**
@@ -69,7 +69,7 @@ export class SceneBuilder extends SceneConfigureImpl {
    * @internal
    */
   private static resetDefault () {
-    delete SceneBuilder.defaultConfig
-    delete SceneBuilder.defaultConfigure
+    delete LiveOnAirSceneBuilder.defaultConfig
+    delete LiveOnAirSceneBuilder.defaultConfigure
   }
 }
