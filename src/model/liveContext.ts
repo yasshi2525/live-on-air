@@ -28,4 +28,8 @@ export interface LiveContext {
    * プレイヤー
    */
   readonly player: Player
+  /**
+   * ライブラリ利用者が自由に使えるフィールドです.
+   */
+  vars?: unknown
 }

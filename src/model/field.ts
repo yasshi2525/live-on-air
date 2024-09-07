@@ -32,6 +32,11 @@ export interface Field {
   readonly spots: readonly Spot[]
 
   /**
+   * ライブラリ利用者が自由に使えるフィールドです.
+   */
+  vars?: unknown
+
+  /**
    * 指定した Player をマップに配置します
    *
    * 配置すると Player ーはマップ上を移動可能になります.
@@ -64,6 +69,7 @@ export interface Field {
 }
 
 export class FieldImpl implements Field {
+  vars?: unknown
   private _view?: g.E
   private readonly _spots: Set<Spot> = new Set<Spot>()
   private _player?: Player

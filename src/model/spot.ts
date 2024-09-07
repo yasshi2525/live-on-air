@@ -51,6 +51,11 @@ export interface Spot {
   readonly status: SpotStatus
 
   /**
+   * ライブラリ利用者が自由に使えるフィールドです.
+   */
+  vars?: unknown
+
+  /**
    * 過去にプレイヤーが訪問したかどうか取得します.
    */
   readonly visited: boolean
@@ -118,6 +123,8 @@ export interface Spot {
 }
 
 export class SpotImpl implements Spot {
+  vars?: unknown
+
   private readonly _view: g.Sprite
   private _field?: Field
   private _status: SpotStatus = 'non-deployed'

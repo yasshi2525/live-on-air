@@ -275,4 +275,11 @@ describe('Player', () => {
     await waitFor(player.onLiveEnd)
     expect(() => player.backFromLive()).toThrow()
   })
+
+  it('自由に値を追加・参照できる', () => {
+    const player = new PlayerBuilder(scene).build()
+    expect(player.vars).not.toBeDefined()
+    player.vars = 'Hello'
+    expect(player.vars).toBe('Hello')
+  })
 })

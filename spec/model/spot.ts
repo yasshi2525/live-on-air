@@ -215,4 +215,11 @@ describe('Spot', () => {
     expect(() => spot.markAsVisited()).toThrow()
     expect(spot.visited).toBeFalsy()
   })
+
+  it('自由に値を追加・参照できる', () => {
+    const spot = sb.build()
+    expect(spot.vars).not.toBeDefined()
+    spot.vars = 'Hello'
+    expect(spot.vars).toBe('Hello')
+  })
 })

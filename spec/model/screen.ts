@@ -16,6 +16,7 @@ import { waitFor } from '../__helper'
 const logger = jest.spyOn(console, 'log').mockImplementation()
 
 class SimpleLive implements Live {
+  vars?: unknown
   readonly onEnd = new g.Trigger()
 
   static numOfLive = 0
@@ -221,5 +222,47 @@ describe('screen', () => {
     expect(screen2.area).not.toBeDefined()
     await gameContext.step()
     screenshot('screen.view.clear.png')
+  })
+
+  it('自由に値を追加・参照できる', () => {
+    expect(screen.vars).not.toBeDefined()
+    screen.vars = 'Hello'
+    expect(screen.vars).toBe('Hello')
+  })
+
+  it('liveに自由に値を追加・参照できる', () => {
+    const spot: Spot = sb.liveClass(SimpleLive).build()
+    screen.addSpot(spot)
+    spot.deployOn(field)
+    player.jumpTo(spot)
+    const live = player.live!
+    expect(live.vars).not.toBeDefined()
+    live.vars = 'Hello'
+    expect(live.vars).toBe('Hello')
+  })
+
+  it('vars のないliveでも自由に値を追加・参照できる', () => {
+    const spot: Spot = sb.liveClass(LiveNoConstructor).build()
+    screen.addSpot(spot)
+    spot.deployOn(field)
+    player.jumpTo(spot)
+    const live = player.live!
+    expect(live.vars).not.toBeDefined()
+    live.vars = 'Hello'
+    expect(live.vars).toBe('Hello')
+  })
+
+  it('liveContextでも自由に値を追加・参照できる', () => {
+    const spot: Spot = sb.liveClass(class implements Live {
+      readonly onEnd = new g.Trigger()
+      start (context: LiveContext) {
+        expect(context.vars).not.toBeDefined()
+        context.vars = 'Hello'
+        expect(context.vars).toBe('Hello')
+      }
+    }).build()
+    screen.addSpot(spot)
+    spot.deployOn(field)
+    player.jumpTo(spot)
   })
 })

@@ -32,6 +32,11 @@ export interface Screen {
   view?: g.E
 
   /**
+   * ライブラリ利用者が自由に使えるフィールドです.
+   */
+  vars?: unknown
+
+  /**
    * Spot を登録します.
    *
    * @param spot 訪問時に生放送を開始するスポット
@@ -54,6 +59,7 @@ export interface Screen {
 }
 
 export class ScreenImpl implements Screen {
+  vars?: unknown
   private container?: g.E
   private readonly _view: g.E
   private _now?: Live
@@ -87,7 +93,8 @@ export class ScreenImpl implements Screen {
       screen: this,
       spot: player.staying,
       player,
-      view: liveContainer
+      view: liveContainer,
+      vars: undefined
     }
     const live = new (player.staying.liveClass!)()
     this._now = live

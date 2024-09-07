@@ -84,6 +84,11 @@ export interface Player {
   readonly status: PlayerStatus
 
   /**
+   * ライブラリ利用者が自由に使えるフィールドです.
+   */
+  vars?: unknown
+
+  /**
    * 指定したマップ (Field) に登録し、マップの上を移動できるようにします.
    *
    * 本メソッドを実行するとプレイヤーが画面上に描画されるようになります.
@@ -162,6 +167,7 @@ export interface Player {
 export class PlayerImpl implements Player {
   readonly onEnter = new g.Trigger<Spot>()
   readonly onLiveEnd = new g.Trigger()
+  vars?: unknown
 
   private _field?: Field
   private readonly _view: g.E

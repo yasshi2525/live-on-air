@@ -19,6 +19,11 @@ export interface Live {
   readonly onEnd: g.Trigger
 
   /**
+   * ライブラリ利用者が自由に使えるフィールドです.
+   */
+  vars?: unknown
+
+  /**
    * 生放送が開始されると呼び出されます.
    *
    * 放送が終了した際は、必ず `this.onEnd.fire()` を呼び出してください.
@@ -29,6 +34,7 @@ export interface Live {
 }
 
 export class SampleLive implements Live {
+  vars?: unknown
   onEnd = new g.Trigger()
   start ({ scene, view } : LiveContext): void {
     const bg = new g.FilledRect({

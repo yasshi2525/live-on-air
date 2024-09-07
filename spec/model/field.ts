@@ -164,4 +164,11 @@ describe('field', () => {
     await gameContext.step()
     screenshot('field.view.remove.png')
   })
+
+  it('自由に値を追加・参照できる', () => {
+    const field = new FieldBuilder().build()
+    expect(field.vars).not.toBeDefined()
+    field.vars = 'Hello'
+    expect(field.vars).toBe('Hello')
+  })
 })
