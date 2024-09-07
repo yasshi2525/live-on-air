@@ -273,6 +273,15 @@ describe('Broadcaster', () => {
     expect(() => broadcaster.goToLive(new SampleLive())).toThrow()
   })
 
+  it('放送中は移動できない', () => {
+    const broadcaster = new BroadcasterBuilder(scene).build()
+    broadcaster.standOn(field1)
+    broadcaster.jumpTo(spot1)
+    spot2.enable()
+    expect(() => broadcaster.departTo(spot2)).toThrow()
+    expect(() => broadcaster.jumpTo(spot2)).toThrow()
+  })
+
   it('放送中でない場合、放送からの復帰に失敗する', async () => {
     const broadcaster = new BroadcasterBuilder(scene).build()
     broadcaster.standOn(field1)

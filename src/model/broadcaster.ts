@@ -208,8 +208,14 @@ export class BroadcasterImpl implements Broadcaster {
     if (this._destination) {
       throw new Error('broadcasterは現在移動中のためワープに失敗しました. broadcasterの移動を停止してください')
     }
+    if (spot.status === 'disabled') {
+      throw new Error('指定したspotが目的地として設定されることを禁止しているためワープに失敗しました. spotを訪問許可状態にしてください')
+    }
     if (!spot.screen) {
       throw new Error('screenが設定されていないspotに到達したため、生放送の開始に失敗しました. spotにscreenを設定してください')
+    }
+    if (this._live) {
+      throw new Error('生放送中のためワープに失敗しました. 生放送が終わってから実行してください')
     }
 
     this._view.x = spot.location.x
@@ -237,8 +243,14 @@ export class BroadcasterImpl implements Broadcaster {
     if (this._destination || this._tween) {
       throw new Error('broadcasterは現在移動中のため移動先の設定に失敗しました. broadcasterの移動を停止してください')
     }
+    if (spot.status === 'disabled') {
+      throw new Error('指定したspotが目的地として設定されることを禁止しているため移動先の設定に失敗しました. spotを訪問許可状態にしてください')
+    }
     if (!spot.screen) {
       throw new Error('screenが設定されていないため移動先の設定に失敗しました. spotにscreenを設定してください')
+    }
+    if (this._live) {
+      throw new Error('生放送中のため移動先の設定に失敗しました. 生放送が終わってから実行してください')
     }
 
     this._field.disableSpotExcept(spot)

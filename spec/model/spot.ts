@@ -54,10 +54,13 @@ describe('Spot', () => {
   it('訪問不可能にする', async () => {
     const spot = sb.build()
     spot.deployOn(field1)
+    spot.attach(screen)
     spot.disable()
     expect(spot.status).toBe('disabled')
     expect(spot.view).toBeInstanceOf(g.Sprite)
     expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toBe('./image/spot.default.disabled.png')
+    expect(() => broadcaster.departTo(spot)).toThrow()
+    expect(() => broadcaster.jumpTo(spot)).toThrow()
     await gameContext.step()
     screenshot('spot.disabled.png')
   })
