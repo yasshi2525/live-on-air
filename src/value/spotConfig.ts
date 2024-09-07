@@ -59,6 +59,8 @@ export interface SpotConfig {
    * 訪問時に始まる生放送.
    *
    * 生放送での処理を定義したクラス名を設定してください. インスタンスでない点にご留意ください.
+   *
+   * @return 生放送処理が定義されたクラス名
    */
   liveClass: new () => Live
 }

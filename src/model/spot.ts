@@ -69,6 +69,8 @@ export interface Spot {
 
   /**
    * 訪問時に開始する生放送を取得します.
+   *
+   * @return 生放送処理が定義されたクラス名
    */
   readonly liveClass: new () => Live
 
