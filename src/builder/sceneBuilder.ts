@@ -1,6 +1,6 @@
 import { SceneConfigSupplierOptions, SceneConfigure, SceneConfigureImpl } from './sceneConfigure'
 import { image } from '../util/loader'
-import { PlayerConfigSupplier } from '../value/playerConfig'
+import { BroadcasterConfigSupplier } from '../value/broadcasterConfig'
 import { LayerConfigSupplier } from '../value/layerConfig'
 import { SpotConfigSupplier } from '../value/spotConfig'
 import { FieldConfigSupplier } from '../value/fieldConfig'
@@ -45,8 +45,8 @@ export class SceneBuilder extends SceneConfigureImpl {
         screen: { x: 100, y: 100, width: game.width - 200, height: game.height - 200 }
       })
       const field = new FieldConfigSupplier({})
-      const player = new PlayerConfigSupplier({
-        x: 0, y: 0, speed: 1, asset: image(game, 'image/player.default.png')
+      const broadcaster = new BroadcasterConfigSupplier({
+        x: 0, y: 0, speed: 1, asset: image(game, 'image/broadcaster.default.png')
       })
       const screen = new ScreenConfigSupplier({})
       const spot = new SpotConfigSupplier({
@@ -58,7 +58,7 @@ export class SceneBuilder extends SceneConfigureImpl {
         normal: image(game.scene()!, 'image/spot.default.normal.png'),
         liveClass: SampleLive
       })
-      SceneBuilder.defaultConfig = { game, layer, field, player, screen, spot }
+      SceneBuilder.defaultConfig = { game, layer, field, broadcaster, screen, spot }
     }
     this.lastUsedScene = game.scene()
     return SceneBuilder.defaultConfig

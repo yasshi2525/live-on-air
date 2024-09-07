@@ -9,7 +9,7 @@ export interface Layer {
   /**
    * マップ層.
    *
-   * {@link Spot}, {@link Player} を配置するためのレイヤ.
+   * {@link Spot}, {@link Broadcaster} を配置するためのレイヤ.
    */
   readonly field: g.E
   /**

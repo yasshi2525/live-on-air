@@ -1,8 +1,8 @@
 import { Spot } from './spot'
-import { Player } from './player'
+import { Broadcaster } from './broadcaster'
 
 /**
- * プレイヤー ({@link Player}) とスポット ({@link Spot}) が配置され、ゲームがプレイされる舞台.
+ * 放送者（プレイヤー） ({@link Broadcaster}) とスポット ({@link Spot}) が配置され、ゲームがプレイされる舞台.
  *
  * {@link FieldBuilder} を使ってインスタンスを作成してください.
  */
@@ -15,16 +15,16 @@ export interface Field {
   readonly area?: Readonly<g.CommonArea>
 
   /**
-   * Player, Spot を描画するエンティティ.
+   * Broadcaster, Spot を描画するエンティティ.
    *
-   * 登録されている Player, Spot は本エンティティの子として描画されます
+   * 登録されている Broadcaster, Spot は本エンティティの子として描画されます
    */
   view?: g.E
 
   /**
-   * マップ上に存在する Player を取得します
+   * マップ上に存在する Broadcaster を取得します
    */
-  readonly player?: Player
+  readonly broadcaster?: Broadcaster
 
   /**
    * マップ上に存在する Spot 一覧を取得します
@@ -37,33 +37,33 @@ export interface Field {
   vars?: unknown
 
   /**
-   * 指定した Player をマップに配置します
+   * 指定した Broadcaster をマップに配置します
    *
-   * 配置すると Player ーはマップ上を移動可能になります.
-   * プレイヤーは一人のみ配置可能です.
+   * 配置すると Broadcaster ーはマップ上を移動可能になります.
+   * 放送者（プレイヤー）は一人のみ配置可能です.
    *
-   * @param player 配置する Player
+   * @param broadcaster 配置する Broadcaster
    */
-  addPlayer(player: Player): void
+  addBroadcaster(broadcaster: Broadcaster): void
 
   /**
    * 指定した Spot をマップに配置します.
    *
-   * 配置すると Player は Spot を目的地として選択できるようになります.
+   * 配置すると Broadcaster は Spot を目的地として選択できるようになります.
    *
    * @param spot 配置する Spot
    */
   addSpot(spot: Spot): void
 
   /**
-   * 指定した Spot 以外を Player が目的地に選択できないようにします.
+   * 指定した Spot 以外を Broadcaster が目的地に選択できないようにします.
    *
    * @param spot 目的地に設定する Spot
    */
   disableSpotExcept(spot: Spot): void
 
   /**
-   * 指定した Spot 以外を Player が目的地として選択できるようにします.
+   * 指定した Spot 以外を Broadcaster が目的地として選択できるようにします.
    */
   enableSpotExcept(spot: Spot): void
 }
@@ -72,25 +72,25 @@ export class FieldImpl implements Field {
   vars?: unknown
   private _view?: g.E
   private readonly _spots: Set<Spot> = new Set<Spot>()
-  private _player?: Player
+  private _broadcaster?: Broadcaster
 
-  addPlayer (player: Player): void {
-    if (this._player && this._player !== player) {
-      throw new Error('このfieldにはすでに異なるplayerが配置されているので、指定のplayerを配置できません.' +
-        ' playerはただ一人である必要があり、fieldには複数のplayerを配置できません')
+  addBroadcaster (broadcaster: Broadcaster): void {
+    if (this._broadcaster && this._broadcaster !== broadcaster) {
+      throw new Error('このfieldにはすでに異なるbroadcasterが配置されているので、指定のbroadcasterを配置できません.' +
+        ' broadcasterはただ一人である必要があり、fieldには複数のbroadcasterを配置できません')
     }
-    if (player.field && player.field !== this) {
-      throw new Error('指定のplayerはすでに異なるfieldに配置されているので、このfieldに配置できません.' +
-        ' playerはただ一人である必要があり、playerは複数のfieldに配置できません')
+    if (broadcaster.field && broadcaster.field !== this) {
+      throw new Error('指定のbroadcasterはすでに異なるfieldに配置されているので、このfieldに配置できません.' +
+        ' broadcasterはただ一人である必要があり、broadcasterは複数のfieldに配置できません')
     }
 
-    this._player = player
+    this._broadcaster = broadcaster
     if (this._view) {
-      this._view.append(player.view)
+      this._view.append(broadcaster.view)
     }
 
-    if (!player.field) {
-      player.standOn(this)
+    if (!broadcaster.field) {
+      broadcaster.standOn(this)
     }
   }
 
@@ -135,11 +135,11 @@ export class FieldImpl implements Field {
         s.view.remove()
       }
     }
-    if (this._player) {
+    if (this._broadcaster) {
       if (this._view) {
-        this._view.append(this._player.view)
+        this._view.append(this._broadcaster.view)
       } else {
-        this._player.view.remove()
+        this._broadcaster.view.remove()
       }
     }
   }
@@ -155,8 +155,8 @@ export class FieldImpl implements Field {
       : undefined
   }
 
-  get player (): Player | undefined {
-    return this._player
+  get broadcaster (): Broadcaster | undefined {
+    return this._broadcaster
   }
 
   get spots (): readonly Spot[] {

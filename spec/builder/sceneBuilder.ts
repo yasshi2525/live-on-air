@@ -32,7 +32,7 @@ describe('sceneBuilder', () => {
     _default
       .layer({})
       .field({})
-      .player({})
+      .broadcaster({})
       .screen({})
       .spot({})
     expect(_default.layer()).toEqual({
@@ -40,7 +40,7 @@ describe('sceneBuilder', () => {
       screen: { x: 100, y: 100, width: 1080, height: 520 }
     })
     expect(_default.field()).toEqual({})
-    expect(_default.player()).toMatchObject({ x: 0, y: 0, speed: 1, asset: { path: './image/player.default.png' } })
+    expect(_default.broadcaster()).toMatchObject({ x: 0, y: 0, speed: 1, asset: { path: './image/broadcaster.default.png' } })
     expect(_default.screen()).toEqual({})
     expect(_default.spot()).toHaveLength(1)
     expect(_default.spot()[0]).toMatchObject({ x: 0, y: 0, ...matchSpotAssets })
@@ -51,7 +51,7 @@ describe('sceneBuilder', () => {
       screen: { x: 100, y: 100, width: 1080, height: 520 }
     })
     expect(_default.field()).toEqual({})
-    expect(_default.player()).toMatchObject({ x: 0, y: 0, speed: 1, asset: { path: './image/player.default.png' } })
+    expect(_default.broadcaster()).toMatchObject({ x: 0, y: 0, speed: 1, asset: { path: './image/broadcaster.default.png' } })
     expect(_default.screen()).toEqual({})
     expect(_default.spot()).toMatchObject([{ x: 0, y: 0, ...matchSpotAssets }])
   })
@@ -62,7 +62,7 @@ describe('sceneBuilder', () => {
         screen: { x: 250, y: 300, width: 1500, height: 1800 }
       })
       .field({})
-      .player({ x: 300, y: 400, speed: 2, asset: scene.asset.getImageById('player.default') })
+      .broadcaster({ x: 300, y: 400, speed: 2, asset: scene.asset.getImageById('broadcaster.default') })
       .screen({})
       .spot({ x: 500, y: 600, ...spotAssets })
     expect(_default.layer()).toEqual({
@@ -70,7 +70,7 @@ describe('sceneBuilder', () => {
       screen: { x: 250, y: 300, width: 1500, height: 1800 }
     })
     expect(_default.field()).toEqual({})
-    expect(_default.player()).toMatchObject({ x: 300, y: 400, speed: 2, asset: { path: './image/player.default.png' } })
+    expect(_default.broadcaster()).toMatchObject({ x: 300, y: 400, speed: 2, asset: { path: './image/broadcaster.default.png' } })
     expect(_default.screen()).toEqual({})
     expect(_default.spot()).toMatchObject([{ x: 500, y: 600, ...matchSpotAssets }])
     const sb = new SceneBuilder(g.game)
@@ -79,7 +79,7 @@ describe('sceneBuilder', () => {
       screen: { x: 250, y: 300, width: 1500, height: 1800 }
     })
     expect(sb.field()).toEqual({})
-    expect(sb.player()).toMatchObject({ x: 300, y: 400, speed: 2, asset: { path: './image/player.default.png' } })
+    expect(sb.broadcaster()).toMatchObject({ x: 300, y: 400, speed: 2, asset: { path: './image/broadcaster.default.png' } })
     expect(sb.screen()).toEqual({})
     expect(sb.spot()).toHaveLength(0)
   })
@@ -88,7 +88,7 @@ describe('sceneBuilder', () => {
       .layer({})
       .field({})
       .screen({})
-      .player({})
+      .broadcaster({})
       .spot({})
       .spot({})
     expect(sb.layer()).toEqual({
@@ -96,7 +96,7 @@ describe('sceneBuilder', () => {
       screen: { x: 100, y: 100, width: 1080, height: 520 }
     })
     expect(sb.field()).toEqual({})
-    expect(sb.player()).toMatchObject({ x: 0, y: 0, speed: 1, asset: { path: './image/player.default.png' } })
+    expect(sb.broadcaster()).toMatchObject({ x: 0, y: 0, speed: 1, asset: { path: './image/broadcaster.default.png' } })
     expect(sb.screen()).toEqual({})
     expect(sb.spot()).toMatchObject([{ x: 0, y: 0, ...matchSpotAssets }, { x: 0, y: 0, ...matchSpotAssets }])
     const s = sb.build()
@@ -104,7 +104,7 @@ describe('sceneBuilder', () => {
     await gameContext.step()
     expect(s.layer.field).toMatchObject({ x: 100, y: 100, width: 1080, height: 520 })
     expect(s.field.area).toEqual({ x: 100, y: 100, width: 1080, height: 520 })
-    expect(s.player.view).toMatchObject({ x: 0, y: 0, src: scene.asset.getImageById('player.default') })
+    expect(s.broadcaster.view).toMatchObject({ x: 0, y: 0, src: scene.asset.getImageById('broadcaster.default') })
     expect(s.screen.area).toEqual({ x: 100, y: 100, width: 1080, height: 520 })
     expect(s.spots).toHaveLength(2)
     expect(s.spots[0].location).toEqual({ x: 0, y: 0 })
@@ -120,7 +120,7 @@ describe('sceneBuilder', () => {
         screen: { x: 250, y: 300, width: 1200, height: 500 }
       })
       .field({})
-      .player({ x: 500, y: 600, speed: 2, asset: scene.asset.getImageById('player.default') })
+      .broadcaster({ x: 500, y: 600, speed: 2, asset: scene.asset.getImageById('broadcaster.default') })
       .screen({})
       .spot({ x: 700, y: 400, ...spotAssets })
     expect(sb.layer()).toEqual({
@@ -128,7 +128,7 @@ describe('sceneBuilder', () => {
       screen: { x: 250, y: 300, width: 1200, height: 500 }
     })
     expect(sb.field()).toEqual({})
-    expect(sb.player()).toMatchObject({ x: 500, y: 600, speed: 2, asset: { path: './image/player.default.png' } })
+    expect(sb.broadcaster()).toMatchObject({ x: 500, y: 600, speed: 2, asset: { path: './image/broadcaster.default.png' } })
     expect(sb.screen()).toEqual({})
     expect(sb.spot()).toMatchObject([{ x: 700, y: 400, ...matchSpotAssets }])
     const s = sb.build()
@@ -137,7 +137,7 @@ describe('sceneBuilder', () => {
     expect(s.layer.field).toMatchObject({ x: 150, y: 200, width: 1000, height: 800 })
     expect(s.layer.screen).toMatchObject({ x: 250, y: 300, width: 1200, height: 500 })
     expect(s.field.area).toEqual({ x: 150, y: 200, width: 1000, height: 800 })
-    expect(s.player.view).toMatchObject({ x: 500, y: 600, src: scene.asset.getImageById('player.default') })
+    expect(s.broadcaster.view).toMatchObject({ x: 500, y: 600, src: scene.asset.getImageById('broadcaster.default') })
     expect(s.screen.area).toEqual({ x: 250, y: 300, width: 1200, height: 500 })
     expect(s.spots).toHaveLength(1)
     expect(s.spots[0].location).toEqual({ x: 700, y: 400 })
@@ -154,19 +154,19 @@ describe('sceneBuilder', () => {
         field: { x: 300, y: 400, width: 500, height: 400 },
         screen: { x: 50, y: 100, width: 200, height: 300 }
       })
-      .player({ x: 100, y: 200 })
-      .player({ x: 300, y: 400 })
+      .broadcaster({ x: 100, y: 200 })
+      .broadcaster({ x: 300, y: 400 })
     expect(sb.layer()).toEqual({
       field: { x: 300, y: 400, width: 500, height: 400 },
       screen: { x: 50, y: 100, width: 200, height: 300 }
     })
-    expect(sb.player()).toMatchObject({ x: 300, y: 400 })
+    expect(sb.broadcaster()).toMatchObject({ x: 300, y: 400 })
   })
   it('無効な値は設定できない', () => {
     const sb = new SceneBuilder(g.game)
-    expect(() => _default.player({ speed: -1 })).toThrow()
-    expect(_default.player().speed).toBe(1)
-    expect(() => sb.player({ speed: -1 })).toThrow()
-    expect(sb.player().speed).toBe(1)
+    expect(() => _default.broadcaster({ speed: -1 })).toThrow()
+    expect(_default.broadcaster().speed).toBe(1)
+    expect(() => sb.broadcaster({ speed: -1 })).toThrow()
+    expect(sb.broadcaster().speed).toBe(1)
   })
 })

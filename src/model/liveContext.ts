@@ -1,5 +1,5 @@
 import { Spot } from './spot'
-import { Player } from './player'
+import { Broadcaster } from './broadcaster'
 import { Screen } from './screen'
 
 /**
@@ -25,9 +25,9 @@ export interface LiveContext {
    */
   readonly spot: Spot
   /**
-   * プレイヤー
+   * 放送者（プレイヤー）
    */
-  readonly player: Player
+  readonly broadcaster: Broadcaster
   /**
    * ライブラリ利用者が自由に使えるフィールドです.
    */

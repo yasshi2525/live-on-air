@@ -5,7 +5,7 @@ describe('Scene', () => {
     const scene = new SceneBuilder(g.game).build()
     expect(() => scene.layer).toThrow()
     expect(() => scene.field).toThrow()
-    expect(() => scene.player).toThrow()
+    expect(() => scene.broadcaster).toThrow()
     expect(() => scene.screen).toThrow()
     expect(() => scene.spots).toThrow()
   })

@@ -1,10 +1,10 @@
 import { Spot } from './spot'
 import { Live } from './live'
-import { Player } from './player'
+import { Broadcaster } from './broadcaster'
 import { LiveContext } from './liveContext'
 
 /**
- * {@link Player} が {@link Spot} を訪問すると開始される 生放送 ({@link Live}) を
+ * {@link Broadcaster} が {@link Spot} を訪問すると開始される 生放送 ({@link Live}) を
  * 画面に描画します.
  *
  * {@link ScreenBuilder} を使ってインスタンスを作成してください.
@@ -44,17 +44,17 @@ export interface Screen {
   addSpot (spot: Spot): void
 
   /**
-   * Player が Spot を訪問したため、登録された生放送を開始します.
+   * Broadcaster が Spot を訪問したため、登録された生放送を開始します.
    *
-   * Player は Spot に滞在している必要があります.
+   * Broadcaster は Spot に滞在している必要があります.
    *
    * 本メソッドは Spot 到着時に自動で呼び出されるため、
    * ライブラリ利用者が実行する必要はありません.
    *
-   * @param player Spot を訪問した Player
+   * @param broadcaster Spot を訪問した Broadcaster
    * @internal
    */
-  startLive (player: Player): void
+  startLive (broadcaster: Broadcaster): void
 
 }
 
@@ -75,11 +75,11 @@ export class ScreenImpl implements Screen {
     spot.attach(this)
   }
 
-  startLive (player: Player): void {
-    if (!player.staying) {
-      throw new Error('playerが放送準備ができていません. playerがspotに到着してから実行してください')
+  startLive (broadcaster: Broadcaster): void {
+    if (!broadcaster.staying) {
+      throw new Error('broadcasterが放送準備ができていません. broadcasterがspotに到着してから実行してください')
     }
-    if (player.live || this._now) {
+    if (broadcaster.live || this._now) {
       throw new Error('放送中にもかかわらず、新規放送を開始しようとしました. 放送終了後に実行してください')
     }
     const liveContainer = new g.E({
@@ -91,19 +91,19 @@ export class ScreenImpl implements Screen {
     const context: LiveContext = {
       scene: this.scene,
       screen: this,
-      spot: player.staying,
-      player,
+      spot: broadcaster.staying,
+      broadcaster,
       view: liveContainer,
       vars: undefined
     }
-    const live = new (player.staying.liveClass!)()
+    const live = new (broadcaster.staying.liveClass!)()
     this._now = live
     live.onEnd.addOnce(() => {
       this._now = undefined
       liveContainer.destroy()
-      player.backFromLive()
+      broadcaster.backFromLive()
     })
-    player.goToLive(live)
+    broadcaster.goToLive(live)
     live.start(context)
   }
 

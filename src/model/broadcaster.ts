@@ -3,7 +3,7 @@ import { Spot } from './spot'
 import { Easing, Timeline, Tween } from '@akashic-extension/akashic-timeline'
 import { Live } from './live'
 /**
- * プレイヤー ({@link Player}) の状態を表します.
+ * 放送者（プレイヤー） ({@link Broadcaster}) の状態を表します.
  *
  * "non-field": マップ上に配置されていない.
  *
@@ -15,15 +15,15 @@ import { Live } from './live'
  *
  * "on-air": スポットにて生放送中
  */
-export type PlayerStatus = 'non-field' | 'staying-in-spot' | 'moving' | 'stopping-on-ground' | 'on-air'
+export type BroadcasterStatus = 'non-field' | 'staying-in-spot' | 'moving' | 'stopping-on-ground' | 'on-air'
 
 /**
- * プレイヤー.
+ * 放送者（プレイヤー）.
  *
- * プレイヤーはマップの上 ({@link Field}) を移動でき、 {@link Spot} を訪問すると生放送します.
- * {@link PlayerBuilder} を使ってインスタンスを作成してください.
+ * 放送者（プレイヤー）はマップの上 ({@link Field}) を移動でき、 {@link Spot} を訪問すると生放送します.
+ * {@link BroadcasterBuilder} を使ってインスタンスを作成してください.
  */
-export interface Player {
+export interface Broadcaster {
   /**
    * Spot に到達した際発火されます. 引数には到達した Spot が格納されます.
    */
@@ -39,49 +39,49 @@ export interface Player {
    */
   speed: number
   /**
-   * プレイヤーの座標
+   * 放送者（プレイヤー）の座標
    *
    * マップ (Field) 上にいないときは undefined が返されます
    */
   readonly location?: Readonly<g.CommonOffset>
 
   /**
-   * 現在描画されているプレイヤーのエンティティ.
+   * 現在描画されている放送者（プレイヤー）のエンティティ.
    */
   readonly view: g.E
 
   /**
-   * プレイヤーが所属するマップ (Field).
+   * 放送者（プレイヤー）が所属するマップ (Field).
    *
    * マップ (Field) 上にいないときは undefined が返されます
    */
   readonly field?: Field
 
   /**
-   * プレイヤーが現在滞在中または生放送をしている Spot.
+   * 放送者（プレイヤー）が現在滞在中または生放送をしている Spot.
    *
    * 滞在中でない場合 undefined を返します.
    */
   readonly staying?: Spot
 
   /**
-   * プレイヤーが現在向かっている Spot.
+   * 放送者（プレイヤー）が現在向かっている Spot.
    *
    * 目的地がない場合、 undefined を返します
    */
   readonly destination?: Spot
 
   /**
-   * プレイヤーが現在している生放送.
+   * 放送者（プレイヤー）が現在している生放送.
    *
    * 生放送中でない場合、 undefined を返します
    */
   readonly live?: Live
 
   /**
-   * プレイヤーの現在の状態を取得します.
+   * 放送者（プレイヤー）の現在の状態を取得します.
    */
-  readonly status: PlayerStatus
+  readonly status: BroadcasterStatus
 
   /**
    * ライブラリ利用者が自由に使えるフィールドです.
@@ -91,7 +91,7 @@ export interface Player {
   /**
    * 指定したマップ (Field) に登録し、マップの上を移動できるようにします.
    *
-   * 本メソッドを実行するとプレイヤーが画面上に描画されるようになります.
+   * 本メソッドを実行すると放送者（プレイヤー）が画面上に描画されるようになります.
    *
    * @param field 登録先マップ
    */
@@ -101,8 +101,8 @@ export interface Player {
    * 指定した Spot の場所にワープします.
    *
    * 移動速度 {@link speed} の制約は受けず、移動は瞬間で完了します.
-   * プレイヤーはマップ (Field) を登録している必要があります.
-   * プレイヤーは移動中でない必要があります. 移動中の場合は停止させてください.
+   * 放送者（プレイヤー）はマップ (Field) を登録している必要があります.
+   * 放送者（プレイヤー）は移動中でない必要があります. 移動中の場合は停止させてください.
    *
    * @see standOn
    * @see stop
@@ -115,8 +115,8 @@ export interface Player {
    * 指定した Spot へ移動し始めます.
    *
    * 移動は 1フレームあたり {@link speed} の距離進みます.
-   * プレイヤーはマップ (Field) を登録している必要があります.
-   * プレイヤーは移動中でない必要があります. 移動中の場合は停止させてください.
+   * 放送者（プレイヤー）はマップ (Field) を登録している必要があります.
+   * 放送者（プレイヤー）は移動中でない必要があります. 移動中の場合は停止させてください.
    *
    * @see standOn
    * @see stop
@@ -129,8 +129,8 @@ export interface Player {
    * 移動中の場合、移動を中止します.
    *
    * 現在地で待機を開始します.
-   * プレイヤーはマップ (Field) を登録している必要があります.
-   * プレイヤーは移動中でない場合、実行に失敗します.
+   * 放送者（プレイヤー）はマップ (Field) を登録している必要があります.
+   * 放送者（プレイヤー）は移動中でない場合、実行に失敗します.
    *
    * @see standOn
    * @see destination
@@ -164,7 +164,7 @@ export interface Player {
   backFromLive(): void
 }
 
-export class PlayerImpl implements Player {
+export class BroadcasterImpl implements Broadcaster {
   readonly onEnter = new g.Trigger<Spot>()
   readonly onLiveEnd = new g.Trigger()
   vars?: unknown
@@ -173,7 +173,7 @@ export class PlayerImpl implements Player {
   private readonly _view: g.E
   private _staying?: Spot
   private _destination?: Spot
-  private _status: PlayerStatus = 'non-field'
+  private _status: BroadcasterStatus = 'non-field'
   private _tween?: Tween
   private _live?: Live
 
@@ -183,15 +183,15 @@ export class PlayerImpl implements Player {
 
   standOn (field: Field): void {
     if (this._field && this._field !== field) {
-      throw new Error('このplayerはすでに異なるfieldに配置されているので、指定のfieldに配置できません.' +
-        ' playerはただ一人である必要があり、fieldには複数のplayerを配置できません')
+      throw new Error('このbroadcasterはすでに異なるfieldに配置されているので、指定のfieldに配置できません.' +
+        ' broadcasterはただ一人である必要があり、fieldには複数のbroadcasterを配置できません')
     }
 
     this._field = field
     this._status = 'stopping-on-ground'
 
-    if (!field.player) {
-      field.addPlayer(this)
+    if (!field.broadcaster) {
+      field.addBroadcaster(this)
     }
   }
 
@@ -200,13 +200,13 @@ export class PlayerImpl implements Player {
       throw new Error('指定したspotがfieldに配置されていないためワープに失敗しました. spotをfieldに配置してください')
     }
     if (!this._field || !this.location) {
-      throw new Error('playerがfieldに配置されていないためワープに失敗しました. playerをfieldに配置してください')
+      throw new Error('broadcasterがfieldに配置されていないためワープに失敗しました. broadcasterをfieldに配置してください')
     }
     if (this._field !== spot.field) {
-      throw new Error('指定したspotがplayerと異なるfieldに配置されているためワープに失敗しました. 同じfieldに配置されたspotを指定してください')
+      throw new Error('指定したspotがbroadcasterと異なるfieldに配置されているためワープに失敗しました. 同じfieldに配置されたspotを指定してください')
     }
     if (this._destination) {
-      throw new Error('playerは現在移動中のためワープに失敗しました. playerの移動を停止してください')
+      throw new Error('broadcasterは現在移動中のためワープに失敗しました. broadcasterの移動を停止してください')
     }
     if (!spot.screen) {
       throw new Error('screenが設定されていないspotに到達したため、生放送の開始に失敗しました. spotにscreenを設定してください')
@@ -229,13 +229,13 @@ export class PlayerImpl implements Player {
       throw new Error('指定したspotがfieldに配置されていないため移動先の設定に失敗しました. spotをfieldに配置してください')
     }
     if (!this._field) {
-      throw new Error('playerがfieldに配置されていないため移動先の設定に失敗しました. playerをfieldに配置してください')
+      throw new Error('broadcasterがfieldに配置されていないため移動先の設定に失敗しました. broadcasterをfieldに配置してください')
     }
     if (this._field !== spot.field) {
-      throw new Error('指定したspotがplayerと異なるfieldに配置されているため移動先の設定に失敗しました. 同じfieldに配置されたspotを指定してください')
+      throw new Error('指定したspotがbroadcasterと異なるfieldに配置されているため移動先の設定に失敗しました. 同じfieldに配置されたspotを指定してください')
     }
     if (this._destination || this._tween) {
-      throw new Error('playerは現在移動中のため移動先の設定に失敗しました. playerの移動を停止してください')
+      throw new Error('broadcasterは現在移動中のため移動先の設定に失敗しました. broadcasterの移動を停止してください')
     }
     if (!spot.screen) {
       throw new Error('screenが設定されていないため移動先の設定に失敗しました. spotにscreenを設定してください')
@@ -270,10 +270,10 @@ export class PlayerImpl implements Player {
 
   stop (): void {
     if (!this._field) {
-      throw new Error('playerがfieldに配置されていないため移動の停止に失敗しました. playerをfieldに配置してください')
+      throw new Error('broadcasterがfieldに配置されていないため移動の停止に失敗しました. broadcasterをfieldに配置してください')
     }
     if (!this._destination || !this._tween) {
-      throw new Error('playerは現在移動中でないため移動の停止に失敗しました. playerの移動中に停止命令を実行してください')
+      throw new Error('broadcasterは現在移動中でないため移動の停止に失敗しました. broadcasterの移動中に停止命令を実行してください')
     }
 
     const oldDestination = this._destination
@@ -290,7 +290,7 @@ export class PlayerImpl implements Player {
 
   goToLive (live: Live): void {
     if (!this._field) {
-      throw new Error('playerがfieldに配置されていないため生放送の開始に失敗しました. playerをfieldに配置してください')
+      throw new Error('broadcasterがfieldに配置されていないため生放送の開始に失敗しました. broadcasterをfieldに配置してください')
     }
     if (!this._staying) {
       throw new Error('spotに滞在していない状態で生放送を開始しようとしました. spotに到着してから実行してください')
@@ -308,13 +308,13 @@ export class PlayerImpl implements Player {
 
   backFromLive (): void {
     if (!this._field) {
-      throw new Error('playerがfieldに配置されていないため生放送の終了に失敗しました. playerをfieldに配置してください')
+      throw new Error('broadcasterがfieldに配置されていないため生放送の終了に失敗しました. broadcasterをfieldに配置してください')
     }
     if (!this._staying) {
       throw new Error('spotに滞在していない状態で生放送を終了しようとしました. spotから離れる前に実行してください')
     }
     if (this._status !== 'on-air') {
-      throw new Error('生放送中でない状態で生放送終了後処理を実行しようとしました. playerが生放送中であることを確認してください')
+      throw new Error('生放送中でない状態で生放送終了後処理を実行しようとしました. broadcasterが生放送中であることを確認してください')
     }
     this._view.show()
     this._live = undefined
@@ -360,7 +360,7 @@ export class PlayerImpl implements Player {
     return this._live
   }
 
-  get status (): PlayerStatus {
+  get status (): BroadcasterStatus {
     return this._status
   }
 }

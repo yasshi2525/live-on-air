@@ -1,5 +1,5 @@
 import { LayerConfig, LayerConfigSupplier } from '../value/layerConfig'
-import { PlayerConfig, PlayerConfigSupplier } from '../value/playerConfig'
+import { BroadcasterConfig, BroadcasterConfigSupplier } from '../value/broadcasterConfig'
 import { SpotConfig, SpotConfigSupplier } from '../value/spotConfig'
 import { FieldConfigSupplier } from '../value/fieldConfig'
 import { Scene, SceneImpl } from '../model/scene'
@@ -35,16 +35,16 @@ export interface SceneConfigure {
   field(): Readonly<object>
 
   /**
-   * 作成する {@link Player} の属性情報を設定します.
+   * 作成する {@link Broadcaster} の属性情報を設定します.
    *
-   * @param config Player の設定値
+   * @param config Broadcaster の設定値
    */
-  player(config: Partial<PlayerConfig>): SceneConfigure
+  broadcaster(config: Partial<BroadcasterConfig>): SceneConfigure
 
   /**
-   * 作成する {@link Player} の属性情報を取得します.
+   * 作成する {@link Broadcaster} の属性情報を取得します.
    */
-  player(): Readonly<PlayerConfig>
+  broadcaster(): Readonly<BroadcasterConfig>
 
   /**
    * 生放送の画面 ({@link Screen}) の属性情報を設定します.
@@ -80,7 +80,7 @@ export interface SceneConfigSupplierOptions {
   game: g.Game
   layer: LayerConfigSupplier
   field: FieldConfigSupplier
-  player: PlayerConfigSupplier
+  broadcaster: BroadcasterConfigSupplier
   screen: ScreenConfigSupplier
   spot: SpotConfigSupplier
   isDefault: boolean
@@ -95,15 +95,15 @@ export class SceneConfigureImpl implements SceneConfigure {
 
   private readonly layerGetter: () => LayerConfig
   private readonly fieldGetter: () => object
-  private readonly playerGetter: () => PlayerConfig
+  private readonly broadcasterGetter: () => BroadcasterConfig
   private readonly screenGetter: () => object
 
   private readonly layerSetter: (obj: Partial<LayerConfig>) => void
   private readonly fieldSetter: (obj: object) => void
-  private readonly playerSetter: (obj: Partial<PlayerConfig>) => void
+  private readonly broadcasterSetter: (obj: Partial<BroadcasterConfig>) => void
   private readonly screenSetter: (obj: object) => void
 
-  constructor ({ game, layer, field, player, screen, spot, isDefault }: SceneConfigSupplierOptions) {
+  constructor ({ game, layer, field, broadcaster, screen, spot, isDefault }: SceneConfigSupplierOptions) {
     this.isDefault = isDefault
     this.game = game
     this.spotConfig = spot
@@ -111,12 +111,12 @@ export class SceneConfigureImpl implements SceneConfigure {
 
     this.layerGetter = () => isDefault ? layer.default() : layer.get()
     this.fieldGetter = () => isDefault ? field.default() : field.get()
-    this.playerGetter = () => isDefault ? player.default() : player.get()
+    this.broadcasterGetter = () => isDefault ? broadcaster.default() : broadcaster.get()
     this.screenGetter = () => isDefault ? screen.default() : screen.get()
 
     this.layerSetter = obj => isDefault ? layer.defaultIf(obj) : layer.setIf(obj)
     this.fieldSetter = obj => isDefault ? field.defaultIf(obj) : field.setIf(obj)
-    this.playerSetter = obj => isDefault ? player.defaultIf(obj) : player.setIf(obj)
+    this.broadcasterSetter = obj => isDefault ? broadcaster.defaultIf(obj) : broadcaster.setIf(obj)
     this.screenSetter = obj => isDefault ? screen.defaultIf(obj) : screen.setIf(obj)
   }
 
@@ -144,16 +144,16 @@ export class SceneConfigureImpl implements SceneConfigure {
     return this.fieldGetter()
   }
 
-  player (config: Partial<PlayerConfig>): SceneConfigure
+  broadcaster (config: Partial<BroadcasterConfig>): SceneConfigure
 
-  player (): Readonly<PlayerConfig>
+  broadcaster (): Readonly<BroadcasterConfig>
 
-  player (args?: Partial<PlayerConfig>): SceneConfigure | Readonly<PlayerConfig> {
+  broadcaster (args?: Partial<BroadcasterConfig>): SceneConfigure | Readonly<BroadcasterConfig> {
     if (args) {
-      this.playerSetter(args)
+      this.broadcasterSetter(args)
       return this
     }
-    return this.playerGetter()
+    return this.broadcasterGetter()
   }
 
   screen (config: object): SceneConfigure
@@ -187,6 +187,6 @@ export class SceneConfigureImpl implements SceneConfigure {
   }
 
   build (): Scene & g.Scene {
-    return new SceneImpl({ game: this.game, layer: this.layer(), player: this.player(), spots: this.spot() })
+    return new SceneImpl({ game: this.game, layer: this.layer(), broadcaster: this.broadcaster(), spots: this.spot() })
   }
 }

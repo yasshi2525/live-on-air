@@ -1,14 +1,14 @@
 import { Layer } from './layer'
 import { Field } from './field'
-import { Player } from './player'
+import { Broadcaster } from './broadcaster'
 import { Screen } from './screen'
 import { Spot } from './spot'
 import { LayerBuilder } from '../builder/layerBuilder'
 import { FieldBuilder } from '../builder/fieldBuilder'
-import { PlayerBuilder } from '../builder/playerBuilder'
+import { BroadcasterBuilder } from '../builder/broadcasterBuilder'
 import { SpotBuilder } from '../builder/spotBuilder'
 import { LayerConfig } from '../value/layerConfig'
-import { PlayerConfig } from '../value/playerConfig'
+import { BroadcasterConfig } from '../value/broadcasterConfig'
 import { SpotConfig } from '../value/spotConfig'
 import { ScreenBuilder } from '../builder/screenBuilder'
 
@@ -25,9 +25,9 @@ export interface Scene{
    */
   readonly field: Field
   /**
-   * プレイヤー情報.
+   * 放送者（プレイヤー）情報.
    */
-  readonly player: Player
+  readonly broadcaster: Broadcaster
   /**
    * 生放送環境情報.
    */
@@ -39,9 +39,9 @@ export interface Scene{
 }
 
 export class SceneImpl extends g.Scene implements Scene {
-  private context: { loaded: false } | { loaded: true, layer: Layer, field: Field, player: Player, screen: Screen, spots: Set<Spot> }
+  private context: { loaded: false } | { loaded: true, layer: Layer, field: Field, broadcaster: Broadcaster, screen: Screen, spots: Set<Spot> }
 
-  constructor (param: g.SceneParameterObject & { layer: LayerConfig, player: PlayerConfig, spots: readonly SpotConfig[] }) {
+  constructor (param: g.SceneParameterObject & { layer: LayerConfig, broadcaster: BroadcasterConfig, spots: readonly SpotConfig[] }) {
     super(param)
     this.context = { loaded: false }
     this.onLoad.add(() => {
@@ -52,12 +52,12 @@ export class SceneImpl extends g.Scene implements Scene {
       const field = new FieldBuilder()
         .build()
       field.view = layer.field
-      const player = new PlayerBuilder(this)
-        .location({ x: param.player.x, y: param.player.y })
-        .speed(param.player.speed)
-        .asset(param.player.asset)
+      const broadcaster = new BroadcasterBuilder(this)
+        .location({ x: param.broadcaster.x, y: param.broadcaster.y })
+        .speed(param.broadcaster.speed)
+        .asset(param.broadcaster.asset)
         .build()
-      player.standOn(field)
+      broadcaster.standOn(field)
       const screen = new ScreenBuilder(this)
         .build()
       screen.view = layer.screen
@@ -71,7 +71,7 @@ export class SceneImpl extends g.Scene implements Scene {
         inst.attach(screen)
         spots.add(inst)
       }
-      this.context = { loaded: true, layer, field, player, screen, spots }
+      this.context = { loaded: true, layer, field, broadcaster, screen, spots }
     })
   }
 
@@ -89,11 +89,11 @@ export class SceneImpl extends g.Scene implements Scene {
     return this.context.field
   }
 
-  get player (): Player {
+  get broadcaster (): Broadcaster {
     if (!this.context.loaded) {
       throw new Error('onLoad が実行されていません. onLoad が実行されてから本パラメタを取得してください')
     }
-    return this.context.player
+    return this.context.broadcaster
   }
 
   get screen (): Screen {

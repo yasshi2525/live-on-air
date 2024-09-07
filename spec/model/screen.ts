@@ -4,8 +4,8 @@ import {
   LayerBuilder,
   Live,
   LiveContext,
-  Player,
-  PlayerBuilder,
+  Broadcaster,
+  BroadcasterBuilder,
   Screen,
   ScreenBuilder,
   Spot,
@@ -74,17 +74,17 @@ describe('screen', () => {
   let sb: SpotBuilder
   let scb: ScreenBuilder
   let field: Field
-  let player: Player
+  let broadcaster: Broadcaster
   let screen: Screen
 
   beforeEach(() => {
-    player = new PlayerBuilder(scene).build()
+    broadcaster = new BroadcasterBuilder(scene).build()
     sb = new SpotBuilder(scene)
     scb = new ScreenBuilder(scene)
     field = new FieldBuilder().build()
     const layer = new LayerBuilder(scene).build()
     field.view = layer.field
-    player.standOn(field)
+    broadcaster.standOn(field)
     screen = scb.build()
     screen.view = layer.screen
   })
@@ -97,7 +97,7 @@ describe('screen', () => {
     const spot: Spot = sb.liveClass(SimpleLive).build()
     screen.addSpot(spot)
     spot.deployOn(field)
-    player.jumpTo(spot)
+    broadcaster.jumpTo(spot)
     expect(screen.nowOnAir).toBeDefined()
     expect(screen.nowOnAir).toBeInstanceOf(SimpleLive)
     expect(logger).toHaveBeenCalledWith('start 1th live')
@@ -110,35 +110,35 @@ describe('screen', () => {
     const spot: Spot = sb.liveClass(SimpleLive).build()
     spot.attach(screen)
     spot.deployOn(field)
-    player.jumpTo(spot)
+    broadcaster.jumpTo(spot)
     expect(screen.nowOnAir).toBeDefined()
     expect(screen.nowOnAir).toBeInstanceOf(SimpleLive)
     await gameContext.step()
     screenshot('live.start.by.attach.png')
   })
 
-  it('放送が始まるとplayerは非表示、放送が終わるとplayerは表示', async () => {
+  it('放送が始まるとbroadcasterは非表示、放送が終わるとbroadcasterは表示', async () => {
     const spot: Spot = sb.liveClass(SimpleLive).build()
     screen.addSpot(spot)
     spot.deployOn(field)
-    player.jumpTo(spot)
-    expect(player.status).toBe('on-air')
-    expect(player.view.visible()).toBeFalsy()
+    broadcaster.jumpTo(spot)
+    expect(broadcaster.status).toBe('on-air')
+    expect(broadcaster.view.visible()).toBeFalsy()
     const live: Live = screen.nowOnAir!
     await gameContext.step()
-    screenshot('live.player.on-air.png')
+    screenshot('live.broadcaster.on-air.png')
     await waitFor(live.onEnd)
-    expect(player.status).toBe('staying-in-spot')
-    expect(player.view.visible()).toBeTruthy()
+    expect(broadcaster.status).toBe('staying-in-spot')
+    expect(broadcaster.view.visible()).toBeTruthy()
     expect(logger).toHaveBeenCalledWith('end 1th live')
-    screenshot('live.player.off-air.png')
+    screenshot('live.broadcaster.off-air.png')
   })
 
   it('コンストラクタのないliveはインスタンス化できる', () => {
     const spot: Spot = sb.liveClass(LiveNoConstructor).build()
     screen.addSpot(spot)
     spot.deployOn(field)
-    player.jumpTo(spot)
+    broadcaster.jumpTo(spot)
     expect(screen.nowOnAir).toBeDefined()
     expect(screen.nowOnAir).toBeInstanceOf(LiveNoConstructor)
   })
@@ -147,17 +147,17 @@ describe('screen', () => {
     const spot: Spot = sb.liveClass(FlushLive).build()
     screen.addSpot(spot)
     spot.deployOn(field)
-    player.jumpTo(spot)
+    broadcaster.jumpTo(spot)
     expect(screen.nowOnAir).not.toBeDefined()
-    expect(player.status).toBe('staying-in-spot')
-    expect(player.view.visible()).toBeTruthy()
+    expect(broadcaster.status).toBe('staying-in-spot')
+    expect(broadcaster.view.visible()).toBeTruthy()
   })
 
   it('放送開始前にonEnd.fireしても無視', () => {
     const spot: Spot = sb.liveClass(FlyingLive).build()
     screen.addSpot(spot)
     spot.deployOn(field)
-    expect(() => player.jumpTo(spot)).not.toThrow()
+    expect(() => broadcaster.jumpTo(spot)).not.toThrow()
   })
 
   it('同じクラスインスタンスなら二重登録しても無視', () => {
@@ -179,7 +179,7 @@ describe('screen', () => {
     spot.deployOn(field)
     spot.attach(screen)
     screen.addSpot(spot)
-    expect(() => screen.startLive(player)).toThrow()
+    expect(() => screen.startLive(broadcaster)).toThrow()
   })
 
   it('放送中に放送開始できない', () => {
@@ -187,9 +187,9 @@ describe('screen', () => {
     spot.deployOn(field)
     spot.attach(screen)
     screen.addSpot(spot)
-    player.jumpTo(spot)
-    expect(player.status).toBe('on-air')
-    expect(() => screen.startLive(player)).toThrow()
+    broadcaster.jumpTo(spot)
+    expect(broadcaster.status).toBe('on-air')
+    expect(() => screen.startLive(broadcaster)).toThrow()
   })
 
   it('viewを登録すると、画面に描画される', async () => {
@@ -197,7 +197,7 @@ describe('screen', () => {
     const spot: Spot = sb.build()
     spot.deployOn(field)
     spot.attach(screen2)
-    player.jumpTo(spot)
+    broadcaster.jumpTo(spot)
     expect(screen2.view).not.toBeDefined()
     expect(screen2.area).not.toBeDefined()
     await gameContext.step()
@@ -214,7 +214,7 @@ describe('screen', () => {
     const spot: Spot = sb.build()
     spot.deployOn(field)
     spot.attach(screen2)
-    player.jumpTo(spot)
+    broadcaster.jumpTo(spot)
     screen2.view = new g.E({ scene, parent: scene, width: 500, height: 500 })
     const view = screen2.view.children![0]
     screen2.view = undefined
@@ -234,8 +234,8 @@ describe('screen', () => {
     const spot: Spot = sb.liveClass(SimpleLive).build()
     screen.addSpot(spot)
     spot.deployOn(field)
-    player.jumpTo(spot)
-    const live = player.live!
+    broadcaster.jumpTo(spot)
+    const live = broadcaster.live!
     expect(live.vars).not.toBeDefined()
     live.vars = 'Hello'
     expect(live.vars).toBe('Hello')
@@ -245,8 +245,8 @@ describe('screen', () => {
     const spot: Spot = sb.liveClass(LiveNoConstructor).build()
     screen.addSpot(spot)
     spot.deployOn(field)
-    player.jumpTo(spot)
-    const live = player.live!
+    broadcaster.jumpTo(spot)
+    const live = broadcaster.live!
     expect(live.vars).not.toBeDefined()
     live.vars = 'Hello'
     expect(live.vars).toBe('Hello')
@@ -263,6 +263,6 @@ describe('screen', () => {
     }).build()
     screen.addSpot(spot)
     spot.deployOn(field)
-    player.jumpTo(spot)
+    broadcaster.jumpTo(spot)
   })
 })
