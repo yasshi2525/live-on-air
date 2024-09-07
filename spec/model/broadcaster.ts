@@ -31,11 +31,11 @@ describe('Broadcaster', () => {
     const broadcaster = new BroadcasterBuilder(scene).build()
     expect(broadcaster.field).not.toBeDefined()
     expect(broadcaster.location).not.toBeDefined()
-    expect(broadcaster.status).toEqual('non-field')
+    expect(broadcaster.status).toBe('non-field')
     broadcaster.standOn(field1)
     expect(broadcaster.field).toBe(field1)
     expect(broadcaster.location).toBeDefined()
-    expect(broadcaster.status).toEqual('stopping-on-ground')
+    expect(broadcaster.status).toBe('stopping-on-ground')
   })
 
   it('同じFieldへの二重登録時は警告だけで何もしない', () => {
@@ -60,9 +60,9 @@ describe('Broadcaster', () => {
     broadcaster.standOn(field1)
     broadcaster.departTo(spot1)
     expect(broadcaster.destination).toBe(spot1)
-    expect(broadcaster.status).toEqual('moving')
-    expect(spot1.status).toEqual('target')
-    expect(spot2.status).toEqual('disabled')
+    expect(broadcaster.status).toBe('moving')
+    expect(spot1.status).toBe('target')
+    expect(spot2.status).toBe('disabled')
   })
 
   it('目的地が設定されると、それに向かって移動を開始する', async () => {
@@ -92,8 +92,8 @@ describe('Broadcaster', () => {
     broadcaster.standOn(field1)
     broadcaster.departTo(spot1)
     await waitFor(broadcaster.onEnter)
-    expect(spot1.status).toEqual('enabled')
-    expect(spot2.status).toEqual('enabled')
+    expect(spot1.status).toBe('enabled')
+    expect(spot2.status).toBe('enabled')
   })
 
   it('Spotに滞在中ならば他のSpotに向かって移動開始できる', async () => {
@@ -109,8 +109,8 @@ describe('Broadcaster', () => {
     await gameContext.step()
     expect(broadcaster.status).toBe('moving')
     expect(broadcaster.location!.y).toBeGreaterThan(0)
-    expect(spot1.status).toEqual('disabled')
-    expect(spot2.status).toEqual('target')
+    expect(spot1.status).toBe('disabled')
+    expect(spot2.status).toBe('target')
     screenshot('broadcaster.moving.restarted.png')
   })
 
@@ -127,13 +127,13 @@ describe('Broadcaster', () => {
     broadcaster.departTo(spot1)
     expect(broadcaster.status).toBe('moving')
     expect(goal).not.toBeDefined()
-    expect(spot1.status).toEqual('target')
-    expect(spot2.status).toEqual('disabled')
+    expect(spot1.status).toBe('target')
+    expect(spot2.status).toBe('disabled')
     await gameContext.step()
     expect(goal).toBe(spot1)
     expect(broadcaster.status).toBe('on-air')
-    expect(spot1.status).toEqual('enabled')
-    expect(spot2.status).toEqual('enabled')
+    expect(spot1.status).toBe('enabled')
+    expect(spot2.status).toBe('enabled')
   })
 
   it('移動中の場合、移動をキャンセルできる', () => {
@@ -142,9 +142,9 @@ describe('Broadcaster', () => {
     broadcaster.departTo(spot1)
     broadcaster.stop()
     expect(broadcaster.destination).not.toBeDefined()
-    expect(broadcaster.status).toEqual('stopping-on-ground')
-    expect(spot1.status).toEqual('enabled')
-    expect(spot2.status).toEqual('enabled')
+    expect(broadcaster.status).toBe('stopping-on-ground')
+    expect(spot1.status).toBe('enabled')
+    expect(spot2.status).toBe('enabled')
   })
 
   it('stop()が実行されたら移動処理も中止される', async () => {
@@ -174,7 +174,7 @@ describe('Broadcaster', () => {
     broadcaster.jumpTo(spot1)
     expect(broadcaster.staying).toBe(spot1)
     expect(broadcaster.location).toEqual(spot1.location)
-    expect(broadcaster.status).toEqual('on-air')
+    expect(broadcaster.status).toBe('on-air')
   })
 
   it('fieldに配置されていないspotには移動できない', () => {

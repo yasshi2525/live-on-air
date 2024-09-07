@@ -83,11 +83,11 @@ describe('field', () => {
     const field: Field = new FieldBuilder().build()
     field.addSpot(spot1)
     field.addSpot(spot2)
-    expect(spot1.status).toEqual('enabled')
-    expect(spot2.status).toEqual('enabled')
+    expect(spot1.status).toBe('enabled')
+    expect(spot2.status).toBe('enabled')
     field.disableSpotExcept(spot1)
-    expect(spot1.status).toEqual('enabled')
-    expect(spot2.status).toEqual('disabled')
+    expect(spot1.status).toBe('enabled')
+    expect(spot2.status).toBe('disabled')
   })
 
   it('特定のSpot(spot1)以外のSpot(spot2)が訪問可能になる', () => {
@@ -96,11 +96,11 @@ describe('field', () => {
     field.addSpot(spot2)
     field.addBroadcaster(broadcaster)
     broadcaster.departTo(spot1)
-    expect(spot1.status).toEqual('target')
-    expect(spot2.status).toEqual('disabled')
+    expect(spot1.status).toBe('target')
+    expect(spot2.status).toBe('disabled')
     field.enableSpotExcept(spot1)
-    expect(spot1.status).toEqual('target')
-    expect(spot2.status).toEqual('enabled')
+    expect(spot1.status).toBe('target')
+    expect(spot2.status).toBe('enabled')
   })
 
   it('g.Eを登録すると今まで登録されたspot,broadcasterが画面に描画される', async () => {

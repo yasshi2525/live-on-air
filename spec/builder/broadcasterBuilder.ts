@@ -15,12 +15,12 @@ describe('broadcasterBuilder', () => {
   it('デフォルトの設定で作成できる', () => {
     const bb = new BroadcasterBuilder(scene)
     expect(bb.speed()).toEqual(1)
-    expect(bb.asset().path).toEqual('./image/broadcaster.default.png')
+    expect(bb.asset().path).toBe('./image/broadcaster.default.png')
     expect(bb.location()).toEqual({ x: 0, y: 0 })
     const broadcaster = bb.build()
     expect(broadcaster.speed).toBe(1)
     expect(broadcaster.view).toBeInstanceOf(g.Sprite)
-    expect(((broadcaster.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/broadcaster.default.png')
+    expect(((broadcaster.view as g.Sprite).src as g.ImageAsset).path).toBe('./image/broadcaster.default.png')
     expect(broadcaster.view).toMatchObject({ x: 0, y: 0 })
   })
 
@@ -31,11 +31,11 @@ describe('broadcasterBuilder', () => {
       .location({ x: 100, y: 200 })
     expect(bb.speed()).toEqual(2)
     expect(bb.location()).toEqual({ x: 100, y: 200 })
-    expect(bb.asset().path).toEqual('./image/default.png')
+    expect(bb.asset().path).toBe('./image/default.png')
     const broadcaster = bb.build()
     expect(broadcaster.speed).toBe(2)
     expect(broadcaster.view).toBeInstanceOf(g.Sprite)
-    expect(((broadcaster.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/default.png')
+    expect(((broadcaster.view as g.Sprite).src as g.ImageAsset).path).toBe('./image/default.png')
     expect(broadcaster.view).toMatchObject({ x: 100, y: 200 })
   })
 

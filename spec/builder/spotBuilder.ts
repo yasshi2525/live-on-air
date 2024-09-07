@@ -11,7 +11,7 @@ describe('spotBuilder', () => {
   it('共通設定を参照できる', () => {
     expect(Object.keys(SpotBuilder.getDefault(scene).image())).toEqual(assetKeys)
     for (const typ of assetKeys) {
-      expect(SpotBuilder.getDefault(scene).image()[typ].path).toEqual(`./image/spot.default.${typ}.png`)
+      expect(SpotBuilder.getDefault(scene).image()[typ].path).toBe(`./image/spot.default.${typ}.png`)
     }
     expect(SpotBuilder.getDefault(scene).location()).toEqual({ x: 0, y: 0 })
     expect(SpotBuilder.getDefault(scene).liveClass()).toBe(SampleLive)
@@ -20,7 +20,7 @@ describe('spotBuilder', () => {
     const sb = new SpotBuilder(scene)
     expect(Object.keys(sb.image())).toEqual(assetKeys)
     for (const typ of assetKeys) {
-      expect(sb.image()[typ].path).toEqual(`./image/spot.default.${typ}.png`)
+      expect(sb.image()[typ].path).toBe(`./image/spot.default.${typ}.png`)
     }
     expect(sb.location()).toEqual({ x: 0, y: 0 })
     expect(sb.liveClass()).toBe(SampleLive)
@@ -42,10 +42,10 @@ describe('spotBuilder', () => {
     }).location({ x: 100, y: 200 }).liveClass(SimpleLive)
 
     for (const typ of assetKeys) {
-      expect(SpotBuilder.getDefault(scene).image()[typ].path).toEqual('./image/default.png')
+      expect(SpotBuilder.getDefault(scene).image()[typ].path).toBe('./image/default.png')
     }
     for (const typ of assetKeys) {
-      expect(sb.image()[typ].path).toEqual('./image/default.png')
+      expect(sb.image()[typ].path).toBe('./image/default.png')
     }
     expect(SpotBuilder.getDefault(scene).location()).toEqual({ x: 100, y: 200 })
     expect(sb.location()).toEqual({ x: 100, y: 200 })
@@ -62,10 +62,10 @@ describe('spotBuilder', () => {
       normal: asset
     }).location({ x: 100, y: 200 })
     for (const typ of assetKeys) {
-      expect(SpotBuilder.getDefault(scene).image()[typ].path).toEqual(`./image/spot.default.${typ}.png`)
+      expect(SpotBuilder.getDefault(scene).image()[typ].path).toBe(`./image/spot.default.${typ}.png`)
     }
     for (const typ of assetKeys) {
-      expect(sb.image()[typ].path).toEqual('./image/default.png')
+      expect(sb.image()[typ].path).toBe('./image/default.png')
     }
     expect(sb.location()).toEqual({ x: 100, y: 200 })
   })
@@ -74,10 +74,10 @@ describe('spotBuilder', () => {
     const spot = sb.build()
     expect(Object.keys(spot.assets)).toEqual(assetKeys)
     for (const typ of assetKeys) {
-      expect(spot.assets[typ].path).toEqual(`./image/spot.default.${typ}.png`)
+      expect(spot.assets[typ].path).toBe(`./image/spot.default.${typ}.png`)
     }
     expect(spot.view).toBeInstanceOf(g.Sprite)
-    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toEqual('./image/spot.default.normal.png')
+    expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toBe('./image/spot.default.normal.png')
     expect(spot.view).toMatchObject({ x: 100, y: 200 })
   })
 })
