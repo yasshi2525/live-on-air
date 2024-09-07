@@ -131,7 +131,6 @@ export class SpotImpl implements Spot {
   private _visited = false
   private _screen?: Screen
 
-  // eslint-disable-next-line no-useless-constructor
   constructor (
     scene: g.Scene,
     readonly assets: Readonly<SpotAssetRecord>,
