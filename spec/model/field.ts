@@ -1,5 +1,4 @@
 import { SpotBuilder, Spot, BroadcasterBuilder, Broadcaster, Field, FieldBuilder, ScreenBuilder } from '../../src'
-import { FieldImpl } from '../../src/model/field'
 
 describe('field', () => {
   let spot1: Spot
@@ -104,7 +103,7 @@ describe('field', () => {
   })
 
   it('g.Eを登録すると今まで登録されたspot,broadcasterが画面に描画される', async () => {
-    const field: Field = new FieldImpl()
+    const field: Field = new FieldBuilder().build()
     field.addSpot(spot1)
     field.addSpot(spot2)
     field.addBroadcaster(broadcaster)
@@ -122,7 +121,7 @@ describe('field', () => {
   })
 
   it('先にg.Eを登録してからspot,broadcasterを登録しても描画される', async () => {
-    const field: Field = new FieldImpl()
+    const field: Field = new FieldBuilder().build()
     field.container = layer1
     field.addSpot(spot1)
     field.addSpot(spot2)
@@ -136,7 +135,7 @@ describe('field', () => {
   })
 
   it('viewを差し替えるとspot,broadcasterは差し替え後の方に所属する', async () => {
-    const field: Field = new FieldImpl()
+    const field: Field = new FieldBuilder().build()
     field.addSpot(spot1)
     field.addSpot(spot2)
     field.addBroadcaster(broadcaster)
@@ -151,7 +150,7 @@ describe('field', () => {
   })
 
   it('viewが削除されるとspot,broadcasterも孤立する', async () => {
-    const field: Field = new FieldImpl()
+    const field: Field = new FieldBuilder().build()
     field.addSpot(spot1)
     field.addSpot(spot2)
     field.addBroadcaster(broadcaster)
