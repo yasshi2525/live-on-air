@@ -92,7 +92,6 @@ describe('liveGame', () => {
     screenshot('liveGame.submit.png')
     await waitFor(live.onResult)
     screenshot('liveGame.result.png')
-    await waitFor(broadcaster.onLiveEnd)
     screenshot('liveGame.end.png')
   })
 })

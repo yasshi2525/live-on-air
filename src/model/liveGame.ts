@@ -82,7 +82,7 @@ export abstract class LiveGame implements Live {
       this.onIntroduce.fire()
       const gamePlayCleanUp = this.handleGamePlay(context)
       const submitCleanUp = this.handleSubmit(context, () => {
-        const rawScore = this.evaluateScore(context) ?? 0
+        const rawScore = this.evaluateScore(context)
         const score = Math.min(Math.max(rawScore, 0), 100)
         this.onSubmit.fire({ score, text: this.toResultText(context, score) })
         if (gamePlayCleanUp) {
@@ -307,6 +307,8 @@ export abstract class LiveGame implements Live {
         return text
       }
     }
+    // 通常未到達
+    // istanbul ignore next
     return '？？？'
   }
 
