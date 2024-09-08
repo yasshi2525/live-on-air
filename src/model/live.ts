@@ -8,37 +8,46 @@ import { LiveContext } from './liveContext'
  */
 export interface Live {
   /**
-   * 生放送終了を通知するトリガー.
-   *
-   * 下記のように初期化してください.
-   *
-   * ```
-   * readonly onEnd = new g.Trigger()
-   * ```
-   */
-  readonly onEnd: g.Trigger
-
-  /**
    * ライブラリ利用者が自由に使えるフィールドです.
    */
   vars?: unknown
 
   /**
-   * 生放送が開始されると呼び出されます.
+   * 生放送中の処理を実行します.
    *
-   * 放送が終了した際は、必ず `this.onEnd.fire()` を呼び出してください.
+   * {@link Broadcaster} が {@link Spot} に到着すると呼び出されます.
+   * 第2引数の `end()` が呼び出されると放送を終了します.
    *
    * @param context 放送中に利用可能な情報が格納されています.
+   * @param end 放送を終了させてよいタイミングになった際、関数を呼び出してください.
+   *
+   * @example
+   * 画像を2秒間表示した後、放送を終了します.
+   * ```typescript
+   * start (context: LiveContext, end: () => void): void {
+   *    const scene: g.Scene = context.scene;
+   *    const view: g.E = context.view; // 生放送用の描画エンティティ
+   *    view.append(new g.Sprite({ scene, src: <省略> } ));
+   *    scene.setTimeout(() => end(), 2000);
+   * }
+   * ```
    */
-  start (context: LiveContext): void
+  start (context: LiveContext, end: () => void): void
 }
 
+/**
+ * サンプル表示用の生放送です.
+ */
 export class SampleLive implements Live {
   vars?: unknown
-  onEnd = new g.Trigger()
-  start ({ scene, view } : LiveContext): void {
+  start ({ scene, view } : LiveContext, end: () => void): void {
     const bg = new g.FilledRect({
-      scene, parent: view, width: view.width, height: view.height, cssColor: '#ffffaa', opacity: 0.5
+      scene,
+      parent: view,
+      width: view.width,
+      height: view.height,
+      cssColor: '#ffffaa',
+      opacity: 0.5
     })
     bg.append(new g.Label({
       scene,
@@ -49,8 +58,14 @@ export class SampleLive implements Live {
         strokeColor: '#ffffff',
         strokeWidth: 4
       }),
-      text: '生放送中です'
+      text: '生放送中です',
+      textAlign: 'center',
+      widthAutoAdjust: false,
+      width: bg.width,
+      y: bg.height / 2,
+      anchorY: 0.5
     }))
-    scene.setTimeout(() => this.onEnd.fire(), 2000)
+    // 2秒経過したら放送を終了します.
+    scene.setTimeout(() => end(), 2000)
   }
 }
