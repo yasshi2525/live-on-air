@@ -20,10 +20,10 @@ class SimpleLive implements Live {
 
   start (context: LiveContext, end: () => void): void {
     console.log(`start ${SimpleLive.numOfLive}th live`)
-    context.view.append(new g.FilledRect({
+    context.container.append(new g.FilledRect({
       scene,
-      width: context.view.width,
-      height: context.view.height,
+      width: context.container.width,
+      height: context.container.height,
       cssColor: '#ffffaa',
       opacity: 0.25
     }))

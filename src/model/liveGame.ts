@@ -206,8 +206,8 @@ export abstract class LiveGame implements Live {
   protected handleSubmit (context: LiveContext, next: () => void): (() => void) | void {
     const submit = new g.FilledRect({
       scene: context.scene,
-      parent: context.view,
-      x: context.view.width / 2,
+      parent: context.container,
+      x: context.container.width / 2,
       y: 150,
       width: 300,
       height: 200,
@@ -351,11 +351,11 @@ export abstract class LiveGame implements Live {
   protected handleResultViewing (context: LiveContext, score: number, next: () => void): (() => void) | void {
     const result = new g.Label({
       scene: context.scene,
-      parent: context.view,
-      width: context.view.width,
+      parent: context.container,
+      width: context.container.width,
       widthAutoAdjust: false,
       textAlign: 'center',
-      y: context.view.height / 2,
+      y: context.container.height / 2,
       anchorY: 0.5,
       font: new g.DynamicFont({
         game: context.scene.game,

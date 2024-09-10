@@ -15,7 +15,7 @@ export interface LiveContext {
    *
    * 生放送中の描画内容は本エンティティの子に指定してください.
    */
-  readonly view: g.E
+  readonly container: g.E
   /**
    * 全放送情報や描画情報を格納しているスクリーン
    */

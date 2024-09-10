@@ -93,7 +93,7 @@ export class ScreenImpl implements Screen {
       screen: this,
       spot: broadcaster.staying,
       broadcaster,
-      view: liveContainer,
+      container: liveContainer,
       vars: undefined
     }
     const live = new (broadcaster.staying.liveClass!)()

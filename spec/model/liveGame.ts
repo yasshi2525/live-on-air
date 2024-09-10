@@ -26,8 +26,8 @@ class SimpleLiveGame extends LiveGame {
   }
 
   protected handleGamePlay (context : LiveContext): () => void {
-    const { scene, view } = { ...context }
-    const gauge = new g.FilledRect({ scene, parent: view, width: 0, height: 100, cssColor: '#aa4444' })
+    const { scene, container } = { ...context }
+    const gauge = new g.FilledRect({ scene, parent: container, width: 0, height: 100, cssColor: '#aa4444' })
     context.vars = { gauge }
     gauge.onUpdate.add(() => {
       gauge.width += 500 / 120
@@ -41,13 +41,13 @@ class SimpleLiveGame extends LiveGame {
     }
   }
 
-  protected handleIntroduction ({ scene, view }: LiveContext, next: () => void) {
-    view.append(new g.FilledRect({
-      scene, width: view.width, height: view.height, cssColor: '#ffffaa', opacity: 0.25
+  protected handleIntroduction ({ scene, container }: LiveContext, next: () => void) {
+    container.append(new g.FilledRect({
+      scene, width: container.width, height: container.height, cssColor: '#ffffaa', opacity: 0.25
     }))
     const description = new g.Label({
       scene,
-      parent: view,
+      parent: container,
       text: 'ゲージの最大値でボタンを押そう！',
       font: this.font
     })

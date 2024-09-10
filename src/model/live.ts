@@ -40,12 +40,12 @@ export interface Live {
  */
 export class SampleLive implements Live {
   vars?: unknown
-  start ({ scene, view } : LiveContext, end: () => void): void {
+  start ({ scene, container } : LiveContext, end: () => void): void {
     const bg = new g.FilledRect({
       scene,
-      parent: view,
-      width: view.width,
-      height: view.height,
+      parent: container,
+      width: container.width,
+      height: container.height,
       cssColor: '#ffffaa',
       opacity: 0.5
     })

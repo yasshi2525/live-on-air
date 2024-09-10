@@ -35,14 +35,14 @@ const teardown = () => {
   fs.rmSync('game.json', { force: true })
 }
 
-process.on('exit', () => {
+process.on('exit', (a) => {
   teardown()
-  process.exit(0)
+  process.exit(a)
 })
 
 process.on('SIGINT', () => {
   teardown()
-  process.exit(0)
+  process.kill(process.pid, 'SIGINT')
 })
 
 try {
