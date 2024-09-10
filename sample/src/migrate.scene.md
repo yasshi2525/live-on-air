@@ -8,28 +8,28 @@
 
 以降で内容を説明します.
 
-```diff
+```diff typescript
 + import {Broadcaster, BroadcasterBuilder, Field, FieldBuilder, Layer, LayerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder} from "@yasshi2525/live-on-air";
-
-export const main = (param: GameMainParameterObject) => {
-  // 自身で実装している g.Scene
-  const scene = new g.Scene({game: g.game})
-  scene.onLoad.add(() => {
-    // 既存の g.Scene の初期化処理
-+   // 以下から本ライブラリの初期化処理です
-+   const layer: Layer = new LayerBuilder(scene).build()
-+   const field = new FieldBuilder().build()
-+   field.container = layer.field
-+   const screen = new ScreenBuilder(scene).build()
-+   screen.container = layer.screen
-+   const broadcaster = new BroadcasterBuilder(scene).build()
-+   broadcaster.standOn(field)
-+   const spot = new SpotBuilder(scene).build()
-+   spot.deployOn(field)
-+   spot.attach(screen)
-  })
-  g.game.pushScene(scene)
-}
+  
+  export const main = (param: GameMainParameterObject) => {
+    // 自身で実装している g.Scene
+    const scene = new g.Scene({game: g.game})
+    scene.onLoad.add(() => {
+      // 既存の g.Scene の初期化処理
++     // 以下から本ライブラリの初期化処理です
++     const layer: Layer = new LayerBuilder(scene).build()
++     const field = new FieldBuilder().build()
++     field.container = layer.field
++     const screen = new ScreenBuilder(scene).build()
++     screen.container = layer.screen
++     const broadcaster = new BroadcasterBuilder(scene).build()
++     broadcaster.standOn(field)
++     const spot = new SpotBuilder(scene).build()
++     spot.deployOn(field)
++     spot.attach(screen)
+    })
+    g.game.pushScene(scene)
+  }
 ```
 
 ## `Layer` (本ライブラリの描画コンポーネント) の初期化
@@ -66,10 +66,10 @@ const screen = new ScreenBuilder(scene).build()
 `Field`, `Screen` の `container` フィールドに各コンポーネントが描画されます.
 これを対応する `Layer` の `field`, `screen` フィールドとしてください.
 
-```diff
-const field = new FieldBuilder().build()
+```diff typescript
+  const field = new FieldBuilder().build()
 + field.container = layer.field
-const screen = new ScreenBuilder(scene).build()
+  const screen = new ScreenBuilder(scene).build()
 + screen.container = layer.screen
 ```
 
@@ -88,20 +88,20 @@ const spot = new SpotBuilder(scene).build()
 
 どちらも `Field` に登録しないと機能しません.
 
-```diff
-const broadcaster = new BroadcasterBuilder(scene).build()
+```diff typescript
+  const broadcaster = new BroadcasterBuilder(scene).build()
 + broadcaster.standOn(field)
-const spot = new SpotBuilder(scene).build()
+  const spot = new SpotBuilder(scene).build()
 + spot.deployOn(field)
 ```
 
 `Sopt` はさらに `Screen` にも登録しないと機能しません.
 
-```diff
-const broadcaster = new BroadcasterBuilder(scene).build()
-broadcaster.standOn(field)
-const spot = new SpotBuilder(scene).build()
-spot.deployOn(field)
+```diff typescript
+  const broadcaster = new BroadcasterBuilder(scene).build()
+  broadcaster.standOn(field)
+  const spot = new SpotBuilder(scene).build()
+  spot.deployOn(field)
 + spot.attach(screen)
 ```
 
