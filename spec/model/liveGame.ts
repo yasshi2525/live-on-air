@@ -22,7 +22,7 @@ class SimpleLiveGame extends LiveGame {
   })
 
   protected evaluateScore (context: LiveContext): number {
-    return (context.vars as Record<string, g.FilledRect>).gauge.width / 500
+    return (context.vars as Record<string, g.FilledRect>).gauge.width / 500 * 100
   }
 
   protected handleGamePlay (context : LiveContext): () => void {
@@ -30,7 +30,7 @@ class SimpleLiveGame extends LiveGame {
     const gauge = new g.FilledRect({ scene, parent: view, width: 0, height: 100, cssColor: '#aa4444' })
     context.vars = { gauge }
     gauge.onUpdate.add(() => {
-      gauge.width++
+      gauge.width += 500 / 120
       if (gauge.width > 500) {
         gauge.width = 0
       }
