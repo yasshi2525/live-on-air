@@ -27,7 +27,7 @@
 
 各コンポーネントは `g.Scene` の初期化後に利用可能です. 参照する際は必ず `onLoad()` の呼び出し後としてください.
 
-```dieff typescript
+```diff typescript
 - import {LiveOnAirScene, LiveOnAirSceneBuilder} from "@yasshi2525/live-on-air";
 + import {LiveOnAirScene, LiveOnAirSceneBuilder, Broadcaster, Spot, Field, Screen, Layer} from "@yasshi2525/live-on-air";
 scene.onLoad.add(() => {
