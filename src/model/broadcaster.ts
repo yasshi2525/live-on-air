@@ -178,7 +178,14 @@ export class BroadcasterImpl implements Broadcaster {
   private _live?: Live
 
   constructor (_scene: g.Scene, _asset: g.ImageAsset, private _speed: number, location: g.CommonOffset) {
-    this._view = new g.Sprite({ scene: _scene, src: _asset, x: location.x, y: location.y })
+    this._view = new g.Sprite({
+      scene: _scene,
+      src: _asset,
+      x: location.x,
+      y: location.y,
+      anchorX: 0.5,
+      anchorY: 0.5
+    })
   }
 
   standOn (field: Field): void {
