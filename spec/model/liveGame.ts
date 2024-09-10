@@ -16,7 +16,7 @@ class SimpleLiveGame extends LiveGame {
   readonly font = new g.DynamicFont({
     game: g.game,
     fontFamily: 'sans-serif',
-    size: 75,
+    size: 50,
     strokeColor: 'white',
     strokeWidth: 4
   })
