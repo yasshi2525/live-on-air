@@ -108,7 +108,6 @@ describe('live', () => {
 
   it('liveContextでも自由に値を追加・参照できる', () => {
     const spot1: Spot = sb.liveClass(class implements Live {
-      readonly onEnd = new g.Trigger()
       start (context: LiveContext) {
         expect(context.vars).not.toBeDefined()
         context.vars = 'Hello'
