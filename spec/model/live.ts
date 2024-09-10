@@ -19,7 +19,6 @@ class SimpleLive implements Live {
   }
 
   start (context: LiveContext, end: () => void): void {
-    console.log(`start ${SimpleLive.numOfLive}th live`)
     context.container.append(new g.FilledRect({
       scene,
       width: context.container.width,
@@ -28,7 +27,6 @@ class SimpleLive implements Live {
       opacity: 0.25
     }))
     scene.setTimeout(() => {
-      console.log(`end ${SimpleLive.numOfLive}th live`)
       end()
     }, 5000)
   }
@@ -36,9 +34,7 @@ class SimpleLive implements Live {
 
 class LiveNoConstructor implements Live {
   start (_: LiveContext, end: () => void): void {
-    console.log('start LiveNoConstructor live')
     scene.setTimeout(() => {
-      console.log('end LiveNoConstructor live')
       end()
     }, 5000)
   }
