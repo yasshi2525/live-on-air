@@ -208,7 +208,7 @@ export abstract class LiveGame implements Live {
       scene: context.scene,
       parent: context.view,
       x: context.view.width / 2,
-      y: 200,
+      y: 150,
       width: 300,
       height: 200,
       anchorX: 0.5,
@@ -218,8 +218,8 @@ export abstract class LiveGame implements Live {
     })
     submit.append(new g.Label({
       scene: context.scene,
-      parent: submit,
       width: submit.width,
+      y: submit.height / 2,
       text: 'PUSH!',
       textAlign: 'center',
       widthAutoAdjust: false,
