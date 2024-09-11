@@ -2,6 +2,10 @@
 
 すでに自分でゲーム用の `g.Scene` を定義している場合の本ライブラリの組み込み方を説明します.
 
+描画内容の制御を自分で用意するか、本ライブラリ提供のものを利用するかで少し手順が変わります.
+本ライブラリ提供のものを利用するとエンティティ間の前後関係などは自動で制御されますが、本ライブラリ以外に描画するエンティティが多種ある場合や、独自のレイアウト機構を持つ場合、干渉する可能性があります.
+自分で用意する場合は **「独自レイアウトの場合」** の注意書きに沿って構築してください.
+
 ## 概要
  
 自身の `g.Scene` の `onLoad()` の呼び出し箇所に以下を追記してください.
@@ -32,7 +36,31 @@
   }
 ```
 
+> [!NOTE]
+> 独自レイアウトの場合、 `Layer` は不要なので初期化・設定処理を削除してください.
+> ```diff typescript
+> - import {Broadcaster, BroadcasterBuilder, Field, FieldBuilder, Layer, LayerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder} from "@yasshi2525/live-on-air";
+> + import {Broadcaster, BroadcasterBuilder, Field, FieldBuilder, Screen, ScreenBuilder, Spot, SpotBuilder} from "@yasshi2525/live-on-air";
+>   // ...
+>     // 以下から本ライブラリの初期化処理です
+> -   const layer: Layer = new LayerBuilder(scene).build()
+>     const field = new FieldBuilder().build()
+> -   field.container = layer.field
+>     const screen = new ScreenBuilder(scene).build()
+> -   screen.container = layer.screen
+>     const broadcaster = new BroadcasterBuilder(scene).build()
+>     broadcaster.standOn(field)
+>     const spot = new SpotBuilder(scene).build()
+>     spot.deployOn(field)
+>     spot.attach(screen)
+>   })
+>   // ...
+> ```
+
 ## `Layer` (本ライブラリの描画コンポーネント) の初期化
+
+> [!NOTE]
+> 独自レイアウトの場合、 `Layer` は不要です. 次の手順に進んでください.
 
 まず、 `Layer` を初期化します.
 `Layer` は本ライブラリが提供するコンポーネントの前面・背面を設定します.
@@ -72,6 +100,19 @@ const screen = new ScreenBuilder(scene).build()
   const screen = new ScreenBuilder(scene).build()
 + screen.container = layer.screen
 ```
+
+> [!NOTE]
+> 独自レイアウトの場合、 `Field` `Screen` の `container` フィールドを自身で定義したエンティティにしてください.
+> 
+> 例:
+> ```diff typescript
+>   const field = new FieldBuilder().build()
+> - field.container = layer.field
+> + field.container = <自身で定義した、マップ描画用エンティティ>
+>   const screen = new ScreenBuilder(scene).build()
+> - screen.container = layer.screen
+> + screen.container = <自身で定義した、生放送描画用エンティティ>
+> ```
 
 ## `Broadcaster`, `Spot` (放送者、訪問先のコンポーネント)の初期化
 
