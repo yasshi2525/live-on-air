@@ -60,7 +60,8 @@ akashic install @yasshi2525/live-on-air
 [新しく`g.Scene`を作成する](sample/src/builtin.scene.md)  
 [自身で定義した`g.Scene`に組み込む](sample/src/migrate.scene.md)
 
-[訪問先を追加する](sample/src/add.spot.md)
+[訪問先を追加する](sample/src/add.spot.md)  
+[訪問先の画像を変更する](sample/src/customize.spot.md)
 
 # LICENSE
 
