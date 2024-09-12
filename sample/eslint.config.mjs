@@ -46,6 +46,6 @@ export default tseslint.config(
     },
     files: ['src/**/*.ts']
   }, {
-    ignores: ['script']
+    ignores: ['script', '_bootstrap.ts']
   }
 )
