@@ -139,7 +139,14 @@ export class SpotImpl implements Spot {
     private readonly _location: g.CommonOffset,
     private readonly _liveClass: new () => Live
   ) {
-    this._view = new g.Sprite({ scene, src: assets.normal, x: _location.x, y: _location.y })
+    this._view = new g.Sprite({
+      scene,
+      src: assets.normal,
+      x: _location.x,
+      y: _location.y,
+      anchorX: 0.5,
+      anchorY: 0.5
+    })
   }
 
   deployOn (field: Field): void {

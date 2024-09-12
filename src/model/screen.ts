@@ -59,6 +59,10 @@ export interface Screen {
 }
 
 export class ScreenImpl implements Screen {
+  /**
+   * 生放送が始まった際に発火するトリガ.
+   */
+  readonly onLiveStart = new g.Trigger<Live>()
   vars?: unknown
   private _container?: g.E
   private readonly _view: g.E
@@ -93,7 +97,7 @@ export class ScreenImpl implements Screen {
       screen: this,
       spot: broadcaster.staying,
       broadcaster,
-      view: liveContainer,
+      container: liveContainer,
       vars: undefined
     }
     const live = new (broadcaster.staying.liveClass!)()
@@ -104,6 +108,7 @@ export class ScreenImpl implements Screen {
       liveContainer.destroy()
       broadcaster.backFromLive()
     })
+    this.onLiveStart.fire(live)
   }
 
   get container (): g.E | undefined {
