@@ -1,6 +1,7 @@
 import * as fs from 'node:fs'
 import * as process from 'node:process'
 import { execSync } from 'node:child_process'
+import { AssetConfigurationMap, GameConfiguration } from '@akashic/akashic-engine'
 
 fs.rmSync('script', { force: true, recursive: true })
 
@@ -50,6 +51,11 @@ try {
   execSync('npx tsc', { stdio: 'inherit' })
   execSync('npx akashic install @yasshi2525/live-on-air', { stdio: 'inherit' })
   execSync('npx akashic scan asset', { stdio: 'inherit' })
+  const gameJSON = JSON.parse(fs.readFileSync('game.json', { encoding: 'utf8' })) as GameConfiguration
+  for (const [key, value] of Object.entries(gameJSON.assets as AssetConfigurationMap).filter(([, v]) => v.type === 'image')) {
+    (gameJSON.assets as AssetConfigurationMap)[key] = { ...value, global: true }
+  }
+  fs.writeFileSync('game.json', JSON.stringify(gameJSON, null, 2))
   execSync('npx akashic sandbox', { stdio: 'inherit' })
 } catch (e) {
   const err = e as Error
