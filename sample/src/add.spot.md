@@ -19,7 +19,7 @@
     .spot({ x: 100, y: 150 })
     .spot({ x: 500, y: 350 })
     .build();
-  g.game.pushScene(scene);
+g.game.pushScene(scene);
 ```
 
 ![ゲーム画面](add.spot.builtin.1.png)
@@ -29,7 +29,7 @@
 定義した情報は引数のない `spot()` メソッドを呼び出すことで取得できます.
 
 ```diff typescript
--   const scene = new LiveOnAirSceneBuilder(g.game)
+-   const scene = new LiveOnAirSceneBuilder(g.game);
 +   const builder = new LiveOnAirSceneBuilder(g.game)
       .spot({ x: 100, y: 150 })
 -     .spot({ x: 500, y: 350 })
@@ -53,13 +53,13 @@
 そして、 `build()` を実行するとこれまで設定した属性値を持った `Spot` が作成されます.
 
 ```typescript
-    const builder = new SpotBuilder(scene)
+    const builder = new SpotBuilder(scene);
     const spot1: Spot = builder
       .location({ x: 100, y: 150 })
       .build()
     const spot2: Spot = builder
       .location({ x: 500, y: 350 })
-      .build()
+      .build();
 ```
 
 `Spot` は動作のために `Field`, `Screen` と紐づける必要があります.
@@ -67,14 +67,14 @@
 `Field`, `Screen` の `addSpot(Spot)` を実行してください.
 
 ```diff typescript
-      const field: Field = new FieldBuilder().build()
-      const screen: Screen = new ScreenBuilder(scene).build()
+      const field: Field = new FieldBuilder().build();
+      const screen: Screen = new ScreenBuilder(scene).build();
 +     // 紐づけ方法1 
-+     spot1.deployOn(field)
-+     spot1.attach(screen)
++     spot1.deployOn(field);
++     spot1.attach(screen);
 +     // 紐づけ方法2
-+     field.addSpot(spot2)
-+     screen.addSpot(spot2)
++     field.addSpot(spot2);
++     screen.addSpot(spot2);
 ```
 
 ![ゲーム画面](add.spot.migrate.1.png)
@@ -84,13 +84,13 @@
 `SpotBuilder` の各メソッドを実行することで、設定した属性値を確認できます.
 
 ```diff typescript
-      const builder = new SpotBuilder(scene)
+      const builder = new SpotBuilder(scene);
 -     const spot1: Spot = builder
 -       .location({ x: 100, y: 150 })
--       .build()
-+     builder.location({ x: 100, y: 150 })
+-       .build();
++     builder.location({ x: 100, y: 150 });
 +    // 定義情報の取得
 +    // = { x: 100, y: 150 }
-+    console.log(builder.location())
-+    const spot1: Spot = builder.build()
++    console.log(builder.location());
++    const spot1: Spot = builder.build();
 ```

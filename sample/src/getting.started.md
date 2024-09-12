@@ -77,21 +77,21 @@ live-on-air は構築済みのゲーム基盤を提供します.
 `main.ts`
 
 ```typescript
-import { GameMainParameterObject } from './parameterObject'
-import { SceneBuilder } from '@yasshi2525/live-on-air'
+import { GameMainParameterObject } from './parameterObject';
+import { LiveOnAirSceneBuilder } from '@yasshi2525/live-on-air';
 
-export const main = (param: GameMainParameterObject) => {
-  g.game.vars.gameState = { score: 0 }
-  g.game.random = param.random
+export const main = (param: GameMainParameterObject): void => {
+  g.game.vars.gameState = { score: 0 };
+  g.game.random = param.random;
   
-  const scene = new SceneBuilder(g.game)
+  const scene = new LiveOnAirSceneBuilder(g.game)
     .spot({ x: 300, y: 0 })
     .spot({ x: 500, y: 0 })
     .spot({ x: 700, y: 0 })
     .spot({ x: 900, y: 0 })
-    .build()
-  g.game.pushScene(scene)
-}
+    .build();
+  g.game.pushScene(scene);
+};
 ```
 
 > [!NOTE]

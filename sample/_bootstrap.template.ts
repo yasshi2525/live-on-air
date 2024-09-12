@@ -1,10 +1,11 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 // 通常このファイルを編集する必要はありません。ゲームの処理は main.js に記述してください
 import { main } from './main'
 
 import { GameMainParameterObject } from './src/parameterObject'
 
-export = (originalParam: g.GameMainParameterObject) => {
+export = (originalParam: g.GameMainParameterObject): void => {
   const param = {} as GameMainParameterObject & Record<string, unknown>
   Object.keys(originalParam).forEach((key) => {
     param[key] = (originalParam as Record<string, unknown>)[key]

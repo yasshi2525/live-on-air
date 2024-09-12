@@ -1,12 +1,13 @@
-import * as fs from "node:fs";
-import {execSync} from "node:child_process";
+import * as fs from 'node:fs'
+import * as process from 'node:process'
+import { execSync } from 'node:child_process'
 
-fs.rmSync('script', { force: true, recursive: true });
+fs.rmSync('script', { force: true, recursive: true })
 
 const entrypoint = JSON.parse(
-  fs.existsSync('entrypoint.json') ?
-    fs.readFileSync('entrypoint.json', 'utf8') :
-    fs.readFileSync('entrypoint.sample.json', 'utf8')
+  fs.existsSync('entrypoint.json')
+    ? fs.readFileSync('entrypoint.json', 'utf8')
+    : fs.readFileSync('entrypoint.sample.json', 'utf8')
 ).main
 
 const _bootstrap = fs.readFileSync('_bootstrap.template.ts', 'utf-8')
@@ -29,8 +30,8 @@ fs.writeFileSync('game.json', `
   }
 }`)
 
-const teardown = () => {
-  fs.rmSync('script', { force: true, recursive: true });
+const teardown = (): void => {
+  fs.rmSync('script', { force: true, recursive: true })
   fs.rmSync('_bootstrap.ts', { force: true })
   fs.rmSync('game.json', { force: true })
 }
@@ -52,7 +53,7 @@ try {
   execSync('npx akashic sandbox', { stdio: 'inherit' })
 } catch (e) {
   const err = e as Error
-  const stdout = (e as Record<string,Buffer>).stdout
+  const stdout = (e as Record<string, Buffer>).stdout
   console.error(stdout?.toString())
   console.error(err.message)
   if (err.stack) {
