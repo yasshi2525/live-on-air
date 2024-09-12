@@ -19,7 +19,7 @@
     .spot({ x: 100, y: 150 })
     .spot({ x: 500, y: 350 })
     .build();
-g.game.pushScene(scene);
+  g.game.pushScene(scene);
 ```
 
 ![ゲーム画面](add.spot.builtin.1.png)
