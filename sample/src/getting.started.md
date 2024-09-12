@@ -94,6 +94,8 @@ export const main = (param: GameMainParameterObject): void => {
 };
 ```
 
+[コード全文](getting.started.ts)
+
 > [!NOTE]
 > 上記は live-on-air のもっとも簡単な使い方の一例です.
 > カスタマイズ方法は後ほど紹介します.

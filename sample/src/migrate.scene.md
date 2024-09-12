@@ -36,6 +36,8 @@
   };
 ```
 
+[コード全文](migrate.scene.ts)
+
 > [!NOTE]
 > 独自レイアウトの場合、 `Layer` は不要なので初期化・設定処理を削除してください.
 > ```diff typescript

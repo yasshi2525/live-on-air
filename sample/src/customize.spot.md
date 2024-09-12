@@ -72,6 +72,8 @@
 > [!NOTE]
 > `g.ImageAsset` として指定するために、画像アセットはグローバルアセットにしてください. ([参考](https://akashic-games.github.io/reverse-reference/v3/asset/global-asset.html))
 
+[コード全文](customize.spot.builtin.ts)
+
 ### 一括で画像を指定する
 
 複数の `Spot` を作る場合で、すべてに同じ画像を適用する際は `LiveOnAirSceneBuilder.getDefault(g.game)` を使うと便利です.
@@ -98,6 +100,8 @@
     .build();
 ```
 
+[コード全文](customize.default.spot.builtin.ts)
+
 ## 独自の `g.Scene` を利用している場合
 
 `SpotBuilder` で `Spot` を初期化する際に画像を指定します. `image()` の引数に画像アセットを指定してください.
@@ -116,6 +120,8 @@
 
 > [!NOTE]
 > `LiveOnAirScene` を使わない場合、画像アセットはグローバルアセットでなくとも構いません.
+
+[コード全文](customize.spot.migrate.ts)
 
 ### 一括で画像を指定する
 
@@ -141,3 +147,4 @@
         .build();
 ```
 
+[コード全文](customize.default.spot.migrate.ts)

@@ -22,6 +22,8 @@
   g.game.pushScene(scene);
 ```
 
+[コード全文](add.spot.builtin.ts)
+
 ![ゲーム画面](add.spot.builtin.1.png)
 
 ### 設定した `Spot` の属性値を取得する
@@ -41,6 +43,8 @@
 +   const scene = builder.build();
     g.game.pushScene(scene);
 ```
+
+[コード全文](add.spot.refer.builtin.ts)
 
 ## 独自の `g.Scene` を利用している場合
 
@@ -77,6 +81,8 @@
 +     screen.addSpot(spot2);
 ```
 
+[コード全文](add.spot.migrate.ts)
+
 ![ゲーム画面](add.spot.migrate.1.png)
 
 ### 設定した `Spot` の属性値を取得する
@@ -94,3 +100,5 @@
 +    console.log(builder.location());
 +    const spot1: Spot = builder.build();
 ```
+
+[コード全文](add.spot.refer.migrate.ts)
