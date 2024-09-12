@@ -2,6 +2,10 @@
 
 すでに自分でゲーム用の `g.Scene` を定義している場合の本ライブラリの組み込み方を説明します.
 
+描画内容の制御を自分で用意するか、本ライブラリ提供のものを利用するかで少し手順が変わります.
+本ライブラリ提供のものを利用するとエンティティ間の前後関係などは自動で制御されますが、本ライブラリ以外に描画するエンティティが多種ある場合や、独自のレイアウト機構を持つ場合、干渉する可能性があります.
+自分で用意する場合は **「独自レイアウトの場合」** の注意書きに沿って構築してください.
+
 ## 概要
  
 自身の `g.Scene` の `onLoad()` の呼び出し箇所に以下を追記してください.
@@ -9,30 +13,56 @@
 以降で内容を説明します.
 
 ```diff typescript
-+ import {Broadcaster, BroadcasterBuilder, Field, FieldBuilder, Layer, LayerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder} from "@yasshi2525/live-on-air";
-  
-  export const main = (param: GameMainParameterObject) => {
++ import { Broadcaster, BroadcasterBuilder, Field, FieldBuilder, Layer, LayerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
+
+  export const main = (param: GameMainParameterObject): void => {
     // 自身で実装している g.Scene
-    const scene = new g.Scene({game: g.game})
+    const scene = new g.Scene({ game: g.game });
     scene.onLoad.add(() => {
       // 既存の g.Scene の初期化処理
 +     // 以下から本ライブラリの初期化処理です
-+     const layer: Layer = new LayerBuilder(scene).build()
-+     const field = new FieldBuilder().build()
-+     field.container = layer.field
-+     const screen = new ScreenBuilder(scene).build()
-+     screen.container = layer.screen
-+     const broadcaster = new BroadcasterBuilder(scene).build()
-+     broadcaster.standOn(field)
-+     const spot = new SpotBuilder(scene).build()
-+     spot.deployOn(field)
-+     spot.attach(screen)
-    })
-    g.game.pushScene(scene)
-  }
++     const layer: Layer = new LayerBuilder(scene).build();
++     const field = new FieldBuilder().build();
++     field.container = layer.field;
++     const screen = new ScreenBuilder(scene).build();
++     screen.container = layer.screen;
++     const broadcaster = new BroadcasterBuilder(scene).build();
++     broadcaster.standOn(field);
++     const spot = new SpotBuilder(scene).build();
++     spot.deployOn(field);
++     spot.attach(screen);
+    });
+    g.game.pushScene(scene);
+  };
 ```
 
+[コード全文](migrate.scene.ts)
+
+> [!NOTE]
+> 独自レイアウトの場合、 `Layer` は不要なので初期化・設定処理を削除してください.
+> ```diff typescript
+> - import { Broadcaster, BroadcasterBuilder, Field, FieldBuilder, Layer, LayerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
+> + import { Broadcaster, BroadcasterBuilder, Field, FieldBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
+>   // ...
+>     // 以下から本ライブラリの初期化処理です
+> -   const layer: Layer = new LayerBuilder(scene).build();
+>     const field = new FieldBuilder().build();
+> -   field.container = layer.field;
+>     const screen = new ScreenBuilder(scene).build();
+> -   screen.container = layer.screen;
+>     const broadcaster = new BroadcasterBuilder(scene).build();
+>     broadcaster.standOn(field);
+>     const spot = new SpotBuilder(scene).build();
+>     spot.deployOn(field);
+>     spot.attach(screen);
+>   });
+>   // ...
+> ```
+
 ## `Layer` (本ライブラリの描画コンポーネント) の初期化
+
+> [!NOTE]
+> 独自レイアウトの場合、 `Layer` は不要です. 次の手順に進んでください.
 
 まず、 `Layer` を初期化します.
 `Layer` は本ライブラリが提供するコンポーネントの前面・背面を設定します.
@@ -41,8 +71,8 @@ Layer を作成しないとゲーム画面上に描画されない点にご注�
 `Layer` は `LayerBuilder` の `build()` を使用して作成してください.
 
 ```typescript
-import { Layer, LayerBuilder } from '@yasshi2525/live-on-air'
-const layer: Layer = new LayerBuilder(scene).build()
+import { Layer, LayerBuilder } from '@yasshi2525/live-on-air';
+const layer: Layer = new LayerBuilder(scene).build();
 ```
 
 ## `Field` と `Screen` (マップ画面、放送画面の制御コンポーネント)の初期化
@@ -57,9 +87,9 @@ const layer: Layer = new LayerBuilder(scene).build()
 `Field`, `Screen` は `FieldBuilder`, `ScreenBuilder` の `build()` を使用して作成してください.
 
 ```typescript
-import { Field, FieldBuilder, Screen, ScreenBuilder } from '@yasshi2525/live-on-air'
-const field = new FieldBuilder().build()
-const screen = new ScreenBuilder(scene).build()
+import { Field, FieldBuilder, Screen, ScreenBuilder } from '@yasshi2525/live-on-air';
+const field = new FieldBuilder().build();
+const screen = new ScreenBuilder(scene).build();
 ```
 
 そして `Field`, `Screen` をゲーム画面上に描画するために、 `Layer` のフィールドと紐づけます.
@@ -67,11 +97,24 @@ const screen = new ScreenBuilder(scene).build()
 これを対応する `Layer` の `field`, `screen` フィールドとしてください.
 
 ```diff typescript
-  const field = new FieldBuilder().build()
-+ field.container = layer.field
-  const screen = new ScreenBuilder(scene).build()
-+ screen.container = layer.screen
+  const field = new FieldBuilder().build();
++ field.container = layer.field;
+  const screen = new ScreenBuilder(scene).build();
++ screen.container = layer.screen;
 ```
+
+> [!NOTE]
+> 独自レイアウトの場合、 `Field` `Screen` の `container` フィールドを自身で定義したエンティティにしてください.
+> 
+> 例:
+> ```diff typescript
+>   const field = new FieldBuilder().build();
+> - field.container = layer.field;
+> + field.container = <自身で定義した、マップ描画用エンティティ>;
+>   const screen = new ScreenBuilder(scene).build();
+> - screen.container = layer.screen;
+> + screen.container = <自身で定義した、生放送描画用エンティティ>;
+> ```
 
 ## `Broadcaster`, `Spot` (放送者、訪問先のコンポーネント)の初期化
 
@@ -82,27 +125,27 @@ const screen = new ScreenBuilder(scene).build()
 
 ```typescript
 import { Broadcaster, BroadcasterBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air'
-const broadcaster = new BroadcasterBuilder(scene).build()
-const spot = new SpotBuilder(scene).build()
+const broadcaster = new BroadcasterBuilder(scene).build();
+const spot = new SpotBuilder(scene).build();
 ```
 
 どちらも `Field` に登録しないと機能しません.
 
 ```diff typescript
-  const broadcaster = new BroadcasterBuilder(scene).build()
-+ broadcaster.standOn(field)
-  const spot = new SpotBuilder(scene).build()
-+ spot.deployOn(field)
+  const broadcaster = new BroadcasterBuilder(scene).build();
++ broadcaster.standOn(field);
+  const spot = new SpotBuilder(scene).build();
++ spot.deployOn(field);
 ```
 
 `Sopt` はさらに `Screen` にも登録しないと機能しません.
 
 ```diff typescript
-  const broadcaster = new BroadcasterBuilder(scene).build()
-  broadcaster.standOn(field)
-  const spot = new SpotBuilder(scene).build()
-  spot.deployOn(field)
-+ spot.attach(screen)
+  const broadcaster = new BroadcasterBuilder(scene).build();
+  broadcaster.standOn(field);
+  const spot = new SpotBuilder(scene).build();
+  spot.deployOn(field);
++ spot.attach(screen);
 ```
 
 以上がすでに存在する `g.Scene` に本ライブラリを組み込む手順です.

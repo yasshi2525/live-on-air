@@ -2,7 +2,7 @@ import { GameMainParameterObject } from './parameterObject';
 import { Broadcaster, BroadcasterBuilder, Field, FieldBuilder, Layer, LayerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
 
 /**
- * 自身で実装している g.Scene に本ライブラリを組み込む記述例です.
+ * 自身で g.Scene を用意してい場合の Spot の画像の変更の仕方です.
  *
  * @param param
  */
@@ -18,13 +18,26 @@ export const main = (param: GameMainParameterObject): void => {
     const layer: Layer = new LayerBuilder(scene).build();
     const field: Field = new FieldBuilder().build();
     field.container = layer.field;
-    const screen:Screen = new ScreenBuilder(scene).build();
+    const screen: Screen = new ScreenBuilder(scene).build();
     screen.container = layer.screen;
     const broadcaster:Broadcaster = new BroadcasterBuilder(scene).build();
     broadcaster.standOn(field);
-    const spot:Spot = new SpotBuilder(scene).build();
-    spot.deployOn(field);
-    spot.attach(screen);
+    const spot1: Spot = new SpotBuilder(scene)
+      .location({ x: 100, y: 150 })
+      .image({
+        locked: scene.asset.getImageById('spot.custom.locked'),
+        unvisited: scene.asset.getImageById('spot.custom.unvisited'),
+        normal: scene.asset.getImageById('spot.custom.normal'),
+        disabled: scene.asset.getImageById('spot.custom.disabled')
+      })
+      .build();
+    spot1.deployOn(field);
+    spot1.attach(screen);
+    const spot2: Spot = new SpotBuilder(scene)
+      .location({ x: 500, y: 350 })
+      .build();
+    field.addSpot(spot2);
+    screen.addSpot(spot2);
   });
   g.game.pushScene(scene);
 };

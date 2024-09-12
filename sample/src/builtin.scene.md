@@ -7,14 +7,14 @@
 `LiveOnAirSceneBuilder` の `build()` を呼び出すと、本ライブラリのコンポーネントが配置された `g.Scene` が作成されます.
 
 ```diff typescript
-+ import {LiveOnAirScene, LiveOnAirSceneBuilder} from "@yasshi2525/live-on-air";
-  export const main = (param: GameMainParameterObject) => {
-    g.game.vars.gameState = { score: 0 }
-    g.game.random = param.random
++ import { LiveOnAirScene, LiveOnAirSceneBuilder } from '@yasshi2525/live-on-air';
+  export const main = (param: GameMainParameterObject): void => {
+    g.game.vars.gameState = { score: 0 };
+    g.game.random = param.random;
     
-+   const scene: g.Scene & LiveOnAirScene = new LiveOnAirSceneBuilder(g.game).build()
-    g.game.pushScene(scene)
-}
++   const scene: g.Scene & LiveOnAirScene = new LiveOnAirSceneBuilder(g.game).build();
+    g.game.pushScene(scene);
+  };
 ```
 
 上記を実行すると下記のような画面が出力されます.
@@ -28,17 +28,19 @@
 各コンポーネントは `g.Scene` の初期化後に利用可能です. 参照する際は必ず `onLoad()` の呼び出し後としてください.
 
 ```diff typescript
-- import {LiveOnAirScene, LiveOnAirSceneBuilder} from "@yasshi2525/live-on-air";
-+ import {LiveOnAirScene, LiveOnAirSceneBuilder, Broadcaster, Spot, Field, Screen, Layer} from "@yasshi2525/live-on-air";
+- import { LiveOnAirScene, LiveOnAirSceneBuilder } from "@yasshi2525/live-on-air";
++ import { LiveOnAirScene, LiveOnAirSceneBuilder, Broadcaster, Spot, Field, Screen, Layer } from "@yasshi2525/live-on-air";
 scene.onLoad.add(() => {
     // 各コンポーネントの参照
-    const broadcaster: Broadcaster = scene.broadcaster
-    const spots: Spot[] = scene.spots
-    const field: Field = scene.field
-    const screen: Screen = scene.screen
-    const layer: Layer = scene.layer
-})
+    const broadcaster: Broadcaster = scene.broadcaster;
+    const spots: Spot[] = scene.spots;
+    const field: Field = scene.field;
+    const screen: Screen = scene.screen;
+    const layer: Layer = scene.layer;
+});
 ```
+
+[コード全文](builtin.scene.ts)
 
 各コンポーネントの役割は以下の通りです.
 
