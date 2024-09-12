@@ -57,11 +57,10 @@
 そして、 `build()` を実行するとこれまで設定した属性値を持った `Spot` が作成されます.
 
 ```typescript
-    const builder = new SpotBuilder(scene);
-    const spot1: Spot = builder
+    const spot1: Spot = new SpotBuilder(scene)
       .location({ x: 100, y: 150 })
       .build()
-    const spot2: Spot = builder
+    const spot2: Spot = new SpotBuilder(scene)
       .location({ x: 500, y: 350 })
       .build();
 ```
@@ -91,7 +90,7 @@
 
 ```diff typescript
       const builder = new SpotBuilder(scene);
--     const spot1: Spot = builder
+-     const spot1: Spot = new SpotBuilder(scene)
 -       .location({ x: 100, y: 150 })
 -       .build();
 +     builder.location({ x: 100, y: 150 });

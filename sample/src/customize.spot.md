@@ -65,6 +65,7 @@
 +       normal: g.game.asset.getImageById('spot.custom.normal'),
 +       disabled: g.game.asset.getImageById('spot.custom.disabled')
 +     })
+      .spot({ x: 500, y: 350 })
       .build();
     g.game.pushScene(scene);
 ```
@@ -73,6 +74,10 @@
 > `g.ImageAsset` として指定するために、画像アセットはグローバルアセットにしてください. ([参考](https://akashic-games.github.io/reverse-reference/v3/asset/global-asset.html))
 
 [コード全文](customize.spot.builtin.ts)
+
+左上の `Spot` の画像が変更されました.
+
+![ゲーム画面](customize.spot.builtin.1.png)
 
 ### 一括で画像を指定する
 
@@ -97,17 +102,22 @@
 -       disabled: g.game.asset.getImageById('spot.custom.disabled')
 -     })
 +    .spot({ x: 100, y: 150 })
+     .spot({ x: 500, y: 350 })
     .build();
 ```
 
 [コード全文](customize.default.spot.builtin.ts)
+
+2つとも画像が変更されました.
+
+![ゲーム画面](customize.default.spot.builtin.1.png)
 
 ## 独自の `g.Scene` を利用している場合
 
 `SpotBuilder` で `Spot` を初期化する際に画像を指定します. `image()` の引数に画像アセットを指定してください.
 
 ```diff typescript
-      const spot1: Spot = builder
+      const spot1: Spot = new SpotBuilder(scene)
         .location({ x: 100, y: 150 })
 +       .image({
 +         locked: scene.asset.getImageById('spot.custom.locked'),
@@ -122,6 +132,11 @@
 > `LiveOnAirScene` を使わない場合、画像アセットはグローバルアセットでなくとも構いません.
 
 [コード全文](customize.spot.migrate.ts)
+
+左上の `Spot` の画像が変更されました.  
+TODO: バグのため個別設定不可. 要差し替え
+
+![ゲーム画面](customize.spot.migrate.1.png)
 
 ### 一括で画像を指定する
 
@@ -148,3 +163,7 @@
 ```
 
 [コード全文](customize.default.spot.migrate.ts)
+
+2つとも画像が変更されました.
+
+![ゲーム画面](customize.default.spot.migrate.1.png)

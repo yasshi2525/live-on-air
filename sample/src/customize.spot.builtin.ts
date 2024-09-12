@@ -18,6 +18,7 @@ export const main = (param: GameMainParameterObject): void => {
       normal: g.game.asset.getImageById('spot.custom.normal'),
       disabled: g.game.asset.getImageById('spot.custom.disabled')
     })
+    .spot({ x: 500, y: 350 })
     .build();
   g.game.pushScene(scene);
 };

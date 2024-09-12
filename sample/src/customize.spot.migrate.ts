@@ -22,8 +22,7 @@ export const main = (param: GameMainParameterObject): void => {
     screen.container = layer.screen;
     const broadcaster:Broadcaster = new BroadcasterBuilder(scene).build();
     broadcaster.standOn(field);
-    const builder = new SpotBuilder(scene);
-    const spot1: Spot = builder
+    const spot1: Spot = new SpotBuilder(scene)
       .location({ x: 100, y: 150 })
       .image({
         locked: scene.asset.getImageById('spot.custom.locked'),
@@ -34,7 +33,7 @@ export const main = (param: GameMainParameterObject): void => {
       .build();
     spot1.deployOn(field);
     spot1.attach(screen);
-    const spot2: Spot = builder
+    const spot2: Spot = new SpotBuilder(scene)
       .location({ x: 500, y: 350 })
       .build();
     field.addSpot(spot2);

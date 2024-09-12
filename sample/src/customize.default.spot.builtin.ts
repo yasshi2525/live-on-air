@@ -18,6 +18,7 @@ export const main = (param: GameMainParameterObject): void => {
     });
   const scene = new LiveOnAirSceneBuilder(g.game)
     .spot({ x: 100, y: 150 })
+    .spot({ x: 500, y: 350 })
     .build();
   g.game.pushScene(scene);
 };
