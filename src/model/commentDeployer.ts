@@ -1,5 +1,4 @@
 import { CommentSupplier } from './commentSupplier'
-import { PrimitiveValueSupplier, ValueValidator } from '../value/value'
 
 /**
  * 画面上に流れるコメントをゲーム画面に配置します.
@@ -13,6 +12,11 @@ export interface CommentDeployer {
   readonly onDeploy: g.Trigger<g.E>
 
   /**
+   * コメントが削除されたとき発火されるトリガ
+   */
+  readonly onFadeOut: g.Trigger<g.E>
+
+  /**
    * コメントを配置するエンティティ.
    *
    * コメントは指定されたエンティティの子として登録されます.
@@ -22,12 +26,17 @@ export interface CommentDeployer {
   /**
    * コメントが流れる速度. 1フレームあたりの移動座標数
    */
-  speed: number
+  readonly speed: number
 
   /**
    * コメントの表示間隔 (y座標値)
    */
   readonly intervalY: number
+
+  /**
+   * コメントの表示に使うフォント
+   */
+  readonly font: g.Font
 
   /**
    * 配置対象のコメント生成器一覧を取得します.
@@ -61,35 +70,20 @@ export interface CommentDeployerOptions {
 
 export class CommentDeployerImpl implements CommentDeployer {
   readonly onDeploy = new g.Trigger<g.E>()
+  readonly onFadeOut = new g.Trigger<g.E>()
   private readonly scene: g.Scene
-  private readonly font: g.Font
+  private readonly _font: g.Font
   private readonly views: { row: number, view: g.E }[] = []
   private _container?: g.E
-  private readonly _speed: PrimitiveValueSupplier<number>
-  private readonly _intervalY: PrimitiveValueSupplier<number>
+  private readonly _speed: number
+  private readonly _intervalY: number
   private readonly _suppliers = new Set<CommentSupplier>()
 
   constructor ({ scene, font, speed, intervalY }: CommentDeployerOptions) {
     this.scene = scene
-    this.font = font
-    this._speed = PrimitiveValueSupplier.create(speed, new class extends ValueValidator<number> {
-      override isInvalid (value: number): boolean {
-        return value <= 0
-      }
-
-      override getMessage (value: number): string {
-        return super.getMessage(value) + ' コメントの移動速度は0より大きな正の値ではなければなりません.'
-      }
-    }())
-    this._intervalY = PrimitiveValueSupplier.create(intervalY, new class extends ValueValidator<number> {
-      override isInvalid (value: number): boolean {
-        return value <= 0
-      }
-
-      override getMessage (value: number): string {
-        return super.getMessage(value) + ' コメントの表示間隔(y座標値)は0より大きな正の値ではなければなりません.'
-      }
-    }())
+    this._font = font
+    this._speed = speed
+    this._intervalY = intervalY
   }
 
   get container (): g.E | undefined {
@@ -110,15 +104,15 @@ export class CommentDeployerImpl implements CommentDeployer {
   }
 
   get speed (): number {
-    return this._speed.get()
-  }
-
-  set speed (value: number) {
-    this._speed.setIf(value)
+    return this._speed
   }
 
   get intervalY (): number {
-    return this._intervalY.get()
+    return this._intervalY
+  }
+
+  get font (): g.Font {
+    return this._font
   }
 
   get suppliers (): readonly CommentSupplier[] {
@@ -143,7 +137,7 @@ export class CommentDeployerImpl implements CommentDeployer {
         full.add(e.row)
       }
     }
-    for (let row = 0; row * this._intervalY.get() < bottom; row++) {
+    for (let row = 0; row * this._intervalY < bottom; row++) {
       if (!full.has(row)) {
         this.onDeploy.fire(this.createView(row, text))
         return
@@ -158,16 +152,17 @@ export class CommentDeployerImpl implements CommentDeployer {
       parent: this._container,
       font: this.font,
       x: this._container?.width ?? this.scene.game.width,
-      y: (row % (Math.ceil(this._container?.height ?? this.scene.game.height) / this.intervalY)) * this._intervalY.get(),
+      y: (row % (Math.ceil(this._container?.height ?? this.scene.game.height) / this.intervalY)) * this._intervalY,
       text
     })
     view.onUpdate.add(() => {
       if (view.x + view.width < 0) {
         view.destroy()
         this.views.splice(this.views.findIndex(e => e.view === view), 1)
+        this.onFadeOut.fire(view)
         return true
       }
-      view.x -= this._speed.get()
+      view.x -= this._speed
       view.modified()
     })
     this.views.push({ row, view })

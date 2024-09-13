@@ -1,5 +1,4 @@
 import { CommentSchema, CommentSupplier, CommentSupplierImpl } from '../model/commentSupplier'
-import { CommentDeployerConfig, CommentDeployerConfigSupplier } from '../value/commentDeployerConfig'
 import { CommentSupplierConfig, CommentSupplierConfigSupplier } from '../value/commentSupplierConfig'
 import { CommentContext } from '../model/commentContext'
 
@@ -20,12 +19,26 @@ export interface CommentSupplierConfigure {
     interval(interval: number): CommentSupplierConfigure
 
     /**
-     * 出力するコメントを登録します.
+     * 出力するコメントを追加します.
      *
      * @param comment コメント本文
      * @param conditions コメントを出力する条件(複数指定可). 省略した場合、状況にかかわらず出力します.
      */
-    add(comment: string, ...conditions: ((ctx: CommentContext) => boolean)[]): CommentSupplierConfigure
+    addComment(comment: string, ...conditions: ((ctx: CommentContext) => boolean)[]): CommentSupplierConfigure
+
+    /**
+     * 登録されたコメント設定を取得します
+     */
+    comments(): CommentSchema[]
+
+  /**
+   * 出力するコメントを登録します.
+   *
+   * これまで設定した情報は削除されます.
+   *
+   * @param comments コメント情報
+   */
+    comments(comments: CommentSchema[]): CommentSupplierConfigure
 
     /**
      * CommentSupplier を作成します.
@@ -36,11 +49,12 @@ export interface CommentSupplierConfigure {
 export class CommentSupplierConfigureImpl implements CommentSupplierConfigure {
   private readonly getter: () => CommentSupplierConfig
   private readonly setter: (obj: Partial<CommentSupplierConfig>) => void
-  private readonly payload: CommentSchema[] = []
+  private readonly commentAdder: (obj: CommentSchema) => void
 
   constructor (isDefault: boolean, private readonly scene: g.Scene, private readonly config: CommentSupplierConfigSupplier) {
     this.getter = () => isDefault ? config.default() : config.get()
     this.setter = obj => isDefault ? config.defaultIf(obj) : config.setIf(obj)
+    this.commentAdder = obj => isDefault ? config.addDefaultComment(obj) : config.addComment(obj)
   }
 
   interval(): number
@@ -54,12 +68,20 @@ export class CommentSupplierConfigureImpl implements CommentSupplierConfigure {
     return this.getter().interval
   }
 
-  add (comment: string, ...conditions: ((ctx: CommentContext) => boolean)[]): CommentSupplierConfigure {
-    this.payload.push({
-      comment,
-      conditions: [...conditions]
-    })
+  addComment (comment: string, ...conditions: ((ctx: CommentContext) => boolean)[]): CommentSupplierConfigure {
+    this.commentAdder({ comment, conditions })
     return this
+  }
+
+  comments (): CommentSchema[]
+  comments (value: CommentSchema[]): CommentSupplierConfigure
+
+  comments (args?: CommentSchema[]): CommentSchema[] | CommentSupplierConfigure {
+    if (args) {
+      this.setter({ comments: args })
+      return this
+    }
+    return this.getter().comments
   }
 
   build (): CommentSupplier {
@@ -68,7 +90,7 @@ export class CommentSupplierConfigureImpl implements CommentSupplierConfigure {
       scene: this.scene,
       interval: config.interval,
       fps: this.scene.game.fps,
-      payload: this.payload
+      comments: config.comments
     })
   }
 }

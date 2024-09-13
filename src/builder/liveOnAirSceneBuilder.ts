@@ -6,6 +6,8 @@ import { SpotConfigSupplier } from '../value/spotConfig'
 import { FieldConfigSupplier } from '../value/fieldConfig'
 import { ScreenConfigSupplier } from '../value/screenConfig'
 import { SampleLive } from '../model/live'
+import { CommentSupplierConfigSupplier } from '../value/commentSupplierConfig'
+import { CommentDeployerConfigSupplier } from '../value/commentDeployerConfig'
 
 /**
  * ゲームが動作する g.Scene を簡便に作るためのクラス.
@@ -59,7 +61,16 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
         normal: image(game.scene()!, 'image/spot.default.normal.png'),
         liveClass: SampleLive
       })
-      LiveOnAirSceneBuilder.defaultConfig = { game, layer, field, broadcaster, screen, spot }
+      const commentSupplier = new CommentSupplierConfigSupplier({
+        interval: 1000,
+        comments: [] // ここにいれると CommentSupplierBuilder が更にデフォルト値を足してしまう
+      })
+      const commentDeployer = new CommentDeployerConfigSupplier({
+        speed: 1,
+        intervalY: 40,
+        font: new g.DynamicFont({ game, fontFamily: 'sans-serif', size: 35 })
+      })
+      LiveOnAirSceneBuilder.defaultConfig = { game, layer, field, broadcaster, screen, spot, commentSupplier, commentDeployer }
     }
     this.lastUsedScene = game.scene()
     return LiveOnAirSceneBuilder.defaultConfig

@@ -5,11 +5,14 @@ import { CommentSchema } from '../model/commentSupplier'
  * {@link CommentSupplier} 生成時に利用する設定値
  */
 export interface CommentSupplierConfig {
-    /**
-     * 作成する CommentSupplier に設定する、コメントの生成間隔 (ミリ秒)
-     */
-    interval: number
-    comments: CommentSchema[]
+  /**
+   * 作成する CommentSupplier に設定する、コメントの生成間隔 (ミリ秒)
+   */
+  interval: number
+  /**
+   * 作成する CommentSupplier に設定する、コメント情報
+   */
+  comments: CommentSchema[]
 }
 
 /**
@@ -29,7 +32,7 @@ export class CommentSupplierConfigSupplier implements ValueSupplier<CommentSuppl
         return super.getMessage(value) + ' コメント生成間隔は0より大きな正の値でなければなりません.'
       }
     }())
-    this.comments = ArraySupplier.create<CommentSchema>([])
+    this.comments = ArraySupplier.create(initial.comments)
   }
 
   setIf (obj: Partial<CommentSupplierConfig>): void {

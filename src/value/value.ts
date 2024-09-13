@@ -183,7 +183,10 @@ export class ArraySupplier<T> implements ValueSupplier<T[]> {
   private store: T[] = []
 
   // eslint-disable-next-line no-useless-constructor
-  protected constructor (protected defaultValue: T[], protected validator?: ValueValidator<T[]>) {}
+  protected constructor (protected defaultValue: T[], protected validator?: ValueValidator<T[]>) {
+    this.throwsIf(defaultValue)
+    this.defaultStore = [...defaultValue]
+  }
 
   addDefault (value: T): void {
     this.throwsIf([...this.defaultStore, value])

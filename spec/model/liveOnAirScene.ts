@@ -8,5 +8,7 @@ describe('LiveOnAirScene', () => {
     expect(() => scene.broadcaster).toThrow()
     expect(() => scene.screen).toThrow()
     expect(() => scene.spots).toThrow()
+    expect(() => scene.commentSupplier).toThrow()
+    expect(() => scene.commentDeployer).toThrow()
   })
 })

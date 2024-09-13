@@ -36,9 +36,20 @@ export class CommentSupplierBuilder extends CommentSupplierConfigureImpl {
       CommentSupplierBuilder.resetDefault()
     }
     if (!CommentSupplierBuilder.defaultConfig) {
+      let isCommented = false
       CommentSupplierBuilder.defaultConfig = new CommentSupplierConfigSupplier({
         interval: 1000,
-        comments: []
+        comments: [{
+          comment: 'わこつ',
+          conditions: [() => {
+            if (isCommented) {
+              return false
+            } else {
+              isCommented = true
+              return true
+            }
+          }]
+        }]
       })
     }
     CommentSupplierBuilder.lastUsedScene = scene

@@ -1,4 +1,10 @@
-import { RecordSupplier, ObjectSupplier, PrimitiveValueSupplier, ValueValidator } from '../../src/value/value'
+import {
+  RecordSupplier,
+  ObjectSupplier,
+  PrimitiveValueSupplier,
+  ValueValidator,
+  ArraySupplier
+} from '../../src/value/value'
 
 describe('supplier', () => {
   describe('primitive value', () => {
@@ -283,6 +289,63 @@ describe('supplier', () => {
         supplier.setIf({ foo: 100, bar: 500, hoge: 1000 })
         expect(supplier.default()).toEqual({ foo: 2, bar: 3 })
         expect(supplier.get()).toEqual({ foo: 100, bar: 500 })
+      })
+    })
+  })
+
+  describe('array', () => {
+    describe('no validator', () => {
+      let supplier: ArraySupplier<number>
+      beforeEach(() => {
+        supplier = ArraySupplier.create([])
+      })
+      it('デフォルト値を設定できる', () => {
+        supplier.defaultIf([5])
+        expect(supplier.default()).toEqual([5])
+        expect(supplier.get()).toEqual([5])
+      })
+      it('値を設定できる', () => {
+        supplier.setIf([5])
+        expect(supplier.default()).toEqual([])
+        expect(supplier.get()).toEqual([5])
+      })
+      it('無効なデフォルト値は無視する', () => {
+        supplier.defaultIf(undefined)
+        expect(supplier.default()).toEqual([])
+        expect(supplier.get()).toEqual([])
+      })
+      it('無効な値は無視する', () => {
+        supplier.setIf(undefined)
+        expect(supplier.default()).toEqual([])
+        expect(supplier.get()).toEqual([])
+      })
+    })
+
+    describe('with validator', () => {
+      let supplier: ArraySupplier<number>
+      beforeEach(() => {
+        supplier = ArraySupplier.create([], new class extends ValueValidator<number[]> {
+          isInvalid (value: number[]): boolean {
+            return value.some(v => v < 0)
+          }
+        }())
+      })
+      it('無効な値で初期化はできない', () => {
+        expect(() => ArraySupplier.create([-1], new class extends ValueValidator<number[]> {
+          isInvalid (value: number[]): boolean {
+            return value.some(v => v < 0)
+          }
+        }())).toThrow('値 "[-1]" は設定できません.')
+      })
+      it('無効なデフォルト値は設定できない', () => {
+        expect(() => supplier.defaultIf([-5])).toThrow('値 "[-5]" は設定できません.')
+        expect(supplier.default()).toEqual([])
+        expect(supplier.get()).toEqual([])
+      })
+      it('無効な値は設定できない', () => {
+        expect(() => supplier.setIf([-4])).toThrow('値 "[-4]" は設定できません.')
+        expect(supplier.default()).toEqual([])
+        expect(supplier.get()).toEqual([])
       })
     })
   })

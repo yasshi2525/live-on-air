@@ -27,7 +27,7 @@ describe('commentDeployer', () => {
     field = new FieldBuilder().build()
     screen = new ScreenBuilder(scene).build()
     cs = new CommentSupplierBuilder(scene)
-      .add('hoge')
+      .addComment('hoge')
       .build()
     layer = new LayerBuilder(scene).build()
     contextSupplier = new CommentContextSupplier({ broadcaster, field, screen })
@@ -74,5 +74,49 @@ describe('commentDeployer', () => {
     const next = await waitFor(cd.onDeploy)
     expect(next.y).toBe(0)
     screenshot('comment.follow.row.png')
+  })
+  it('viewを登録すると描画される', async () => {
+    const cd = new CommentDeployerBuilder(scene).build()
+    cd.subscribe(cs)
+    const comment = await waitFor(cd.onDeploy)
+    expect(cd.container).not.toBeDefined()
+    expect(comment.parent).not.toBeDefined()
+    screenshot('comment.add.no.view.png')
+    cd.container = layer.comment
+    await gameContext.step()
+    expect(comment.parent).toBe(layer.comment)
+    screenshot('comment.add.with.view.png')
+  })
+  it('viewを解除すると描画されない', async () => {
+    const cd = new CommentDeployerBuilder(scene).build()
+    cd.subscribe(cs)
+    cd.container = layer.comment
+    expect(cd.container).toBe(layer.comment)
+    const comment = await waitFor(cd.onDeploy)
+    expect(comment.parent).toBe(layer.comment)
+    screenshot('comment.remove.with.view.png')
+    cd.container = undefined
+    expect(comment.parent).not.toBeDefined()
+    await gameContext.step()
+    screenshot('comment.remove.no.view.png')
+  })
+  it('画面端までいくと消える', async () => {
+    const cd = new CommentDeployerBuilder(scene).build()
+    cd.subscribe(cs)
+    cd.container = layer.comment
+    const comment = await waitFor(cd.onFadeOut)
+    expect(comment.destroyed()).toBeTruthy()
+    screenshot('comment.fadeout.png')
+  })
+  it('画面高さがないときでもはみ出して描画する', async () => {
+    const cd = new CommentDeployerBuilder(scene).build()
+    cd.subscribe(cs)
+    layer.comment.height = 0
+    layer.comment.modified()
+    await gameContext.step()
+    cd.container = layer.comment
+    const comment = await waitFor(cd.onDeploy)
+    expect(comment.y).toBe(0)
+    screenshot('comment.zero.height.png')
   })
 })

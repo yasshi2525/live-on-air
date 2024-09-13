@@ -13,6 +13,25 @@ import { CommentContextSupplier } from './commentContextSupplier'
 export type CommentSupplierStatus = 'initialized' | 'scheduled'
 
 /**
+ * コメントが描画される条件を定義します.
+ */
+export type CommentCondition = (ctx: CommentContext) => boolean
+
+/**
+ * コメント本文と描画条件を格納します.
+ */
+export interface CommentSchema {
+  /**
+   * コメント本文
+   */
+  comment: string,
+  /**
+   * コメント描画条件. すべての条件をみたす際に描画されます.
+   */
+  conditions: CommentCondition[]
+}
+
+/**
  * 画面上に表示されるコメントを生成します.
  *
  * {@link CommentSupplierBuilder} を使ってインスタンスを作成してください.
@@ -31,7 +50,7 @@ export interface CommentSupplier {
   /**
    * 登録された全コメント.
    */
-  readonly comments: readonly string[]
+  readonly comments: readonly CommentSchema[]
 
   /**
    * 現在の状態
@@ -67,39 +86,30 @@ export interface CommentSupplier {
   fetch(context: CommentContext): string[]
 }
 
-export type CommentCondition = (ctx: CommentContext) => boolean
-
-export interface CommentSchema {
-  comment: string,
-  conditions: CommentCondition[]
-}
-
 export interface CommentSupplierOptions {
   scene: g.Scene
   interval: number
   fps: number
-  payload: CommentSchema[]
+  comments: CommentSchema[]
 }
 
 export class CommentSupplierImpl implements CommentSupplier {
   readonly onSupply = new g.Trigger<string>()
-  readonly comments: readonly string[]
   private readonly scene: g.Scene
   private readonly _deployers = new Set<CommentDeployer>()
   private _interval: PrimitiveValueSupplier<number>
   private readonly fps: PrimitiveValueSupplier<number>
-  private readonly payload: CommentSchema[]
+  private readonly _comments: CommentSchema[]
   private indexCount = 0
   private intervalCount = 0
   private _status: CommentSupplierStatus = 'initialized'
 
-  constructor ({ scene, interval, fps, payload }: CommentSupplierOptions) {
+  constructor ({ scene, interval, fps, comments }: CommentSupplierOptions) {
     this.scene = scene
-    if (payload.length === 0) {
+    if (comments.length === 0) {
       throw new Error('コメント候補が登録されていません. 1つ以上のエントリを登録してください.')
     }
-    this.payload = [...payload]
-    this.comments = this.payload.map(p => p.comment)
+    this._comments = [...comments]
     this._interval = PrimitiveValueSupplier.create(interval, new class extends ValueValidator<number> {
       override isInvalid (value: number): boolean {
         return value <= 0
@@ -178,6 +188,10 @@ export class CommentSupplierImpl implements CommentSupplier {
     return [...this._deployers]
   }
 
+  get comments (): readonly CommentSchema[] {
+    return [...this._comments]
+  }
+
   private next (): CommentSchema {
     this.indexCount++
     return this.schema
@@ -188,15 +202,15 @@ export class CommentSupplierImpl implements CommentSupplier {
   }
 
   private loops (index: number): boolean {
-    return this.index === index % this.payload.length
+    return this.index === index % this._comments.length
   }
 
   private get index (): number {
-    return this.indexCount % this.payload.length
+    return this.indexCount % this._comments.length
   }
 
   private get schema (): CommentSchema {
-    return this.payload[this.index]
+    return this._comments[this.index]
   }
 
   private get comment (): string {
