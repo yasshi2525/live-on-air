@@ -8,12 +8,14 @@ import { PrimitiveValueSupplier, ValueValidator } from '../value/value'
  * CommentSupplier は本クラスを用いて作成してください.
  */
 export class CommentSupplierBuilder {
+  private readonly scene: g.Scene
   private readonly queue: CommentSchema[] = []
   private readonly fps: number
   private readonly _interval: PrimitiveValueSupplier<number>
 
-  constructor (game: g.Game) {
-    this.fps = game.fps
+  constructor (scene: g.Scene) {
+    this.scene = scene
+    this.fps = scene.game.fps
     this._interval = PrimitiveValueSupplier.create(1000, new class extends ValueValidator<number> {
       override isInvalid (value: number): boolean {
         return value <= 0
@@ -61,6 +63,6 @@ export class CommentSupplierBuilder {
    * CommentSupplier を作成します.
    */
   build (): CommentSupplier {
-    return new CommentSupplierImpl({ payload: this.queue, fps: this.fps, interval: this._interval.get() })
+    return new CommentSupplierImpl({ scene: this.scene, payload: this.queue, fps: this.fps, interval: this._interval.get() })
   }
 }

@@ -19,6 +19,12 @@ export interface Layer {
    */
   readonly screen: g.E
   /**
+   * コメント層
+   *
+   * {@link CommentDeployer} がコメントを配置するためのレイヤ
+   */
+  readonly comment: g.E
+  /**
    * ライブラリ利用者が自由に使えるフィールドです.
    */
   vars?: unknown
@@ -27,11 +33,13 @@ export interface Layer {
 export class LayerImpl implements Layer {
   readonly field: g.E
   readonly screen: g.E
+  readonly comment: g.E
   vars?: unknown
 
   constructor (private readonly scene: g.Scene, private readonly config: LayerConfig) {
     this.field = this.createEntity('field')
     this.screen = this.createEntity('screen')
+    this.comment = this.createEntity('comment')
   }
 
   private createEntity (typ: LayerType) {

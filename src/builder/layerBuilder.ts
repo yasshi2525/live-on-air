@@ -38,7 +38,8 @@ export class LayerBuilder extends LayerConfigureImpl {
     if (!LayerBuilder.defaultConfig) {
       LayerBuilder.defaultConfig = new LayerConfigSupplier({
         field: { x: 100, y: 100, width: scene.game.width - 200, height: scene.game.height - 200 },
-        screen: { x: 100, y: 100, width: scene.game.width - 200, height: scene.game.height - 200 }
+        screen: { x: 100, y: 100, width: scene.game.width - 200, height: scene.game.height - 200 },
+        comment: { x: 100, y: 100, width: scene.game.width - 200, height: scene.game.height - 200 }
       })
     }
     LayerBuilder.lastUsedScene = scene

@@ -42,7 +42,8 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
     if (!LiveOnAirSceneBuilder.defaultConfig) {
       const layer = new LayerConfigSupplier({
         field: { x: 100, y: 100, width: game.width - 200, height: game.height - 200 },
-        screen: { x: 100, y: 100, width: game.width - 200, height: game.height - 200 }
+        screen: { x: 100, y: 100, width: game.width - 200, height: game.height - 200 },
+        comment: { x: 100, y: 100, width: game.width - 200, height: game.height - 200 }
       })
       const field = new FieldConfigSupplier({})
       const broadcaster = new BroadcasterConfigSupplier({
