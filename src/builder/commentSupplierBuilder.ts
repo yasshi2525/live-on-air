@@ -1,68 +1,56 @@
-import { CommentSchema, CommentSupplier, CommentSupplierImpl } from '../model/commentSupplier'
-import { CommentContext } from '../model/commentContext'
-import { PrimitiveValueSupplier, ValueValidator } from '../value/value'
+import { CommentSupplierConfigure, CommentSupplierConfigureImpl } from './commentSupplierConfigure'
+import { CommentSupplierConfigSupplier } from '../value/commentSupplierConfig'
 
 /**
  * コメント生成器 ({@link CommentSupplier}) を簡便に作るためのクラス.
  *
  * CommentSupplier は本クラスを用いて作成してください.
  */
-export class CommentSupplierBuilder {
-  private readonly scene: g.Scene
-  private readonly queue: CommentSchema[] = []
-  private readonly fps: number
-  private readonly _interval: PrimitiveValueSupplier<number>
+export class CommentSupplierBuilder extends CommentSupplierConfigureImpl {
+  private static lastUsedScene?: g.Scene
+  private static defaultConfig?: CommentSupplierConfigSupplier
+  private static defaultConfigure?: CommentSupplierConfigure
 
   constructor (scene: g.Scene) {
-    this.scene = scene
-    this.fps = scene.game.fps
-    this._interval = PrimitiveValueSupplier.create(1000, new class extends ValueValidator<number> {
-      override isInvalid (value: number): boolean {
-        return value <= 0
-      }
-
-      override getMessage (value: number): string {
-        return super.getMessage(value) + ' コメント生成間隔は0より大きな正の値でなければなりません.'
-      }
-    }())
+    super(false, scene, new CommentSupplierConfigSupplier(CommentSupplierBuilder.getDefaultConfig(scene).get()))
   }
 
   /**
-   * コメントの生成間隔(ミリ秒)の初期値を取得します.
-   */
-  interval(): number
-  /**
-   * コメントの生成間隔(ミリ秒)の初期値を設定します.
-   * @param value 生成間隔の初期値
-   */
-  interval(value: number): CommentSupplierBuilder
-
-  interval (args?: number): number | CommentSupplierBuilder {
-    if (typeof args === 'number') {
-      this._interval.setIf(args)
-      return this
-    }
-    return this._interval.get()
-  }
-
-  /**
-   * 出力するコメントを登録します.
+   * 各属性値に値を設定しなかった際に使用されるデフォルト値を設定します.
    *
-   * @param comment コメント本文
-   * @param conditions コメントを出力する条件(複数指定可). 省略した場合、状況にかかわらず出力します.
+   * @param scene 現在の scene を指定してください.
    */
-  add (comment: string, ...conditions: ((ctx: CommentContext) => boolean)[]): CommentSupplierBuilder {
-    this.queue.push({
-      comment,
-      conditions: [...conditions]
-    })
-    return this
+  static getDefault (scene: g.Scene): CommentSupplierConfigure {
+    if (CommentSupplierBuilder.lastUsedScene !== scene) {
+      CommentSupplierBuilder.resetDefault()
+    }
+    if (!CommentSupplierBuilder.defaultConfigure) {
+      CommentSupplierBuilder.defaultConfigure = new CommentSupplierConfigureImpl(true, scene, CommentSupplierBuilder.getDefaultConfig(scene))
+    }
+    CommentSupplierBuilder.lastUsedScene = scene
+    return CommentSupplierBuilder.defaultConfigure
+  }
+
+  private static getDefaultConfig (scene: g.Scene): CommentSupplierConfigSupplier {
+    if (CommentSupplierBuilder.lastUsedScene !== scene) {
+      CommentSupplierBuilder.resetDefault()
+    }
+    if (!CommentSupplierBuilder.defaultConfig) {
+      CommentSupplierBuilder.defaultConfig = new CommentSupplierConfigSupplier({
+        interval: 1000,
+        comments: []
+      })
+    }
+    CommentSupplierBuilder.lastUsedScene = scene
+    return CommentSupplierBuilder.defaultConfig
   }
 
   /**
-   * CommentSupplier を作成します.
+   * {@link getDefault} で設定した変更を消去します.
+   * @internal
    */
-  build (): CommentSupplier {
-    return new CommentSupplierImpl({ scene: this.scene, payload: this.queue, fps: this.fps, interval: this._interval.get() })
+  private static resetDefault () {
+    delete CommentSupplierBuilder.defaultConfig
+    delete CommentSupplierBuilder.defaultConfigure
   }
 }

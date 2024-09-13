@@ -177,3 +177,57 @@ export class RecordSupplier<K extends string, V> implements ValueSupplier<Record
     return new RecordSupplier<K, V>(initial, validator)
   }
 }
+
+export class ArraySupplier<T> implements ValueSupplier<T[]> {
+  private defaultStore: T[] = []
+  private store: T[] = []
+
+  // eslint-disable-next-line no-useless-constructor
+  protected constructor (protected defaultValue: T[], protected validator?: ValueValidator<T[]>) {}
+
+  addDefault (value: T): void {
+    this.throwsIf([...this.defaultStore, value])
+    this.defaultStore.push(value)
+  }
+
+  default (): T[] {
+    return [...this.defaultStore]
+  }
+
+  defaultIf (value?: T[]): void {
+    if (this.isValid(value)) {
+      this.throwsIf(value)
+      this.defaultStore = [...value]
+    }
+  }
+
+  add (value: T): void {
+    this.throwsIf([...this.store, value])
+    this.store.push(value)
+  }
+
+  get (): T[] {
+    return [...this.defaultStore, ...this.store]
+  }
+
+  setIf (value?: T[]): void {
+    if (this.isValid(value)) {
+      this.throwsIf(value)
+      this.store = [...value]
+    }
+  }
+
+  protected isValid (value?: T[]): value is T[] {
+    return value !== undefined && value !== null
+  }
+
+  protected throwsIf (value: T[]): void {
+    if (this.validator?.isInvalid(value)) {
+      throw new Error(this.validator.getMessage(value))
+    }
+  }
+
+  static create <V> (initial: V[], validator?: ValueValidator<V[]>): ArraySupplier<V> {
+    return new ArraySupplier(initial, validator)
+  }
+}
