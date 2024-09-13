@@ -11,6 +11,13 @@ import { LayerConfig } from '../value/layerConfig'
 import { BroadcasterConfig } from '../value/broadcasterConfig'
 import { SpotConfig } from '../value/spotConfig'
 import { ScreenBuilder } from '../builder/screenBuilder'
+import { CommentSupplier } from './commentSupplier'
+import { CommentDeployer } from './commentDeployer'
+import { CommentSupplierBuilder } from '../builder/commentSupplierBuilder'
+import { CommentSupplierConfig } from '../value/commentSupplierConfig'
+import { CommentDeployerConfig } from '../value/commentDeployerConfig'
+import { CommentDeployerBuilder } from '../builder/commentDeployerBuilder'
+import { CommentContextSupplier } from './commentContextSupplier'
 
 /**
  * 本ゲームが動作する g.Scene が持つゲーム情報を格納したパラメタ一覧です.
@@ -36,18 +43,27 @@ export interface LiveOnAirScene {
    * スポット情報一覧.
    */
   readonly spots: Spot[]
+  /**
+   * コメント生成器
+   */
+  readonly commentSupplier: CommentSupplier
+  /**
+   * コメント配置器
+   */
+  readonly commentDeployer: CommentDeployer
 }
 
 export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
-  private context: { loaded: false } | { loaded: true, layer: Layer, field: Field, broadcaster: Broadcaster, screen: Screen, spots: Set<Spot> }
+  private context: { loaded: false } | { loaded: true, layer: Layer, field: Field, broadcaster: Broadcaster, screen: Screen, spots: Set<Spot>, commentSupplier: CommentSupplier, commentDeployer: CommentDeployer }
 
-  constructor (param: g.SceneParameterObject & { layer: LayerConfig, broadcaster: BroadcasterConfig, spots: readonly SpotConfig[] }) {
+  constructor (param: g.SceneParameterObject & { layer: LayerConfig, broadcaster: BroadcasterConfig, spots: readonly SpotConfig[], commentSupplier: CommentSupplierConfig, commentDeployer: CommentDeployerConfig }) {
     super(param)
     this.context = { loaded: false }
     this.onLoad.add(() => {
       const layer = new LayerBuilder(this)
         .field(param.layer.field)
         .screen(param.layer.screen)
+        .comment(param.layer.comment)
         .build()
       const field = new FieldBuilder()
         .build()
@@ -72,7 +88,19 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
         inst.attach(screen)
         spots.add(inst)
       }
-      this.context = { loaded: true, layer, field, broadcaster, screen, spots }
+      const commentSupplier = new CommentSupplierBuilder(this)
+        .interval(param.commentSupplier.interval)
+        .comments(param.commentSupplier.comments)
+        .build()
+      const commentDeployer = new CommentDeployerBuilder(this)
+        .speed(param.commentDeployer.speed)
+        .intervalY(param.commentDeployer.intervalY)
+        .font(param.commentDeployer.font)
+        .build()
+      const commentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen })
+      commentSupplier.addDeployer(commentDeployer)
+      commentSupplier.start(commentContextSupplier)
+      this.context = { loaded: true, layer, field, broadcaster, screen, spots, commentSupplier, commentDeployer }
     })
   }
 
@@ -109,5 +137,19 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
       throw new Error('onLoad が実行されていません. onLoad が実行されてから本パラメタを取得してください')
     }
     return [...this.context.spots]
+  }
+
+  get commentSupplier (): CommentSupplier {
+    if (!this.context.loaded) {
+      throw new Error('onLoad が実行されていません. onLoad が実行されてから本パラメタを取得してください')
+    }
+    return this.context.commentSupplier
+  }
+
+  get commentDeployer (): CommentDeployer {
+    if (!this.context.loaded) {
+      throw new Error('onLoad が実行されていません. onLoad が実行されてから本パラメタを取得してください')
+    }
+    return this.context.commentDeployer
   }
 }

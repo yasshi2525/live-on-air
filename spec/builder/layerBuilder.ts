@@ -35,11 +35,12 @@ describe('LayerBuilder', () => {
     const layer = lb.build()
     expect(lb.field()).toEqual({ x: 100, y: 100, width: 1080, height: 520 })
     expect(lb.screen()).toEqual({ x: 100, y: 100, width: 1080, height: 520 })
+    expect(lb.comment()).toEqual({ x: 100, y: 100, width: 1080, height: 520 })
     for (const typ of ['field', 'screen'] as LayerType[]) {
       expect(layer[typ]).toBeDefined()
       expect(layer[typ]).toBeInstanceOf(g.E)
     }
-    expect(scene.children).toEqual([layer.field, layer.screen])
+    expect(scene.children).toEqual([layer.field, layer.screen, layer.comment])
 
     insertDebugView(layer)
     await gameContext.step()
@@ -50,11 +51,14 @@ describe('LayerBuilder', () => {
     const lb = new LayerBuilder(scene)
       .field({ x: 100, y: 100, width: 500, height: 500 })
       .screen({ x: 200, y: 200, width: 400, height: 400 })
+      .comment({ x: 300, y: 300, width: 300, height: 300 })
     expect(lb.field()).toEqual({ x: 100, y: 100, width: 500, height: 500 })
     expect(lb.screen()).toEqual({ x: 200, y: 200, width: 400, height: 400 })
+    expect(lb.comment()).toEqual({ x: 300, y: 300, width: 300, height: 300 })
     const layer = lb.build()
     expect(layer.field).toMatchObject({ x: 100, y: 100, width: 500, height: 500 })
     expect(layer.screen).toMatchObject({ x: 200, y: 200, width: 400, height: 400 })
+    expect(layer.comment).toMatchObject({ x: 300, y: 300, width: 300, height: 300 })
 
     insertDebugView(layer)
     await gameContext.step()

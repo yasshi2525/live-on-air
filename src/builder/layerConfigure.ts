@@ -30,6 +30,18 @@ export interface LayerConfigure {
   screen (area: g.CommonArea): LayerConfigure
 
   /**
+   * コメントが表示される領域の大きさを取得します.
+   */
+  comment (): Readonly<g.CommonArea>
+
+  /**
+   * コメントが表示される領域の大きさを設定します.
+   *
+   * @param area 設定する領域
+   */
+  comment (area: g.CommonArea): LayerConfigure
+
+  /**
    * 設定されたレイアウト情報をもとに各レイヤを作成し、sceneに登録します
    */
   build(): Layer
@@ -66,6 +78,18 @@ export class LayerConfigureImpl implements LayerConfigure {
       return this
     }
     return this.getter().screen
+  }
+
+  comment (): Readonly<g.CommonArea>
+
+  comment (area: g.CommonArea): LayerConfigure
+
+  comment (args?: g.CommonArea): LayerConfigure | Readonly<g.CommonArea> {
+    if (args) {
+      this.setter({ comment: { x: args.x, y: args.y, width: args.width, height: args.height } })
+      return this
+    }
+    return this.getter().comment
   }
 
   build (): Layer {
