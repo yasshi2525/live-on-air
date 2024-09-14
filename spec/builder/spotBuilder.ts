@@ -31,7 +31,6 @@ describe('spotBuilder', () => {
     expect(sb.location()).toEqual({ x: 30, y: 40 })
   })
   it('共通設定ができる', () => {
-    const sb = new SpotBuilder(scene)
     const asset = scene.asset.getImageById('default')
 
     SpotBuilder.getDefault(scene).image({
@@ -44,6 +43,7 @@ describe('spotBuilder', () => {
     for (const typ of assetKeys) {
       expect(SpotBuilder.getDefault(scene).image()[typ].path).toBe('./image/default.png')
     }
+    const sb = new SpotBuilder(scene)
     for (const typ of assetKeys) {
       expect(sb.image()[typ].path).toBe('./image/default.png')
     }
