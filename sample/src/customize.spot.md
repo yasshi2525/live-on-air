@@ -133,8 +133,7 @@
 
 [コード全文](customize.spot.migrate.ts)
 
-左上の `Spot` の画像が変更されました.  
-TODO: バグのため個別設定不可. 要差し替え
+左上の `Spot` の画像が変更されました.
 
 ![ゲーム画面](customize.spot.migrate.1.png)
 

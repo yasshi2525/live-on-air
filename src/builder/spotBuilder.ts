@@ -14,7 +14,7 @@ export class SpotBuilder extends SpotConfigureImpl {
   private static defaultConfigure?: SpotConfigure
 
   constructor (scene: g.Scene) {
-    super(false, scene, SpotBuilder.getDefaultConfig(scene))
+    super(false, scene, new SpotConfigSupplier(SpotBuilder.getDefaultConfig(scene).get()))
   }
 
   /**
