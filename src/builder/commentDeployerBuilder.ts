@@ -16,6 +16,66 @@ export class CommentDeployerBuilder extends CommentDeployerConfigureImpl {
   }
 
   /**
+   * 作成する CommentDeployer に設定するコメントの移動速度を取得します.
+   */
+  speed (): number
+
+  /**
+   * 作成する CommentDeployer に設定するコメントの移動速度を設定します.
+   *
+   * @param speed 移動速度
+   */
+  speed (speed: number): CommentDeployerBuilder
+
+  speed (args?: number): number | CommentDeployerBuilder {
+    if (typeof args === 'number') {
+      super.speed(args)
+      return this
+    }
+    return super.speed()
+  }
+
+  /**
+   * 作成する CommentDeployer に設定するコメント間隔(y座標値)を取得します.
+   */
+  intervalY (): number
+
+  /**
+   * 作成する CommentDeployer に設定するコメント間隔(y座標値)を設定します.
+   *
+   * @param intervalY コメント間隔(y座標値)
+   */
+  intervalY (intervalY: number): CommentDeployerBuilder
+
+  intervalY (args?: number): number | CommentDeployerBuilder {
+    if (typeof args === 'number') {
+      super.intervalY(args)
+      return this
+    }
+    return super.intervalY()
+  }
+
+  /**
+   * 作成する CommentDeployer に設定するコメントのフォントを取得します.
+   */
+  font(): g.Font
+
+  /**
+   * 作成する CommentDeployer に設定するコメントのフォントを設定します.
+   *
+   * @param font コメントのフォント
+   */
+  font (font: g.Font): CommentDeployerBuilder
+
+  font (args?: g.Font): g.Font | CommentDeployerBuilder {
+    if (args) {
+      super.font(args)
+      return this
+    }
+    return super.font()
+  }
+
+  /**
    * 各属性値に値を設定しなかった際に使用されるデフォルト値を設定します.
    *
    * @param scene 現在の scene を指定してください.

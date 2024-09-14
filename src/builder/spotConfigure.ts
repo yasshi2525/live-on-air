@@ -41,11 +41,6 @@ export interface SpotConfigure {
    * @param liveClass 開始する生放送クラス名. インスタンスでない点にご留意ください.
    */
   liveClass(liveClass: new() => Live): SpotConfigure
-
-  /**
-   * 指定された設定で Spot を作成します
-   */
-  build (): Spot
 }
 
 export class SpotConfigureImpl implements SpotConfigure {
@@ -100,6 +95,9 @@ export class SpotConfigureImpl implements SpotConfigure {
     return this.getter().liveClass
   }
 
+  /**
+   * 指定された設定で Spot を作成します
+   */
   build (): Spot {
     return new SpotImpl(this.scene, this.image(), this.location(), this.liveClass())
   }

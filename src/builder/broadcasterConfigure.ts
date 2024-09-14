@@ -35,16 +35,11 @@ export interface BroadcasterConfigure {
   location (): g.CommonOffset
 
   /**
-   * 作成する Broadcaster の座標を登録します.
+   * 作成する Broadcaster の座標を設定します.
    *
    * @param location Broadcaster の座標
    */
   location (location: g.CommonOffset): BroadcasterConfigure
-
-  /**
-   * Broadcaster を作成します.
-   */
-  build (): Broadcaster
 }
 
 export class BroadcasterConfigureImpl implements BroadcasterConfigure {
@@ -68,16 +63,8 @@ export class BroadcasterConfigureImpl implements BroadcasterConfigure {
     return this.getter().asset
   }
 
-  /**
-   * 作成する Broadcaster に設定する移動速度を取得します.
-   */
   speed (): number
 
-  /**
-   * 作成する Broadcaster に設定する移動速度を設定します.
-   *
-   * @param value 移動速度
-   */
   speed (value: number): BroadcasterConfigure
 
   speed (args?: number): number | BroadcasterConfigure {
@@ -88,16 +75,8 @@ export class BroadcasterConfigureImpl implements BroadcasterConfigure {
     return this.getter().speed
   }
 
-  /**
-   * 作成する Broadcaster に設定する座標を取得します.
-   */
   location (): Readonly<g.CommonOffset>
 
-  /**
-   * 作成する Broadcaster の座標を登録します.
-   *
-   * @param location Broadcaster の座標
-   */
   location (location: g.CommonOffset): BroadcasterConfigure
 
   location (args?: g.CommonOffset): Readonly<g.CommonOffset> | BroadcasterConfigure {
@@ -109,6 +88,9 @@ export class BroadcasterConfigureImpl implements BroadcasterConfigure {
     return { x: value.x, y: value.y }
   }
 
+  /**
+   * Broadcaster を作成します.
+   */
   build (): Broadcaster {
     const config = this.config.get()
     return new BroadcasterImpl(this.scene, config.asset, config.speed, { x: config.x, y: config.y })

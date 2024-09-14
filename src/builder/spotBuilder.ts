@@ -1,7 +1,7 @@
 import { SpotConfigure, SpotConfigureImpl } from './spotConfigure'
 import { image } from '../util/loader'
-import { SpotConfigSupplier } from '../value/spotConfig'
-import { SampleLive } from '../model/live'
+import { SpotAssetRecord, SpotConfigSupplier } from '../value/spotConfig'
+import { Live, SampleLive } from '../model/live'
 
 /**
  * 訪問先 {@link Spot} を簡便に作るためのクラス.
@@ -15,6 +15,66 @@ export class SpotBuilder extends SpotConfigureImpl {
 
   constructor (scene: g.Scene) {
     super(false, scene, new SpotConfigSupplier(SpotBuilder.getDefaultConfig(scene).get()))
+  }
+
+  /**
+   * 描画に使用する画像アセットを設定します.
+   *
+   * @param assets 状態ごとに使用する画像アセット
+   */
+  image(assets: Partial<SpotAssetRecord>): SpotBuilder
+
+  /**
+   * 描画に使用される画像アセットをすべての状態について取得します.
+   */
+  image (): Readonly<SpotAssetRecord>
+
+  image (args?: Partial<SpotAssetRecord>): SpotBuilder | Readonly<SpotAssetRecord> {
+    if (args) {
+      super.image(args)
+      return this
+    }
+    return super.image()
+  }
+
+  /**
+   * 作成する Spot を配置する座標を設定します.
+   *
+   * @param location Spot を配置する座標
+   */
+  location (location: g.CommonOffset): SpotBuilder
+
+  /**
+   * 作成する Spot を配置する座標を取得します.
+   */
+  location (): Readonly<g.CommonOffset>
+
+  location (args?: g.CommonOffset): SpotBuilder | Readonly<g.CommonOffset> {
+    if (args) {
+      super.location(args)
+      return this
+    }
+    return super.location()
+  }
+
+  /**
+   * 作成する Spot に到達すると開始する生放送を取得します.
+   */
+  liveClass(): new () => Live
+
+  /**
+   * 作成する Spot に到達すると開始する生放送を設定します.
+   *
+   * @param liveClass 開始する生放送クラス名. インスタンスでない点にご留意ください.
+   */
+  liveClass(liveClass: new () => Live): SpotBuilder
+
+  liveClass (args?: new () => Live): SpotBuilder | Readonly<new () => Live> {
+    if (args) {
+      super.liveClass(args)
+      return this
+    }
+    return super.liveClass()
   }
 
   /**

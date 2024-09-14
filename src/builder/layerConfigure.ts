@@ -41,10 +41,6 @@ export interface LayerConfigure {
    */
   comment (area: g.CommonArea): LayerConfigure
 
-  /**
-   * 設定されたレイアウト情報をもとに各レイヤを作成し、sceneに登録します
-   */
-  build(): Layer
 }
 
 export class LayerConfigureImpl implements LayerConfigure {
@@ -92,6 +88,9 @@ export class LayerConfigureImpl implements LayerConfigure {
     return this.getter().comment
   }
 
+  /**
+   * 設定されたレイアウト情報をもとに各レイヤを作成し、sceneに登録します
+   */
   build (): Layer {
     return new LayerImpl(this.scene, this.config.get())
   }
