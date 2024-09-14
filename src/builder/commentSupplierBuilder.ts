@@ -1,5 +1,7 @@
 import { CommentSupplierConfigure, CommentSupplierConfigureImpl } from './commentSupplierConfigure'
 import { CommentSupplierConfigSupplier } from '../value/commentSupplierConfig'
+import { CommentContext } from '../model/commentContext'
+import { CommentSchema } from '../model/commentSupplier'
 
 /**
  * コメント生成器 ({@link CommentSupplier}) を簡便に作るためのクラス.
@@ -13,6 +15,59 @@ export class CommentSupplierBuilder extends CommentSupplierConfigureImpl {
 
   constructor (scene: g.Scene) {
     super(false, scene, new CommentSupplierConfigSupplier(CommentSupplierBuilder.getDefaultConfig(scene).get()))
+  }
+
+  /**
+   * 作成する CommentSupplier に設定するコメント生成間隔(ミリ秒)を取得します.
+   */
+  interval(): number
+
+  /**
+   * 作成する CommentSupplier に設定するコメント生成間隔(ミリ秒)を設定します.
+   *
+   * @param interval コメントの生成間隔(ミリ秒)
+   */
+  interval(interval: number): CommentSupplierBuilder
+
+  interval (args?: number): number | CommentSupplierBuilder {
+    if (typeof args === 'number') {
+      super.interval(args)
+      return this
+    }
+    return super.interval()
+  }
+
+  /**
+   * 出力するコメントを追加します.
+   *
+   * @param comment コメント本文
+   * @param conditions コメントを出力する条件(複数指定可). 省略した場合、状況にかかわらず出力します.
+   */
+  addComment (comment: string, ...conditions: ((ctx: CommentContext) => boolean)[]): CommentSupplierBuilder {
+    super.addComment(comment, ...conditions)
+    return this
+  }
+
+  /**
+   * 登録されたコメント設定を取得します
+   */
+  comments(): CommentSchema[]
+
+  /**
+   * 出力するコメントを設定します.
+   *
+   * これまで設定した情報は削除されます.
+   *
+   * @param comments コメント情報
+   */
+  comments (comments: CommentSchema[]): CommentSupplierBuilder
+
+  comments (args?: CommentSchema[]): CommentSchema[] | CommentSupplierBuilder {
+    if (args) {
+      super.comments(args)
+      return this
+    }
+    return super.comments()
   }
 
   /**

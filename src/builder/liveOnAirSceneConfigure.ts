@@ -95,11 +95,6 @@ export interface LiveOnAirSceneConfigure {
    * 作成する {@link CommentSupplier} の属性情報を取得します.
    */
   commentDeployer(): Readonly<CommentDeployerConfig>
-
-  /**
-   * 指定された設定で {@link LiveOnAirScene} を作成します.
-   */
-  build (): LiveOnAirScene & g.Scene
 }
 
 export interface LiveOnAirSceneConfigSupplierOptions {
@@ -246,6 +241,9 @@ export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
     return this.commentDeployerGetter()
   }
 
+  /**
+   * 指定された設定で {@link LiveOnAirScene} を作成します.
+   */
   build (): LiveOnAirScene & g.Scene {
     return new LiveOnAirSceneImpl({ game: this.game, layer: this.layer(), broadcaster: this.broadcaster(), spots: this.spot(), commentSupplier: this.commentSupplier(), commentDeployer: this.commentDeployer() })
   }

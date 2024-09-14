@@ -32,7 +32,7 @@ export interface CommentSupplierConfigure {
     comments(): CommentSchema[]
 
   /**
-   * 出力するコメントを登録します.
+   * 出力するコメントを設定します.
    *
    * これまで設定した情報は削除されます.
    *
@@ -40,10 +40,6 @@ export interface CommentSupplierConfigure {
    */
     comments(comments: CommentSchema[]): CommentSupplierConfigure
 
-    /**
-     * CommentSupplier を作成します.
-     */
-    build(): CommentSupplier
 }
 
 export class CommentSupplierConfigureImpl implements CommentSupplierConfigure {
@@ -84,6 +80,9 @@ export class CommentSupplierConfigureImpl implements CommentSupplierConfigure {
     return this.getter().comments
   }
 
+  /**
+   * CommentSupplier を作成します.
+   */
   build (): CommentSupplier {
     const config = this.config.get()
     return new CommentSupplierImpl({

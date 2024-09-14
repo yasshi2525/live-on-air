@@ -17,6 +17,66 @@ export class BroadcasterBuilder extends BroadcasterConfigureImpl {
   }
 
   /**
+   * 作成する Broadcaster に使用される画像アセットを取得します.
+   */
+  asset (): g.ImageAsset
+
+  /**
+   * 作成する Broadcaster に設定する画像アセットを登録します.
+   *
+   * @param asset 描画に使用する画像アセット
+   */
+  asset (asset: g.ImageAsset): BroadcasterBuilder
+
+  asset (args?: g.ImageAsset): g.ImageAsset | BroadcasterBuilder {
+    if (args) {
+      super.asset(args)
+      return this
+    }
+    return super.asset()
+  }
+
+  /**
+   * 作成する Broadcaster に設定する移動速度を取得します.
+   */
+  speed (): number
+
+  /**
+   * 作成する Broadcaster に設定する移動速度を設定します.
+   *
+   * @param speed 移動速度
+   */
+  speed (speed: number): BroadcasterBuilder
+
+  speed (args?: number): number | BroadcasterBuilder {
+    if (args) {
+      super.speed(args)
+      return this
+    }
+    return super.speed()
+  }
+
+  /**
+   * 作成する Broadcaster に設定する座標を取得します.
+   */
+  location (): g.CommonOffset
+
+  /**
+   * 作成する Broadcaster の座標を設定します.
+   *
+   * @param location Broadcaster の座標
+   */
+  location (location: g.CommonOffset): BroadcasterBuilder
+
+  location (args?: g.CommonOffset): Readonly<g.CommonOffset> | BroadcasterBuilder {
+    if (args) {
+      super.location(args)
+      return this
+    }
+    return super.location()
+  }
+
+  /**
    * 各属性値に値を設定しなかった際に使用されるデフォルト値を設定します.
    *
    * @param scene 現在の scene を指定してください.

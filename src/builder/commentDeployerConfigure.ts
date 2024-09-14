@@ -40,11 +40,6 @@ export interface CommentDeployerConfigure {
    * @param font コメントのフォント
    */
   font(font: g.Font): CommentDeployerConfigure
-
-  /**
-   * CommentDeployer を作成します.
-   */
-  build(): CommentDeployer
 }
 
 export class CommentDeployerConfigureImpl implements CommentDeployerConfigure {
@@ -89,6 +84,9 @@ export class CommentDeployerConfigureImpl implements CommentDeployerConfigure {
     return this.getter().font
   }
 
+  /**
+   * CommentDeployer を作成します.
+   */
   build (): CommentDeployer {
     const config = this.config.get()
     return new CommentDeployerImpl({ scene: this.scene, speed: config.speed, intervalY: config.intervalY, font: config.font })
