@@ -22,13 +22,13 @@
       // 既存の g.Scene の初期化処理
 +     // 以下から本ライブラリの初期化処理です
 +     const layer: Layer = new LayerBuilder(scene).build();
-+     const field = new FieldBuilder().build();
++     const field: Field = new FieldBuilder().build();
 +     field.container = layer.field;
-+     const screen = new ScreenBuilder(scene).build();
++     const screen: Screen = new ScreenBuilder(scene).build();
 +     screen.container = layer.screen;
-+     const broadcaster = new BroadcasterBuilder(scene).build();
++     const broadcaster: Broadcaster = new BroadcasterBuilder(scene).build();
 +     broadcaster.standOn(field);
-+     const spot = new SpotBuilder(scene).build();
++     const spot: Spot = new SpotBuilder(scene).build();
 +     spot.deployOn(field);
 +     spot.attach(screen);
 +     const commentSupplier: CommentSupplier = new CommentSupplierBuilder(scene).build();
@@ -52,13 +52,13 @@
 >   // ...
 >     // 以下から本ライブラリの初期化処理です
 > -   const layer: Layer = new LayerBuilder(scene).build();
->     const field = new FieldBuilder().build();
+>     const field: Field = new FieldBuilder().build();
 > -   field.container = layer.field;
->     const screen = new ScreenBuilder(scene).build();
+>     const screen: Screen = new ScreenBuilder(scene).build();
 > -   screen.container = layer.screen;
->     const broadcaster = new BroadcasterBuilder(scene).build();
+>     const broadcaster: Broadcaster = new BroadcasterBuilder(scene).build();
 >     broadcaster.standOn(field);
->     const spot = new SpotBuilder(scene).build();
+>     const spot: Spot = new SpotBuilder(scene).build();
 >     spot.deployOn(field);
 >     spot.attach(screen);
 >     const commentSupplier: CommentSupplier = new CommentSupplierBuilder(scene).build();
@@ -100,8 +100,8 @@ const layer: Layer = new LayerBuilder(scene).build();
 
 ```typescript
 import { Field, FieldBuilder, Screen, ScreenBuilder } from '@yasshi2525/live-on-air';
-const field = new FieldBuilder().build();
-const screen = new ScreenBuilder(scene).build();
+const field: Field = new FieldBuilder().build();
+const screen: Screen = new ScreenBuilder(scene).build();
 ```
 
 そして `Field`, `Screen` をゲーム画面上に描画するために、 `Layer` のフィールドと紐づけます.
@@ -109,9 +109,9 @@ const screen = new ScreenBuilder(scene).build();
 これを対応する `Layer` の `field`, `screen` フィールドとしてください.
 
 ```diff typescript
-  const field = new FieldBuilder().build();
+  const field: Field = new FieldBuilder().build();
 + field.container = layer.field;
-  const screen = new ScreenBuilder(scene).build();
+  const screen: Screen = new ScreenBuilder(scene).build();
 + screen.container = layer.screen;
 ```
 
@@ -120,10 +120,10 @@ const screen = new ScreenBuilder(scene).build();
 > 
 > 例:
 > ```diff typescript
->   const field = new FieldBuilder().build();
+>   const field: Field = new FieldBuilder().build();
 > - field.container = layer.field;
 > + field.container = <自身で定義した、マップ描画用エンティティ>;
->   const screen = new ScreenBuilder(scene).build();
+>   const screen: Screen = new ScreenBuilder(scene).build();
 > - screen.container = layer.screen;
 > + screen.container = <自身で定義した、生放送描画用エンティティ>;
 > ```
@@ -137,25 +137,25 @@ const screen = new ScreenBuilder(scene).build();
 
 ```typescript
 import { Broadcaster, BroadcasterBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air'
-const broadcaster = new BroadcasterBuilder(scene).build();
-const spot = new SpotBuilder(scene).build();
+const broadcaster: Broadcaster = new BroadcasterBuilder(scene).build();
+const spot: Spot = new SpotBuilder(scene).build();
 ```
 
 どちらも `Field` に登録しないと機能しません.
 
 ```diff typescript
-  const broadcaster = new BroadcasterBuilder(scene).build();
+  const broadcaster: Broadcaster = new BroadcasterBuilder(scene).build();
 + broadcaster.standOn(field);
-  const spot = new SpotBuilder(scene).build();
+  const spot: Spot = new SpotBuilder(scene).build();
 + spot.deployOn(field);
 ```
 
 `Sopt` はさらに `Screen` にも登録しないと機能しません.
 
 ```diff typescript
-  const broadcaster = new BroadcasterBuilder(scene).build();
+  const broadcaster: Broadcaster = new BroadcasterBuilder(scene).build();
   broadcaster.standOn(field);
-  const spot = new SpotBuilder(scene).build();
+  const spot: Spot = new SpotBuilder(scene).build();
   spot.deployOn(field);
 + spot.attach(screen);
 ```
