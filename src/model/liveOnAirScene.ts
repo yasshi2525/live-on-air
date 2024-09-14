@@ -97,6 +97,7 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
         .intervalY(param.commentDeployer.intervalY)
         .font(param.commentDeployer.font)
         .build()
+      commentDeployer.container = layer.comment
       const commentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen })
       commentSupplier.addDeployer(commentDeployer)
       commentSupplier.start(commentContextSupplier)
