@@ -263,6 +263,21 @@ const spot: Spot = new SpotBuilder(scene).build();
 +   scorer.enable();
 ```
 
+> [!NOTE]
+> 独自レイアウトの場合、 `Scorer` の `container` フィールドを自身で定義したエンティティにしてください.
+>
+> 例:
+> ```diff typescript
+>   const scorer: Scorer = new ScorerBuilder(scene).build();
+>   scorer.container = layer.header;
+>   commentSupplier.onSupply.add(() => scorer.add(1));
+>   scorer.enable();
+> - scorer.container = layer.header;
+> + commentDeployer.container = <自身で定義した、コメント描画用エンティティ>
+>   const commentContextSupplier: CommentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen });
+>   commentSupplier.start(commentContextSupplier);
+>   ```
+
 以上がすでに存在する `g.Scene` に本ライブラリを組み込む手順です.
 
 上記を実行すると下記のような画面が出力されます.
