@@ -1,5 +1,5 @@
 import { GameMainParameterObject } from './parameterObject';
-import { LiveOnAirScene, LiveOnAirSceneBuilder, Broadcaster, Spot, Field, Screen, CommentSupplier, CommentDeployer, Layer } from '@yasshi2525/live-on-air';
+import { LiveOnAirScene, LiveOnAirSceneBuilder, Broadcaster, Spot, Field, Screen, CommentSupplier, CommentDeployer, Scorer, Layer } from '@yasshi2525/live-on-air';
 
 /* eslint no-unused-vars: 0 */
 /* eslint @typescript-eslint/no-unused-vars: 0 */
@@ -24,6 +24,7 @@ export const main = (param: GameMainParameterObject): void => {
     const screen: Screen = scene.screen;
     const commentSupplier: CommentSupplier = scene.commentSupplier;
     const commentDeployer: CommentDeployer = scene.commentDeployer;
+    const scorer: Scorer = scene.scorer;
     const layer: Layer = scene.layer;
   });
 };
