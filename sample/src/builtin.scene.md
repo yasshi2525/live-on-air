@@ -38,6 +38,7 @@ scene.onLoad.add(() => {
     const screen: Screen = scene.screen;
     const commentSupplier: CommentSupplier = scene.commentSupplier;
     const commentDeployer: CommentDeployer = scene.commentDeployer;
+    const scorer: Scorer = scene.scorer;
     const layer: Layer = scene.layer;
 });
 ```
@@ -52,4 +53,5 @@ scene.onLoad.add(() => {
 * `Screen`: 生放送画面. 生放送中のミニイベントの流れを制御する.
 * `CommentSupplier`: 画面に表示するコメントを保持し、定期的に出力指示を出す.
 * `CommentDeployer`: 出力対象のコメントを画面上に配置する.
+* `Scorer`: 得点の保持と描画を制御する.
 * `Layer`: 描画管理. 各要素を前後関係をつけて描画する.

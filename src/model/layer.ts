@@ -25,6 +25,12 @@ export interface Layer {
    */
   readonly comment: g.E
   /**
+   * ヘッダー層
+   *
+   * {@link Scorer} が得点と残り時間を配置するためのレイヤ
+   */
+  readonly header: g.E
+  /**
    * ライブラリ利用者が自由に使えるフィールドです.
    */
   vars?: unknown
@@ -34,12 +40,14 @@ export class LayerImpl implements Layer {
   readonly field: g.E
   readonly screen: g.E
   readonly comment: g.E
+  readonly header: g.E
   vars?: unknown
 
   constructor (private readonly scene: g.Scene, private readonly config: LayerConfig) {
     this.field = this.createEntity('field')
     this.screen = this.createEntity('screen')
     this.comment = this.createEntity('comment')
+    this.header = this.createEntity('header')
   }
 
   private createEntity (typ: LayerType) {

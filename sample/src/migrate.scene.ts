@@ -1,5 +1,5 @@
 import { GameMainParameterObject } from './parameterObject';
-import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Layer, LayerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
+import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Layer, LayerBuilder, Scorer, ScorerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
 
 /**
  * 自身で実装している g.Scene に本ライブラリを組み込む記述例です.
@@ -31,6 +31,10 @@ export const main = (param: GameMainParameterObject): void => {
     commentDeployer.container = layer.comment;
     const commentContextSupplier: CommentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen });
     commentSupplier.start(commentContextSupplier);
+    const scorer: Scorer = new ScorerBuilder(scene).build();
+    scorer.container = layer.header;
+    commentSupplier.onSupply.add(() => scorer.add(1));
+    scorer.enable();
   });
   g.game.pushScene(scene);
 };

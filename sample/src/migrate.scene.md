@@ -13,7 +13,7 @@
 以降で内容を説明します.
 
 ```diff typescript
-+ import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Layer, LayerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
++ import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Layer, LayerBuilder, Scorer, ScorerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
 
   export const main = (param: GameMainParameterObject): void => {
     // 自身で実装している g.Scene
@@ -37,6 +37,10 @@
 +     commentDeployer.container = layer.comment;
 +     const commentContextSupplier: CommentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen });
 +     commentSupplier.start(commentContextSupplier);
++     const scorer: Scorer = new ScorerBuilder(scene).build();
++     scorer.container = layer.header;
++     commentSupplier.onSupply.add(() => scorer.add(1));
++     scorer.enable();
     });
     g.game.pushScene(scene);
   };
@@ -47,8 +51,8 @@
 > [!NOTE]
 > 独自レイアウトの場合、 `Layer` は不要なので初期化・設定処理を削除してください.
 > ```diff typescript
-> - import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Layer, LayerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
-> + import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
+> - import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Layer, LayerBuilder, Scorer, ScorerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
+> + import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Scorer, ScorerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
 >   // ...
 >     // 以下から本ライブラリの初期化処理です
 > -   const layer: Layer = new LayerBuilder(scene).build();
@@ -64,9 +68,13 @@
 >     const commentSupplier: CommentSupplier = new CommentSupplierBuilder(scene).build();
 >     const commentDeployer: CommentDeployer = new CommentDeployerBuilder(scene).build();
 >     commentDeployer.subscribe(commentSupplier);
->     commentDeployer.container = layer.comment;
+> -   commentDeployer.container = layer.comment;
 >     const commentContextSupplier: CommentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen });
 >     commentSupplier.start(commentContextSupplier);
+>     const scorer: Scorer = new ScorerBuilder(scene).build();
+> -   scorer.container = layer.header;
+>     commentSupplier.onSupply.add(() => scorer.add(1));
+>     scorer.enable();
 >   });
 >   // ...
 > ```
@@ -162,7 +170,7 @@ const spot: Spot = new SpotBuilder(scene).build();
 
 ## `CommentSupplier`, `CommentDeployer`, `CommentContextSupplier` (コメント表示コンポーネント)の初期化
 
-最後に `CommentSupplier`, `CommentDeployer`, `CommentContextSupplier` を初期化します.
+そして `CommentSupplier`, `CommentDeployer`, `CommentContextSupplier` を初期化します.
 `CommentSupplier` はどのようなコメントを出力するか、 `CommentDeployer` はどのようにコメントを描画させるか制御します.
 `CommentContextSupplier` はコメントの表示条件を制御するために環境情報を提供します.
 
@@ -206,6 +214,69 @@ const spot: Spot = new SpotBuilder(scene).build();
 +   commentSupplier.start(commentContextSupplier);
 ```
 
+> [!NOTE]
+> 独自レイアウトの場合、 `CommentDeployer` の `container` フィールドを自身で定義したエンティティにしてください.
+>
+> 例:
+> ```diff typescript
+>   const commentSupplier: CommentSupplier = new CommentSupplierBuilder(scene).build();
+>   const commentDeployer: CommentDeployer = new CommentDeployerBuilder(scene).build();
+>   commentDeployer.subscribe(commentSupplier);
+> - commentDeployer.container = layer.comment;
+> + commentDeployer.container = <自身で定義した、コメント描画用エンティティ>
+>   const commentContextSupplier: CommentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen });
+>   commentSupplier.start(commentContextSupplier);
+>   ```
+
+## `Scorer` (スコア制御コンポーネント) の初期化
+
+最後に `Scorer` を初期化します. `Scorer` は得点の保持と描画を行います.
+
+`Scorer` は `ScorerBuilder` の `build()` を使用して作成してください.
+
+```typescript
+    import { Scorer, ScorerBuilder } from '@yasshi2525/live-on-air'
+    const scorer: Scorer = new ScorerBuilder(scene).build();
+```
+
+まず、 `Scorer` が描画内容を画面に出力するため、 `Layer` と紐づけます.
+
+```diff typescript
+    const scorer: Scorer = new ScorerBuilder(scene).build();
++   scorer.container = layer.header;
+```
+
+次に、コメント生成時に加点されるよう `CommentSupplier` の `onSupply` トリガにハンドラを追加します.
+
+```diff typescript
+    const scorer: Scorer = new ScorerBuilder(scene).build();
+    scorer.container = layer.header;
++   commentSupplier.onSupply.add(() => scorer.add(1));
+```
+
+そして、加点処理の受け付けを開始するため `Scorer` の `enable()` を実行します.
+
+```diff typescript
+    const scorer: Scorer = new ScorerBuilder(scene).build();
+    scorer.container = layer.header;
+    commentSupplier.onSupply.add(() => scorer.add(1));
++   scorer.enable();
+```
+
+> [!NOTE]
+> 独自レイアウトの場合、 `Scorer` の `container` フィールドを自身で定義したエンティティにしてください.
+>
+> 例:
+> ```diff typescript
+>   const scorer: Scorer = new ScorerBuilder(scene).build();
+>   scorer.container = layer.header;
+>   commentSupplier.onSupply.add(() => scorer.add(1));
+>   scorer.enable();
+> - scorer.container = layer.header;
+> + commentDeployer.container = <自身で定義した、コメント描画用エンティティ>
+>   commentSupplier.onSupply.add(() => scorer.add(1));
+>   scorer.enable();
+>   ```
 
 以上がすでに存在する `g.Scene` に本ライブラリを組み込む手順です.
 

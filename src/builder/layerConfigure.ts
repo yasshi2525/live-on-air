@@ -41,6 +41,17 @@ export interface LayerConfigure {
    */
   comment (area: g.CommonArea): LayerConfigure
 
+  /**
+   * 残り時間と得点が表示される領域の大きさを取得します.
+   */
+  header (): Readonly<g.CommonArea>
+
+  /**
+   * 残り時間と得点が表示される領域の大きさを設定します.
+   *
+   * @param area 設定する領域
+   */
+  header (area: g.CommonArea): LayerConfigure
 }
 
 export class LayerConfigureImpl implements LayerConfigure {
@@ -86,6 +97,18 @@ export class LayerConfigureImpl implements LayerConfigure {
       return this
     }
     return this.getter().comment
+  }
+
+  header (): Readonly<g.CommonArea>
+
+  header (area: g.CommonArea): LayerConfigure
+
+  header (args?: g.CommonArea): LayerConfigure | Readonly<g.CommonArea> {
+    if (args) {
+      this.setter({ header: { x: args.x, y: args.y, width: args.width, height: args.height } })
+      return this
+    }
+    return this.getter().header
   }
 
   /**
