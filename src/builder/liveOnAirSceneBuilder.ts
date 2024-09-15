@@ -233,7 +233,7 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
         font: new g.DynamicFont({ game, fontFamily: 'sans-serif', size: 35 })
       })
       const scorer = new ScorerConfigSupplier({
-        font: new g.DynamicFont({ game, fontFamily: 'sans-serif', size: 40 }),
+        font: new g.DynamicFont({ game, fontFamily: 'monospace', size: 40 }),
         digit: 4,
         prefix: 'スコア',
         suffix: '点'
