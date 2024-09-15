@@ -63,6 +63,11 @@ export interface CommentSupplier {
   readonly deployers: readonly CommentDeployer[]
 
   /**
+   * ライブラリ利用者が自由に使えるフィールドです.
+   */
+  vars?: unknown
+
+  /**
    * 生成されたコメントを画面上に配置する CommentDeployer を登録します.
    *
    * @param deployer 生成されたコメントを画面上に配置する CommentDeployer
@@ -95,6 +100,7 @@ export interface CommentSupplierOptions {
 
 export class CommentSupplierImpl implements CommentSupplier {
   readonly onSupply = new g.Trigger<string>()
+  vars?: unknown
   private readonly scene: g.Scene
   private readonly _deployers = new Set<CommentDeployer>()
   private _interval: PrimitiveValueSupplier<number>

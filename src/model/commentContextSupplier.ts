@@ -19,12 +19,20 @@ export interface CommentContextSupplierOptions {
    * 生放送画面情報
    */
   screen: Screen
+  /**
+   * ライブラリ利用者が自由に使えるフィールドです.
+   */
+  vars?: unknown
 }
 
 /**
  * {@link CommentContext} を環境情報から生成します.
  */
 export class CommentContextSupplier {
+  /**
+   * ライブラリ利用者が自由に使えるフィールドです.
+   */
+  vars?: unknown
   private readonly _broadcaster: Broadcaster
   private readonly _field: Field
   private readonly _screen: Screen
@@ -40,7 +48,8 @@ export class CommentContextSupplier {
    */
   get (): CommentContext {
     return {
-      live: this._broadcaster.live
+      live: this._broadcaster.live,
+      vars: undefined
     }
   }
 }

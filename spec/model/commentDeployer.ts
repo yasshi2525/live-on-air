@@ -119,4 +119,10 @@ describe('commentDeployer', () => {
     expect(comment.y).toBe(0)
     screenshot('comment.zero.height.png')
   })
+  it('自由に値を追加・参照できる', () => {
+    const cd = new CommentDeployerBuilder(scene).build()
+    expect(cd.vars).not.toBeDefined()
+    cd.vars = 'Hello'
+    expect(cd.vars).toBe('Hello')
+  })
 })

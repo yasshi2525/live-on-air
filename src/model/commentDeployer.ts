@@ -44,6 +44,11 @@ export interface CommentDeployer {
   readonly suppliers: readonly CommentSupplier[]
 
   /**
+   * ライブラリ利用者が自由に使えるフィールドです.
+   */
+  vars?: unknown
+
+  /**
    * コメント内容を生成するインスタンスを追加します.
    *
    * @param supplier 配置したいコメントを生成するインスタンス
@@ -71,6 +76,7 @@ export interface CommentDeployerOptions {
 export class CommentDeployerImpl implements CommentDeployer {
   readonly onDeploy = new g.Trigger<g.E>()
   readonly onFadeOut = new g.Trigger<g.E>()
+  vars?: unknown
   private readonly scene: g.Scene
   private readonly _font: g.Font
   private readonly views: { row: number, view: g.E }[] = []

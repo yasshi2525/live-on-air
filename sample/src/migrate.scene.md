@@ -13,7 +13,7 @@
 以降で内容を説明します.
 
 ```diff typescript
-+ import { Broadcaster, BroadcasterBuilder, Field, FieldBuilder, Layer, LayerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
++ import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Layer, LayerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
 
   export const main = (param: GameMainParameterObject): void => {
     // 自身で実装している g.Scene
@@ -22,15 +22,21 @@
       // 既存の g.Scene の初期化処理
 +     // 以下から本ライブラリの初期化処理です
 +     const layer: Layer = new LayerBuilder(scene).build();
-+     const field = new FieldBuilder().build();
++     const field: Field = new FieldBuilder().build();
 +     field.container = layer.field;
-+     const screen = new ScreenBuilder(scene).build();
++     const screen: Screen = new ScreenBuilder(scene).build();
 +     screen.container = layer.screen;
-+     const broadcaster = new BroadcasterBuilder(scene).build();
++     const broadcaster: Broadcaster = new BroadcasterBuilder(scene).build();
 +     broadcaster.standOn(field);
-+     const spot = new SpotBuilder(scene).build();
++     const spot: Spot = new SpotBuilder(scene).build();
 +     spot.deployOn(field);
 +     spot.attach(screen);
++     const commentSupplier: CommentSupplier = new CommentSupplierBuilder(scene).build();
++     const commentDeployer: CommentDeployer = new CommentDeployerBuilder(scene).build();
++     commentDeployer.subscribe(commentSupplier);
++     commentDeployer.container = layer.comment;
++     const commentContextSupplier: CommentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen });
++     commentSupplier.start(commentContextSupplier);
     });
     g.game.pushScene(scene);
   };
@@ -41,20 +47,26 @@
 > [!NOTE]
 > 独自レイアウトの場合、 `Layer` は不要なので初期化・設定処理を削除してください.
 > ```diff typescript
-> - import { Broadcaster, BroadcasterBuilder, Field, FieldBuilder, Layer, LayerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
-> + import { Broadcaster, BroadcasterBuilder, Field, FieldBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
+> - import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Layer, LayerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
+> + import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
 >   // ...
 >     // 以下から本ライブラリの初期化処理です
 > -   const layer: Layer = new LayerBuilder(scene).build();
->     const field = new FieldBuilder().build();
+>     const field: Field = new FieldBuilder().build();
 > -   field.container = layer.field;
->     const screen = new ScreenBuilder(scene).build();
+>     const screen: Screen = new ScreenBuilder(scene).build();
 > -   screen.container = layer.screen;
->     const broadcaster = new BroadcasterBuilder(scene).build();
+>     const broadcaster: Broadcaster = new BroadcasterBuilder(scene).build();
 >     broadcaster.standOn(field);
->     const spot = new SpotBuilder(scene).build();
+>     const spot: Spot = new SpotBuilder(scene).build();
 >     spot.deployOn(field);
 >     spot.attach(screen);
+>     const commentSupplier: CommentSupplier = new CommentSupplierBuilder(scene).build();
+>     const commentDeployer: CommentDeployer = new CommentDeployerBuilder(scene).build();
+>     commentDeployer.subscribe(commentSupplier);
+>     commentDeployer.container = layer.comment;
+>     const commentContextSupplier: CommentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen });
+>     commentSupplier.start(commentContextSupplier);
 >   });
 >   // ...
 > ```
@@ -88,8 +100,8 @@ const layer: Layer = new LayerBuilder(scene).build();
 
 ```typescript
 import { Field, FieldBuilder, Screen, ScreenBuilder } from '@yasshi2525/live-on-air';
-const field = new FieldBuilder().build();
-const screen = new ScreenBuilder(scene).build();
+const field: Field = new FieldBuilder().build();
+const screen: Screen = new ScreenBuilder(scene).build();
 ```
 
 そして `Field`, `Screen` をゲーム画面上に描画するために、 `Layer` のフィールドと紐づけます.
@@ -97,9 +109,9 @@ const screen = new ScreenBuilder(scene).build();
 これを対応する `Layer` の `field`, `screen` フィールドとしてください.
 
 ```diff typescript
-  const field = new FieldBuilder().build();
+  const field: Field = new FieldBuilder().build();
 + field.container = layer.field;
-  const screen = new ScreenBuilder(scene).build();
+  const screen: Screen = new ScreenBuilder(scene).build();
 + screen.container = layer.screen;
 ```
 
@@ -108,45 +120,92 @@ const screen = new ScreenBuilder(scene).build();
 > 
 > 例:
 > ```diff typescript
->   const field = new FieldBuilder().build();
+>   const field: Field = new FieldBuilder().build();
 > - field.container = layer.field;
 > + field.container = <自身で定義した、マップ描画用エンティティ>;
->   const screen = new ScreenBuilder(scene).build();
+>   const screen: Screen = new ScreenBuilder(scene).build();
 > - screen.container = layer.screen;
 > + screen.container = <自身で定義した、生放送描画用エンティティ>;
 > ```
 
 ## `Broadcaster`, `Spot` (放送者、訪問先のコンポーネント)の初期化
 
-最後に `Broadcaster` と `Spot` を初期化します. 
+次に `Broadcaster` と `Spot` を初期化します. 
 `Broadcaster` は放送者を、 `Spot` は訪問先を表します.
 
 `Broadcaster`, `Spot` は `BroadcasterBuilder`, `SpotBuilder` の `build()` を使用して作成してください.
 
 ```typescript
 import { Broadcaster, BroadcasterBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air'
-const broadcaster = new BroadcasterBuilder(scene).build();
-const spot = new SpotBuilder(scene).build();
+const broadcaster: Broadcaster = new BroadcasterBuilder(scene).build();
+const spot: Spot = new SpotBuilder(scene).build();
 ```
 
 どちらも `Field` に登録しないと機能しません.
 
 ```diff typescript
-  const broadcaster = new BroadcasterBuilder(scene).build();
+  const broadcaster: Broadcaster = new BroadcasterBuilder(scene).build();
 + broadcaster.standOn(field);
-  const spot = new SpotBuilder(scene).build();
+  const spot: Spot = new SpotBuilder(scene).build();
 + spot.deployOn(field);
 ```
 
 `Sopt` はさらに `Screen` にも登録しないと機能しません.
 
 ```diff typescript
-  const broadcaster = new BroadcasterBuilder(scene).build();
+  const broadcaster: Broadcaster = new BroadcasterBuilder(scene).build();
   broadcaster.standOn(field);
-  const spot = new SpotBuilder(scene).build();
+  const spot: Spot = new SpotBuilder(scene).build();
   spot.deployOn(field);
 + spot.attach(screen);
 ```
+
+## `CommentSupplier`, `CommentDeployer`, `CommentContextSupplier` (コメント表示コンポーネント)の初期化
+
+最後に `CommentSupplier`, `CommentDeployer`, `CommentContextSupplier` を初期化します.
+`CommentSupplier` はどのようなコメントを出力するか、 `CommentDeployer` はどのようにコメントを描画させるか制御します.
+`CommentContextSupplier` はコメントの表示条件を制御するために環境情報を提供します.
+
+`CommentSupplier`, `CommentDeployer` は `CommentSupplierBuilder`, `CommentDeployerBuilder` の `build()` を使用して作成してください.
+
+```typescript
+    import { CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder } from '@yasshi2525/live-on-air'
+    const commentSupplier: CommentSupplier = new CommentSupplierBuilder(scene).build();
+    const commentDeployer: CommentDeployer = new CommentDeployerBuilder(scene).build();
+    const commentContextSupplier: CommentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen });
+```
+
+`CommentDeployer` は描画対象の入力元として `CommentSupplier` を設定する必要があります.
+
+```diff typescript
+    const commentSupplier: CommentSupplier = new CommentSupplierBuilder(scene).build();
+    const commentDeployer: CommentDeployer = new CommentDeployerBuilder(scene).build();
++   commentDeployer.subscribe(commentSupplier);
+    const commentContextSupplier: CommentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen });
+```
+
+加えて `CommentDeployer` は描画内容を画面に表示するため、 `Layer` とひも付ける必要があります.
+
+```diff typescript
+    const commentSupplier: CommentSupplier = new CommentSupplierBuilder(scene).build();
+    const commentDeployer: CommentDeployer = new CommentDeployerBuilder(scene).build();
+    commentDeployer.subscribe(commentSupplier);
++   commentDeployer.container = layer.comment;
+    const commentContextSupplier: CommentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen });
+```
+
+そして `CommentSupplier` が場面に合わせて条件に合ったコメントを出力できるよう、 `CommentContextSupplier` を設定する必要があります.
+また、 `start(CommentContextSupplier)` を呼び出すことでコメントの描画を開始します.
+
+```diff typescript
+    const commentSupplier: CommentSupplier = new CommentSupplierBuilder(scene).build();
+    const commentDeployer: CommentDeployer = new CommentDeployerBuilder(scene).build();
+    commentDeployer.subscribe(commentSupplier);
+    commentDeployer.container = layer.comment;
+    const commentContextSupplier: CommentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen });
++   commentSupplier.start(commentContextSupplier);
+```
+
 
 以上がすでに存在する `g.Scene` に本ライブラリを組み込む手順です.
 

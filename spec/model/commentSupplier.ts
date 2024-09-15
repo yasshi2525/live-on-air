@@ -74,4 +74,10 @@ describe('commentSupplier', () => {
     g.game.fps = -1
     expect(() => new CommentSupplierBuilder(scene).addComment('hoge').build()).toThrow()
   })
+  it('自由に値を追加・参照できる', () => {
+    const cs = new CommentSupplierBuilder(scene).build()
+    expect(cs.vars).not.toBeDefined()
+    cs.vars = 'Hello'
+    expect(cs.vars).toBe('Hello')
+  })
 })
