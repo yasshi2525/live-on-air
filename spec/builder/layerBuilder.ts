@@ -36,11 +36,12 @@ describe('LayerBuilder', () => {
     expect(lb.field()).toEqual({ x: 100, y: 100, width: 1080, height: 520 })
     expect(lb.screen()).toEqual({ x: 100, y: 100, width: 1080, height: 520 })
     expect(lb.comment()).toEqual({ x: 100, y: 100, width: 1080, height: 520 })
+    expect(lb.header()).toEqual({ x: 0, y: 0, width: 1280, height: 100 })
     for (const typ of ['field', 'screen'] as LayerType[]) {
       expect(layer[typ]).toBeDefined()
       expect(layer[typ]).toBeInstanceOf(g.E)
     }
-    expect(scene.children).toEqual([layer.field, layer.screen, layer.comment])
+    expect(scene.children).toEqual([layer.field, layer.screen, layer.comment, layer.header])
 
     insertDebugView(layer)
     await gameContext.step()

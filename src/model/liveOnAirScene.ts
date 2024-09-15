@@ -18,6 +18,9 @@ import { CommentSupplierConfig } from '../value/commentSupplierConfig'
 import { CommentDeployerConfig } from '../value/commentDeployerConfig'
 import { CommentDeployerBuilder } from '../builder/commentDeployerBuilder'
 import { CommentContextSupplier } from './commentContextSupplier'
+import { Scorer } from './scorer'
+import { ScorerBuilder } from '../builder/scorerBuilder'
+import { ScorerConfig } from '../value/scorerConfig'
 
 /**
  * 本ゲームが動作する g.Scene が持つゲーム情報を格納したパラメタ一覧です.
@@ -51,12 +54,16 @@ export interface LiveOnAirScene {
    * コメント配置器
    */
   readonly commentDeployer: CommentDeployer
+  /**
+   * 得点制御器.
+   */
+  readonly scorer: Scorer
 }
 
 export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
-  private context: { loaded: false } | { loaded: true, layer: Layer, field: Field, broadcaster: Broadcaster, screen: Screen, spots: Set<Spot>, commentSupplier: CommentSupplier, commentDeployer: CommentDeployer }
+  private context: { loaded: false } | { loaded: true, layer: Layer, field: Field, broadcaster: Broadcaster, screen: Screen, spots: Set<Spot>, commentSupplier: CommentSupplier, commentDeployer: CommentDeployer, scorer: Scorer }
 
-  constructor (param: g.SceneParameterObject & { layer: LayerConfig, broadcaster: BroadcasterConfig, spots: readonly SpotConfig[], commentSupplier: CommentSupplierConfig, commentDeployer: CommentDeployerConfig }) {
+  constructor (param: g.SceneParameterObject & { layer: LayerConfig, broadcaster: BroadcasterConfig, spots: readonly SpotConfig[], commentSupplier: CommentSupplierConfig, commentDeployer: CommentDeployerConfig, scorer: ScorerConfig }) {
     super(param)
     this.context = { loaded: false }
     this.onLoad.add(() => {
@@ -64,6 +71,7 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
         .field(param.layer.field)
         .screen(param.layer.screen)
         .comment(param.layer.comment)
+        .header(param.layer.header)
         .build()
       const field = new FieldBuilder()
         .build()
@@ -101,7 +109,16 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
       const commentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen })
       commentSupplier.addDeployer(commentDeployer)
       commentSupplier.start(commentContextSupplier)
-      this.context = { loaded: true, layer, field, broadcaster, screen, spots, commentSupplier, commentDeployer }
+      const scorer = new ScorerBuilder(this)
+        .font(param.scorer.font)
+        .digit(param.scorer.digit)
+        .prefix(param.scorer.prefix)
+        .suffix(param.scorer.suffix)
+        .build()
+      scorer.container = layer.header
+      commentSupplier.onSupply.add(() => scorer.add(1))
+      scorer.enable()
+      this.context = { loaded: true, layer, field, broadcaster, screen, spots, commentSupplier, commentDeployer, scorer }
     })
   }
 
@@ -152,5 +169,12 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
       throw new Error('onLoad が実行されていません. onLoad が実行されてから本パラメタを取得してください')
     }
     return this.context.commentDeployer
+  }
+
+  get scorer (): Scorer {
+    if (!this.context.loaded) {
+      throw new Error('onLoad が実行されていません. onLoad が実行されてから本パラメタを取得してください')
+    }
+    return this.context.scorer
   }
 }

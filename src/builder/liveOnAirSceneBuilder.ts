@@ -8,6 +8,7 @@ import { ScreenConfigSupplier } from '../value/screenConfig'
 import { SampleLive } from '../model/live'
 import { CommentSupplierConfig, CommentSupplierConfigSupplier } from '../value/commentSupplierConfig'
 import { CommentDeployerConfig, CommentDeployerConfigSupplier } from '../value/commentDeployerConfig'
+import { ScorerConfig, ScorerConfigSupplier } from '../value/scorerConfig'
 
 /**
  * ゲームが動作する g.Scene を簡便に作るためのクラス.
@@ -163,6 +164,25 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
   }
 
   /**
+   * 作成する {@link Scorer} の属性情報を設定します.
+   * @param config Scorer の設定値
+   */
+  scorer(config: Partial<ScorerConfig>): LiveOnAirSceneBuilder
+
+  /**
+   * 作成する{@link Scorer} の属性情報を取得します.
+   */
+  scorer(): Readonly<ScorerConfig>
+
+  scorer (args?: Partial<ScorerConfig>): LiveOnAirSceneBuilder | Readonly<ScorerConfig> {
+    if (args) {
+      super.scorer(args)
+      return this
+    }
+    return super.scorer()
+  }
+
+  /**
    * 各属性値に値を設定しなかった際に使用されるデフォルト値を設定します.
    *
    * @param game g.game を指定してください.
@@ -186,7 +206,8 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
       const layer = new LayerConfigSupplier({
         field: { x: 100, y: 100, width: game.width - 200, height: game.height - 200 },
         screen: { x: 100, y: 100, width: game.width - 200, height: game.height - 200 },
-        comment: { x: 100, y: 100, width: game.width - 200, height: game.height - 200 }
+        comment: { x: 100, y: 100, width: game.width - 200, height: game.height - 200 },
+        header: { x: 0, y: 0, width: game.width, height: 100 }
       })
       const field = new FieldConfigSupplier({})
       const broadcaster = new BroadcasterConfigSupplier({
@@ -211,7 +232,13 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
         intervalY: 40,
         font: new g.DynamicFont({ game, fontFamily: 'sans-serif', size: 35 })
       })
-      LiveOnAirSceneBuilder.defaultConfig = { game, layer, field, broadcaster, screen, spot, commentSupplier, commentDeployer }
+      const scorer = new ScorerConfigSupplier({
+        font: new g.DynamicFont({ game, fontFamily: 'sans-serif', size: 40 }),
+        digit: 4,
+        prefix: 'スコア',
+        suffix: '点'
+      })
+      LiveOnAirSceneBuilder.defaultConfig = { game, layer, field, broadcaster, screen, spot, commentSupplier, commentDeployer, scorer }
     }
     this.lastUsedScene = game.scene()
     return LiveOnAirSceneBuilder.defaultConfig

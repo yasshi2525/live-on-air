@@ -76,6 +76,26 @@ export class LayerBuilder extends LayerConfigureImpl {
   }
 
   /**
+   * 残り時間と得点が表示される領域の大きさを取得します.
+   */
+  header (): Readonly<g.CommonArea>
+
+  /**
+   * 残り時間と得点が表示される領域の大きさを設定します.
+   *
+   * @param area 設定する領域
+   */
+  header (area: g.CommonArea): LayerBuilder
+
+  header (args?: g.CommonArea): LayerBuilder | Readonly<g.CommonArea> {
+    if (args) {
+      super.header(args)
+      return this
+    }
+    return super.header()
+  }
+
+  /**
    * 各属性値に値を設定しなかった際に使用されるデフォルト値を設定します.
    *
    * @param scene 現在の scene を指定してください.
@@ -99,7 +119,8 @@ export class LayerBuilder extends LayerConfigureImpl {
       LayerBuilder.defaultConfig = new LayerConfigSupplier({
         field: { x: 100, y: 100, width: scene.game.width - 200, height: scene.game.height - 200 },
         screen: { x: 100, y: 100, width: scene.game.width - 200, height: scene.game.height - 200 },
-        comment: { x: 100, y: 100, width: scene.game.width - 200, height: scene.game.height - 200 }
+        comment: { x: 100, y: 100, width: scene.game.width - 200, height: scene.game.height - 200 },
+        header: { x: 0, y: 0, width: scene.game.width, height: 100 }
       })
     }
     LayerBuilder.lastUsedScene = scene
