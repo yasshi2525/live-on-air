@@ -68,11 +68,11 @@
 >     const commentSupplier: CommentSupplier = new CommentSupplierBuilder(scene).build();
 >     const commentDeployer: CommentDeployer = new CommentDeployerBuilder(scene).build();
 >     commentDeployer.subscribe(commentSupplier);
->     commentDeployer.container = layer.comment;
+> -   commentDeployer.container = layer.comment;
 >     const commentContextSupplier: CommentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen });
 >     commentSupplier.start(commentContextSupplier);
 >     const scorer: Scorer = new ScorerBuilder(scene).build();
->     scorer.container = layer.header;
+> -   scorer.container = layer.header;
 >     commentSupplier.onSupply.add(() => scorer.add(1));
 >     scorer.enable();
 >   });
