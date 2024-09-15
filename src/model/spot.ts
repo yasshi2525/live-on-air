@@ -145,7 +145,15 @@ export class SpotImpl implements Spot {
       x: _location.x,
       y: _location.y,
       anchorX: 0.5,
-      anchorY: 0.5
+      anchorY: 0.5,
+      touchable: true
+    })
+    this.view.onPointDown.add(() => {
+      if (this.status === 'target') {
+        this.unsetAsDestination()
+      } else if (this.status === 'enabled') {
+        this.setAsDestination()
+      }
     })
   }
 
@@ -216,6 +224,7 @@ export class SpotImpl implements Spot {
       throw new Error('spotがfieldに配置されていないため訪問先として指定可能にできませんでした. spotをfieldに配置してください')
     }
     this._status = 'enabled'
+    this._view.touchable = true
     this._view.src = this._visited ? this.assets.normal : this.assets.unvisited
     this._view.invalidate()
   }
@@ -225,6 +234,7 @@ export class SpotImpl implements Spot {
       throw new Error('spotがfieldに配置されていないため訪問先として指定不可能にできませんでした. spotをfieldに配置してください')
     }
     this._status = 'disabled'
+    this._view.touchable = false
     this._view.src = this.assets.disabled
     this._view.invalidate()
   }

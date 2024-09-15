@@ -225,4 +225,26 @@ describe('Spot', () => {
     spot.vars = 'Hello'
     expect(spot.vars).toBe('Hello')
   })
+
+  it('タップすると行き先として指定される', async () => {
+    const spot = sb.location({ x: 100, y: 0 }).build()
+    spot.deployOn(field1)
+    spot.attach(screen)
+    gameClient.sendPointDown(spot.location!.x, spot.location!.y, 1)
+    await gameContext.step()
+    expect(spot.status).toBe('target')
+    expect(broadcaster.destination).toBe(spot)
+  })
+
+  it('行き先の状態でタップすると行き先が解除される', async () => {
+    const spot = sb.location({ x: 100, y: 0 }).build()
+    spot.deployOn(field1)
+    spot.attach(screen)
+    gameClient.sendPointDown(spot.location!.x, spot.location!.y, 1)
+    await gameContext.step()
+    gameClient.sendPointDown(spot.location!.x, spot.location!.y, 1)
+    await gameContext.step()
+    expect(spot.status).toBe('enabled')
+    expect(broadcaster.destination).not.toBeDefined()
+  })
 })
