@@ -274,8 +274,8 @@ const spot: Spot = new SpotBuilder(scene).build();
 >   scorer.enable();
 > - scorer.container = layer.header;
 > + commentDeployer.container = <自身で定義した、コメント描画用エンティティ>
->   const commentContextSupplier: CommentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen });
->   commentSupplier.start(commentContextSupplier);
+>   commentSupplier.onSupply.add(() => scorer.add(1));
+>   scorer.enable();
 >   ```
 
 以上がすでに存在する `g.Scene` に本ライブラリを組み込む手順です.
