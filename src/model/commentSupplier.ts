@@ -104,7 +104,7 @@ export class CommentSupplierImpl implements CommentSupplier {
   private readonly scene: g.Scene
   private readonly _deployers = new Set<CommentDeployer>()
   private _interval: PrimitiveValueSupplier<number>
-  private readonly fps: PrimitiveValueSupplier<number>
+  private readonly _fps: number
   private readonly _comments: CommentSchema[]
   private indexCount = 0
   private intervalCount = 0
@@ -125,15 +125,7 @@ export class CommentSupplierImpl implements CommentSupplier {
         return super.getMessage(value) + ' コメント生成間隔は0より大きな正の値でなければなりません.'
       }
     }())
-    this.fps = PrimitiveValueSupplier.create(fps, new class extends ValueValidator<number> {
-      override isInvalid (value: number): boolean {
-        return value <= 0
-      }
-
-      override getMessage (value: number): string {
-        return super.getMessage(value) + ' fpsは0より大きな正の値でなければなりません.'
-      }
-    }())
+    this._fps = fps
   }
 
   fetch (context: CommentContext): string[] {
@@ -153,7 +145,7 @@ export class CommentSupplierImpl implements CommentSupplier {
       }
       this.intervalCount -= this._interval.get()
     }
-    this.intervalCount += 1000 / this.fps.get()
+    this.intervalCount += 1000 / this._fps
     return result
   }
 
