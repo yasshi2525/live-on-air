@@ -7,7 +7,6 @@ import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeploye
  * @param param
  */
 export const main = (param: GameMainParameterObject): void => {
-  g.game.vars.gameState = { score: 0 };
   g.game.random = param.random;
 
   // 自身で実装している g.Scene

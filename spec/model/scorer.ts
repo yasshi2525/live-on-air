@@ -84,4 +84,10 @@ describe('scorer', () => {
     scorer = new ScorerBuilder(scene).build()
     expect(g.game.vars.gameState.score).toBe(0)
   })
+
+  it('自由に値を追加・参照できる', () => {
+    expect(scorer.vars).not.toBeDefined()
+    scorer.vars = 'Hello'
+    expect(scorer.vars).toBe('Hello')
+  })
 })

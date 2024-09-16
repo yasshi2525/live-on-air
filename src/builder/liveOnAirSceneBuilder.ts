@@ -28,15 +28,15 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    *
    * @param config 設定されている各レイヤーについての領域の位置・大きさ
    */
-  layer(config: Partial<LayerConfig>): LiveOnAirSceneBuilder
+  override layer (config: Partial<LayerConfig>): LiveOnAirSceneBuilder
 
   /**
    * g.Scene 上に配置される各レイヤーの領域値を取得します.
    *
    */
-  layer (): Readonly<LayerConfig>
+  override layer (): Readonly<LayerConfig>
 
-  layer (args?: Partial<LayerConfig>): LiveOnAirSceneBuilder | Readonly<LayerConfig> {
+  override layer (args?: Partial<LayerConfig>): LiveOnAirSceneBuilder | Readonly<LayerConfig> {
     if (args) {
       super.layer(args)
       return this
@@ -49,14 +49,14 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    *
    * @param config Field の設定値
    */
-  field(config: object): LiveOnAirSceneBuilder
+  override field (config: object): LiveOnAirSceneBuilder
 
   /**
    * マップ ({@link Field}) の属性情報を取得します.
    */
-  field (): Readonly<object>
+  override field (): Readonly<object>
 
-  field (args?: object): LiveOnAirSceneBuilder | Readonly<object> {
+  override field (args?: object): LiveOnAirSceneBuilder | Readonly<object> {
     if (args) {
       super.field(args)
       return this
@@ -69,14 +69,14 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    *
    * @param config Broadcaster の設定値
    */
-  broadcaster(config: Partial<BroadcasterConfig>): LiveOnAirSceneBuilder
+  override broadcaster (config: Partial<BroadcasterConfig>): LiveOnAirSceneBuilder
 
   /**
    * 作成する {@link Broadcaster} の属性情報を取得します.
    */
-  broadcaster (): Readonly<BroadcasterConfig>
+  override broadcaster (): Readonly<BroadcasterConfig>
 
-  broadcaster (args?: Partial<BroadcasterConfig>): LiveOnAirSceneBuilder | Readonly<BroadcasterConfig> {
+  override broadcaster (args?: Partial<BroadcasterConfig>): LiveOnAirSceneBuilder | Readonly<BroadcasterConfig> {
     if (args) {
       super.broadcaster(args)
       return this
@@ -89,14 +89,14 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    *
    * @param config Field の設定値
    */
-  screen(config: object): LiveOnAirSceneBuilder
+  override screen (config: object): LiveOnAirSceneBuilder
 
   /**
    * 生放送の画面 ({@link Screen}) の属性情報を取得します.
    */
-  screen (): Readonly<object>
+  override screen (): Readonly<object>
 
-  screen (args?: object): LiveOnAirSceneBuilder | Readonly<object> {
+  override screen (args?: object): LiveOnAirSceneBuilder | Readonly<object> {
     if (args) {
       super.screen(args)
       return this
@@ -109,14 +109,14 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    *
    * @param config Spot の設定値
    */
-  spot(config: Partial<SpotConfig>): LiveOnAirSceneBuilder
+  override spot (config: Partial<SpotConfig>): LiveOnAirSceneBuilder
 
   /**
    * 作成する {@link Spot} の属性情報を取得します.
    */
-  spot (): readonly SpotConfig[]
+  override spot (): readonly SpotConfig[]
 
-  spot (args?: Partial<SpotConfig>): LiveOnAirSceneBuilder | readonly SpotConfig[] {
+  override spot (args?: Partial<SpotConfig>): LiveOnAirSceneBuilder | readonly SpotConfig[] {
     if (args) {
       super.spot(args)
       return this
@@ -129,14 +129,14 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    *
    * @param config CommentSupplier の設定値
    */
-  commentSupplier(config: Partial<CommentSupplierConfig>): LiveOnAirSceneBuilder
+  override commentSupplier (config: Partial<CommentSupplierConfig>): LiveOnAirSceneBuilder
 
   /**
    * 作成する {@link CommentSupplier} の属性情報を取得します.
    */
-  commentSupplier (): Readonly<CommentSupplierConfig>
+  override commentSupplier (): Readonly<CommentSupplierConfig>
 
-  commentSupplier (args?: Partial<CommentSupplierConfig>): LiveOnAirSceneBuilder | Readonly<CommentSupplierConfig> {
+  override commentSupplier (args?: Partial<CommentSupplierConfig>): LiveOnAirSceneBuilder | Readonly<CommentSupplierConfig> {
     if (args) {
       super.commentSupplier(args)
       return this
@@ -149,14 +149,14 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    *
    * @param config CommentSupplier の設定値
    */
-  commentDeployer(config: Partial<CommentDeployerConfig>): LiveOnAirSceneBuilder
+  override commentDeployer (config: Partial<CommentDeployerConfig>): LiveOnAirSceneBuilder
 
   /**
    * 作成する {@link CommentSupplier} の属性情報を取得します.
    */
-  commentDeployer (): Readonly<CommentDeployerConfig>
+  override commentDeployer (): Readonly<CommentDeployerConfig>
 
-  commentDeployer (args?: Partial<CommentDeployerConfig>): LiveOnAirSceneBuilder | Readonly<CommentDeployerConfig> {
+  override commentDeployer (args?: Partial<CommentDeployerConfig>): LiveOnAirSceneBuilder | Readonly<CommentDeployerConfig> {
     if (args) {
       super.commentDeployer(args)
       return this
@@ -168,14 +168,14 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    * 作成する {@link Scorer} の属性情報を設定します.
    * @param config Scorer の設定値
    */
-  scorer(config: Partial<ScorerConfig>): LiveOnAirSceneBuilder
+  override scorer (config: Partial<ScorerConfig>): LiveOnAirSceneBuilder
 
   /**
    * 作成する{@link Scorer} の属性情報を取得します.
    */
-  scorer(): Readonly<ScorerConfig>
+  override scorer (): Readonly<ScorerConfig>
 
-  scorer (args?: Partial<ScorerConfig>): LiveOnAirSceneBuilder | Readonly<ScorerConfig> {
+  override scorer (args?: Partial<ScorerConfig>): LiveOnAirSceneBuilder | Readonly<ScorerConfig> {
     if (args) {
       super.scorer(args)
       return this
@@ -187,14 +187,14 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    * 作成する {@link Ticker} の属性情報を設定します.
    * @param config Ticker の設定値
    */
-  ticker(config: Partial<TickerConfig>): LiveOnAirSceneBuilder
+  override ticker (config: Partial<TickerConfig>): LiveOnAirSceneBuilder
 
   /**
    * 作成する{@link Ticker} の属性情報を取得します.
    */
-  ticker(): Readonly<TickerConfig>
+  override ticker (): Readonly<TickerConfig>
 
-  ticker (args?: Partial<TickerConfig>): LiveOnAirSceneBuilder | Readonly<TickerConfig> {
+  override ticker (args?: Partial<TickerConfig>): LiveOnAirSceneBuilder | Readonly<TickerConfig> {
     if (args) {
       super.ticker(args)
       return this
@@ -248,19 +248,19 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
         comments: [] // ここにいれると CommentSupplierBuilder が更にデフォルト値を足してしまう
       })
       const commentDeployer = new CommentDeployerConfigSupplier({
-        speed: 1,
+        speed: 4,
         intervalY: 40,
-        font: new g.DynamicFont({ game, fontFamily: 'sans-serif', size: 35 })
+        font: new g.DynamicFont({ game, fontFamily: 'sans-serif', size: 35, strokeColor: 'white', strokeWidth: 4 })
       })
       const scorer = new ScorerConfigSupplier({
-        font: new g.DynamicFont({ game, fontFamily: 'monospace', size: 40 }),
+        font: new g.DynamicFont({ game, fontFamily: 'monospace', size: 40, strokeColor: 'white', strokeWidth: 4 }),
         digit: 4,
         prefix: 'スコア',
         suffix: '点'
       })
       const ticker = new TickerConfigSupplier({
         frame: 1800,
-        font: new g.DynamicFont({ game, fontFamily: 'monospace', size: 40 }),
+        font: new g.DynamicFont({ game, fontFamily: 'monospace', size: 40, strokeColor: 'white', strokeWidth: 4 }),
         digit: 2,
         prefix: '残り',
         suffix: '秒'

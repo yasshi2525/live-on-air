@@ -3,7 +3,7 @@ import { CommentDeployerBuilder } from '../../src'
 describe('commentDeployerBuilder', () => {
   it('デフォルトの設定を変更できる', () => {
     const def = CommentDeployerBuilder.getDefault(scene)
-    expect(def.speed()).toEqual(1)
+    expect(def.speed()).toEqual(4)
     expect(def.intervalY()).toEqual(40)
     expect(def.font().size).toEqual(35)
     def
@@ -20,11 +20,11 @@ describe('commentDeployerBuilder', () => {
   })
   it('デフォルトの設定で作成できる', () => {
     const cdb = new CommentDeployerBuilder(scene)
-    expect(cdb.speed()).toEqual(1)
+    expect(cdb.speed()).toEqual(4)
     expect(cdb.intervalY()).toEqual(40)
     expect(cdb.font().size).toEqual(35)
     const cd = cdb.build()
-    expect(cd.speed).toBe(1)
+    expect(cd.speed).toBe(4)
     expect(cd.intervalY).toBe(40)
     expect(cd.font.size).toEqual(35)
   })

@@ -4,6 +4,7 @@
     "declaration": true,
     "module": "commonjs",
     "strict": true,
+    "noImplicitOverride": true,
     "allowUmdGlobalAccess": true,
     "outDir": "lib"
   },

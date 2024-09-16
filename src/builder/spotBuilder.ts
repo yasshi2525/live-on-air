@@ -22,14 +22,14 @@ export class SpotBuilder extends SpotConfigureImpl {
    *
    * @param assets 状態ごとに使用する画像アセット
    */
-  image(assets: Partial<SpotAssetRecord>): SpotBuilder
+  override image (assets: Partial<SpotAssetRecord>): SpotBuilder
 
   /**
    * 描画に使用される画像アセットをすべての状態について取得します.
    */
-  image (): Readonly<SpotAssetRecord>
+  override image (): Readonly<SpotAssetRecord>
 
-  image (args?: Partial<SpotAssetRecord>): SpotBuilder | Readonly<SpotAssetRecord> {
+  override image (args?: Partial<SpotAssetRecord>): SpotBuilder | Readonly<SpotAssetRecord> {
     if (args) {
       super.image(args)
       return this
@@ -42,14 +42,14 @@ export class SpotBuilder extends SpotConfigureImpl {
    *
    * @param location Spot を配置する座標
    */
-  location (location: g.CommonOffset): SpotBuilder
+  override location (location: g.CommonOffset): SpotBuilder
 
   /**
    * 作成する Spot を配置する座標を取得します.
    */
-  location (): Readonly<g.CommonOffset>
+  override location (): Readonly<g.CommonOffset>
 
-  location (args?: g.CommonOffset): SpotBuilder | Readonly<g.CommonOffset> {
+  override location (args?: g.CommonOffset): SpotBuilder | Readonly<g.CommonOffset> {
     if (args) {
       super.location(args)
       return this
@@ -60,16 +60,16 @@ export class SpotBuilder extends SpotConfigureImpl {
   /**
    * 作成する Spot に到達すると開始する生放送を取得します.
    */
-  liveClass(): new () => Live
+  override liveClass (): new () => Live
 
   /**
    * 作成する Spot に到達すると開始する生放送を設定します.
    *
    * @param liveClass 開始する生放送クラス名. インスタンスでない点にご留意ください.
    */
-  liveClass(liveClass: new () => Live): SpotBuilder
+  override liveClass (liveClass: new () => Live): SpotBuilder
 
-  liveClass (args?: new () => Live): SpotBuilder | Readonly<new () => Live> {
+  override liveClass (args?: new () => Live): SpotBuilder | Readonly<new () => Live> {
     if (args) {
       super.liveClass(args)
       return this

@@ -1,7 +1,15 @@
 import { LiveOnAirSceneBuilder } from '../../src'
 import { waitFor } from '../__helper'
+import { LiveOnAirSceneImpl } from '../../src/model/liveOnAirScene'
 
 describe('LiveOnAirScene', () => {
+  afterEach(async () => {
+    if (g.game.scene() instanceof LiveOnAirSceneImpl) {
+      g.game.popScene()
+      await gameContext.step()
+    }
+  })
+
   it('load 前は 要素にアクセスできない', () => {
     const scene = new LiveOnAirSceneBuilder(g.game).build()
     expect(() => scene.layer).toThrow()

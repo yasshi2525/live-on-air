@@ -20,16 +20,16 @@ export class CommentSupplierBuilder extends CommentSupplierConfigureImpl {
   /**
    * 作成する CommentSupplier に設定するコメント生成間隔(ミリ秒)を取得します.
    */
-  interval(): number
+  override interval (): number
 
   /**
    * 作成する CommentSupplier に設定するコメント生成間隔(ミリ秒)を設定します.
    *
    * @param interval コメントの生成間隔(ミリ秒)
    */
-  interval(interval: number): CommentSupplierBuilder
+  override interval (interval: number): CommentSupplierBuilder
 
-  interval (args?: number): number | CommentSupplierBuilder {
+  override interval (args?: number): number | CommentSupplierBuilder {
     if (typeof args === 'number') {
       super.interval(args)
       return this
@@ -43,7 +43,7 @@ export class CommentSupplierBuilder extends CommentSupplierConfigureImpl {
    * @param comment コメント本文
    * @param conditions コメントを出力する条件(複数指定可). 省略した場合、状況にかかわらず出力します.
    */
-  addComment (comment: string, ...conditions: ((ctx: CommentContext) => boolean)[]): CommentSupplierBuilder {
+  override addComment (comment: string, ...conditions: ((ctx: CommentContext) => boolean)[]): CommentSupplierBuilder {
     super.addComment(comment, ...conditions)
     return this
   }
@@ -51,7 +51,7 @@ export class CommentSupplierBuilder extends CommentSupplierConfigureImpl {
   /**
    * 登録されたコメント設定を取得します
    */
-  comments(): CommentSchema[]
+  override comments (): CommentSchema[]
 
   /**
    * 出力するコメントを設定します.
@@ -60,9 +60,9 @@ export class CommentSupplierBuilder extends CommentSupplierConfigureImpl {
    *
    * @param comments コメント情報
    */
-  comments (comments: CommentSchema[]): CommentSupplierBuilder
+  override comments (comments: CommentSchema[]): CommentSupplierBuilder
 
-  comments (args?: CommentSchema[]): CommentSchema[] | CommentSupplierBuilder {
+  override comments (args?: CommentSchema[]): CommentSchema[] | CommentSupplierBuilder {
     if (args) {
       super.comments(args)
       return this

@@ -133,7 +133,7 @@ export class ObjectSupplier<T> extends PrimitiveValueSupplier<T> implements Valu
     }, {} as Record<string, unknown>) as T
   }
 
-  static create <V> (initial: V, validator?: ValueValidator<V>): ObjectSupplier<V> {
+  static override create <V> (initial: V, validator?: ValueValidator<V>): ObjectSupplier<V> {
     return new ObjectSupplier<V>(new DefaultValueProvider<V>(initial, validator), validator)
   }
 }

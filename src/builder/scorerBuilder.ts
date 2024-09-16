@@ -18,16 +18,16 @@ export class ScorerBuilder extends ScorerConfigureImpl {
   /**
    * 作成する Scorer に設定するフォントを取得します.
    */
-  font (): g.Font
+  override font (): g.Font
 
   /**
    * 作成する Scorer に設定するフォントを設定します.
    *
    * @param font 描画に使用するフォント
    */
-  font (font: g.Font): ScorerBuilder
+  override font (font: g.Font): ScorerBuilder
 
-  font (args?: g.Font): g.Font | ScorerBuilder {
+  override font (args?: g.Font): g.Font | ScorerBuilder {
     if (args) {
       super.font(args)
       return this
@@ -38,16 +38,16 @@ export class ScorerBuilder extends ScorerConfigureImpl {
   /**
    * 作成する Scorer に設定する得点の桁数を取得します.
    */
-  digit (): number
+  override digit (): number
 
   /**
    * 作成する Scorer に設定する得点の桁数を設定します.
    *
    * @param digit 得点の桁数
    */
-  digit (digit: number): ScorerBuilder
+  override digit (digit: number): ScorerBuilder
 
-  digit (args?: number): number | ScorerBuilder {
+  override digit (args?: number): number | ScorerBuilder {
     if (typeof args === 'number') {
       super.digit(args)
       return this
@@ -58,16 +58,16 @@ export class ScorerBuilder extends ScorerConfigureImpl {
   /**
    * 作成する Scorer に設定する前置テキストを取得します.
    */
-  prefix (): string
+  override prefix (): string
 
   /**
    * 作成する Scorer に設定する前置テキストを設定します.
    *
    * @param prefix 前置テキスト
    */
-  prefix (prefix: string): ScorerBuilder
+  override prefix (prefix: string): ScorerBuilder
 
-  prefix (args?: string): string | ScorerBuilder {
+  override prefix (args?: string): string | ScorerBuilder {
     if (args) {
       super.prefix(args)
       return this
@@ -78,16 +78,16 @@ export class ScorerBuilder extends ScorerConfigureImpl {
   /**
    * 作成する Scorer に設定する後置テキストを取得します.
    */
-  suffix (): string
+  override suffix (): string
 
   /**
    * 作成する Scorer に設定する後置テキストを設定します.
    *
    * @param suffix 後置テキスト
    */
-  suffix (suffix: string): ScorerBuilder
+  override suffix (suffix: string): ScorerBuilder
 
-  suffix (args?: string): string | ScorerBuilder {
+  override suffix (args?: string): string | ScorerBuilder {
     if (args) {
       super.suffix(args)
       return this
@@ -117,7 +117,7 @@ export class ScorerBuilder extends ScorerConfigureImpl {
     }
     if (!ScorerBuilder.defaultConfig) {
       ScorerBuilder.defaultConfig = new ScorerConfigSupplier({
-        font: new g.DynamicFont({ game: scene.game, fontFamily: 'monospace', size: 40 }),
+        font: new g.DynamicFont({ game: scene.game, fontFamily: 'monospace', size: 40, strokeColor: 'white', strokeWidth: 4 }),
         digit: 4,
         prefix: 'スコア',
         suffix: '点'

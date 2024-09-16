@@ -3,6 +3,7 @@ import pluginImport from 'eslint-plugin-import'
 import n from 'eslint-plugin-n'
 import promise from 'eslint-plugin-promise'
 import tslint from 'typescript-eslint'
+import stylistic from '@stylistic/eslint-plugin'
 
 standard.plugins = {
   import: pluginImport,
@@ -17,6 +18,14 @@ export default [
   standard,
   ...tslint.configs.recommended,
   ...tslint.configs.stylistic, {
+    plugins: {
+      '@stylistic': stylistic
+    },
+    rules: {
+      '@stylistic/space-before-function-paren': 'error'
+    }
+  },
+  {
     ignores: ['lib', 'tmp', 'sample']
   }
 ]

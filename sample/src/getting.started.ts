@@ -7,7 +7,6 @@ import { LiveOnAirSceneBuilder } from '@yasshi2525/live-on-air';
  * @param param
  */
 export const main = (param: GameMainParameterObject): void => {
-  g.game.vars.gameState = { score: 0 };
   g.game.random = param.random;
 
   const scene = new LiveOnAirSceneBuilder(g.game)

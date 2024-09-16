@@ -42,7 +42,8 @@ export default tseslint.config(
     },
     rules: {
       ...standard.rules,
-      semi: 'error'
+      semi: 'error',
+      '@stylistic/space-before-function-paren': 'error'
     },
     files: ['src/**/*.ts']
   }, {

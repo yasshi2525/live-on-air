@@ -29,6 +29,11 @@ export interface Scorer extends NumberLabel {
   readonly status: ScorerStatus
 
   /**
+   * ライブラリ利用者が自由に使えるフィールドです.
+   */
+  vars?: unknown
+
+  /**
    * 加点します.
    *
    * @param score 加点する値
@@ -56,6 +61,7 @@ export interface Scorer extends NumberLabel {
 export type ScorerOptions = Omit<NumberLabelOptions, 'value' | 'textAlign'>
 
 export class ScorerImpl extends NumberLabelImpl implements Scorer {
+  vars?: unknown
   constructor ({ scene, font, digit, prefix, suffix }: ScorerOptions) {
     if (!scene.game.vars) {
       scene.game.vars = { gameState: { score: 0 } }
@@ -72,7 +78,7 @@ export class ScorerImpl extends NumberLabelImpl implements Scorer {
     })
   }
 
-  get value (): number {
+  override get value (): number {
     return Math.max(Math.floor(super.value), 0)
   }
 

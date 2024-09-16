@@ -4,6 +4,7 @@
     "target": "ES6",
     "module": "CommonJS",
     "strict": true,
+    "noImplicitOverride": true,
     "allowUmdGlobalAccess": true,
   },
   "files": ["node_modules/@akashic/akashic-engine/index.runtime.d.ts"],

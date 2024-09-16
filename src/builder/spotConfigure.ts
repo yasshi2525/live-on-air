@@ -83,9 +83,9 @@ export class SpotConfigureImpl implements SpotConfigure {
     return { x: value.x, y: value.y }
   }
 
-  liveClass(): new () => Live
+  liveClass (): new () => Live
 
-  liveClass(liveClass: new () => Live): SpotConfigure
+  liveClass (liveClass: new () => Live): SpotConfigure
 
   liveClass (args?: new () => Live): SpotConfigure | Readonly<new () => Live> {
     if (args) {

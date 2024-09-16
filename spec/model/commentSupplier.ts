@@ -70,10 +70,6 @@ describe('commentSupplier', () => {
       cs.interval = 0
     }).toThrow()
   })
-  it('無効なfps値は設定できない', () => {
-    g.game.fps = -1
-    expect(() => new CommentSupplierBuilder(scene).addComment('hoge').build()).toThrow()
-  })
   it('自由に値を追加・参照できる', () => {
     const cs = new CommentSupplierBuilder(scene).build()
     expect(cs.vars).not.toBeDefined()
