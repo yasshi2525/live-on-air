@@ -43,24 +43,24 @@ export class TickerConfigSupplier extends NumberLabelConfigSupplier implements V
     }())
   }
 
-  setIf (obj: Partial<TickerConfig>): void {
+  override setIf (obj: Partial<TickerConfig>): void {
     super.setIf(obj)
     this.frame.setIf(obj.frame)
   }
 
-  get (): TickerConfig {
+  override get (): TickerConfig {
     return {
       ...super.get(),
       frame: this.frame.get()
     }
   }
 
-  defaultIf (obj: Partial<TickerConfig>): void {
+  override defaultIf (obj: Partial<TickerConfig>): void {
     super.defaultIf(obj)
     this.frame.defaultIf(obj.frame)
   }
 
-  default (): TickerConfig {
+  override default (): TickerConfig {
     return {
       ...super.default(),
       frame: this.frame.default()

@@ -18,16 +18,16 @@ export class CommentDeployerBuilder extends CommentDeployerConfigureImpl {
   /**
    * 作成する CommentDeployer に設定するコメントの移動速度を取得します.
    */
-  speed (): number
+  override speed (): number
 
   /**
    * 作成する CommentDeployer に設定するコメントの移動速度を設定します.
    *
    * @param speed 移動速度
    */
-  speed (speed: number): CommentDeployerBuilder
+  override speed (speed: number): CommentDeployerBuilder
 
-  speed (args?: number): number | CommentDeployerBuilder {
+  override speed (args?: number): number | CommentDeployerBuilder {
     if (typeof args === 'number') {
       super.speed(args)
       return this
@@ -38,16 +38,16 @@ export class CommentDeployerBuilder extends CommentDeployerConfigureImpl {
   /**
    * 作成する CommentDeployer に設定するコメント間隔(y座標値)を取得します.
    */
-  intervalY (): number
+  override intervalY (): number
 
   /**
    * 作成する CommentDeployer に設定するコメント間隔(y座標値)を設定します.
    *
    * @param intervalY コメント間隔(y座標値)
    */
-  intervalY (intervalY: number): CommentDeployerBuilder
+  override intervalY (intervalY: number): CommentDeployerBuilder
 
-  intervalY (args?: number): number | CommentDeployerBuilder {
+  override intervalY (args?: number): number | CommentDeployerBuilder {
     if (typeof args === 'number') {
       super.intervalY(args)
       return this
@@ -58,16 +58,16 @@ export class CommentDeployerBuilder extends CommentDeployerConfigureImpl {
   /**
    * 作成する CommentDeployer に設定するコメントのフォントを取得します.
    */
-  font (): g.Font
+  override font (): g.Font
 
   /**
    * 作成する CommentDeployer に設定するコメントのフォントを設定します.
    *
    * @param font コメントのフォント
    */
-  font (font: g.Font): CommentDeployerBuilder
+  override font (font: g.Font): CommentDeployerBuilder
 
-  font (args?: g.Font): g.Font | CommentDeployerBuilder {
+  override font (args?: g.Font): g.Font | CommentDeployerBuilder {
     if (args) {
       super.font(args)
       return this

@@ -72,7 +72,7 @@ export class ScorerImpl extends NumberLabelImpl implements Scorer {
     })
   }
 
-  get value (): number {
+  override get value (): number {
     return Math.max(Math.floor(super.value), 0)
   }
 

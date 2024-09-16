@@ -18,16 +18,16 @@ export class LayerBuilder extends LayerConfigureImpl {
   /**
    * Spot, Broadcaster が配置されるマップの大きさを取得します.
    */
-  field (): Readonly<g.CommonArea>
+  override field (): Readonly<g.CommonArea>
 
   /**
    * Spot, Broadcaster が配置されるマップの大きさを設定します.
    *
    * @param area 設定する領域
    */
-  field (area: g.CommonArea): LayerBuilder
+  override field (area: g.CommonArea): LayerBuilder
 
-  field (args?: g.CommonArea): LayerBuilder | Readonly<g.CommonArea> {
+  override field (args?: g.CommonArea): LayerBuilder | Readonly<g.CommonArea> {
     if (args) {
       super.field(args)
       return this
@@ -38,16 +38,16 @@ export class LayerBuilder extends LayerConfigureImpl {
   /**
    * Live が配置される生放送画面の大きさを取得します.
    */
-  screen (): Readonly<g.CommonArea>
+  override screen (): Readonly<g.CommonArea>
 
   /**
    * Live が配置される生放送画面の大きさを設定します.
    *
    * @param area 設定する領域
    */
-  screen (area: g.CommonArea): LayerBuilder
+  override screen (area: g.CommonArea): LayerBuilder
 
-  screen (args?: g.CommonArea): LayerBuilder | Readonly<g.CommonArea> {
+  override screen (args?: g.CommonArea): LayerBuilder | Readonly<g.CommonArea> {
     if (args) {
       super.screen(args)
       return this
@@ -58,16 +58,16 @@ export class LayerBuilder extends LayerConfigureImpl {
   /**
    * コメントが表示される領域の大きさを取得します.
    */
-  comment (): Readonly<g.CommonArea>
+  override comment (): Readonly<g.CommonArea>
 
   /**
    * コメントが表示される領域の大きさを設定します.
    *
    * @param area 設定する領域
    */
-  comment (area: g.CommonArea): LayerBuilder
+  override comment (area: g.CommonArea): LayerBuilder
 
-  comment (args?: g.CommonArea): LayerBuilder | Readonly<g.CommonArea> {
+  override comment (args?: g.CommonArea): LayerBuilder | Readonly<g.CommonArea> {
     if (args) {
       super.comment(args)
       return this
@@ -78,16 +78,16 @@ export class LayerBuilder extends LayerConfigureImpl {
   /**
    * 残り時間と得点が表示される領域の大きさを取得します.
    */
-  header (): Readonly<g.CommonArea>
+  override header (): Readonly<g.CommonArea>
 
   /**
    * 残り時間と得点が表示される領域の大きさを設定します.
    *
    * @param area 設定する領域
    */
-  header (area: g.CommonArea): LayerBuilder
+  override header (area: g.CommonArea): LayerBuilder
 
-  header (args?: g.CommonArea): LayerBuilder | Readonly<g.CommonArea> {
+  override header (args?: g.CommonArea): LayerBuilder | Readonly<g.CommonArea> {
     if (args) {
       super.header(args)
       return this

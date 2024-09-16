@@ -78,7 +78,7 @@ export class TickerImpl extends NumberLabelImpl implements Ticker {
     })
   }
 
-  get value (): number {
+  override get value (): number {
     return Math.max(Math.floor(super.value / g.game.fps), 0)
   }
 

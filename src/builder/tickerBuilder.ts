@@ -18,16 +18,16 @@ export class TickerBuilder extends TickerConfigureImpl {
   /**
    * 作成する Ticker に設定する残り時間の初期値 (フレーム数) を取得します.
    */
-  frame (): number
+  override frame (): number
 
   /**
    * 作成する Ticker に設定する残り時間の初期値 (フレーム数) を設定します.
    *
    * @param frame 残り時間の初期値 (フレーム数)
    */
-  frame (frame: number): TickerBuilder
+  override frame (frame: number): TickerBuilder
 
-  frame (args?: number): number | TickerConfigure {
+  override frame (args?: number): number | TickerConfigure {
     if (typeof args === 'number') {
       super.frame(args)
       return this
@@ -38,16 +38,16 @@ export class TickerBuilder extends TickerConfigureImpl {
   /**
    * 作成する Ticker に設定するフォントを取得します.
    */
-  font (): g.Font
+  override font (): g.Font
 
   /**
    * 作成する Ticker に設定するフォントを設定します.
    *
    * @param font 描画に使用するフォント
    */
-  font (font: g.Font): TickerBuilder
+  override font (font: g.Font): TickerBuilder
 
-  font (args?: g.Font): g.Font | TickerBuilder {
+  override font (args?: g.Font): g.Font | TickerBuilder {
     if (args) {
       super.font(args)
       return this
@@ -58,16 +58,16 @@ export class TickerBuilder extends TickerConfigureImpl {
   /**
    * 作成する Ticker に設定する得点の桁数を取得します.
    */
-  digit (): number
+  override digit (): number
 
   /**
    * 作成する Ticker に設定する得点の桁数を設定します.
    *
    * @param digit 残り時間の桁数
    */
-  digit (digit: number): TickerBuilder
+  override digit (digit: number): TickerBuilder
 
-  digit (args?: number): number | TickerBuilder {
+  override digit (args?: number): number | TickerBuilder {
     if (typeof args === 'number') {
       super.digit(args)
       return this
@@ -78,16 +78,16 @@ export class TickerBuilder extends TickerConfigureImpl {
   /**
    * 作成する Ticker に設定する前置テキストを取得します.
    */
-  prefix (): string
+  override prefix (): string
 
   /**
    * 作成する Ticker に設定する前置テキストを設定します.
    *
    * @param prefix 前置テキスト
    */
-  prefix (prefix: string): TickerBuilder
+  override prefix (prefix: string): TickerBuilder
 
-  prefix (args?: string): string | TickerBuilder {
+  override prefix (args?: string): string | TickerBuilder {
     if (args) {
       super.prefix(args)
       return this
@@ -98,16 +98,16 @@ export class TickerBuilder extends TickerConfigureImpl {
   /**
    * 作成する Ticker に設定する後置テキストを取得します.
    */
-  suffix (): string
+  override suffix (): string
 
   /**
    * 作成する Ticker に設定する後置テキストを設定します.
    *
    * @param suffix 後置テキスト
    */
-  suffix (suffix: string): TickerBuilder
+  override suffix (suffix: string): TickerBuilder
 
-  suffix (args?: string): string | TickerBuilder {
+  override suffix (args?: string): string | TickerBuilder {
     if (args) {
       super.suffix(args)
       return this
