@@ -33,6 +33,11 @@ export interface Ticker extends NumberLabel {
   readonly status: TickerStatus
 
   /**
+   * ライブラリ利用者が自由に使えるフィールドです.
+   */
+  vars?: unknown
+
+  /**
    * 残り時間の値 (フレーム数) を追加します.
    *
    * カウントダウン形式の場合、引数に負の値を設定してください.
@@ -65,6 +70,7 @@ export type TickerOptions = Omit<NumberLabelOptions, 'value' | 'textAlign'> & {
 
 export class TickerImpl extends NumberLabelImpl implements Ticker {
   readonly onExpire = new g.Trigger()
+  vars?: unknown
   constructor ({ scene, frame, font, digit, prefix, suffix }: TickerOptions) {
     super({ scene, value: frame, font, digit, prefix, suffix, textAlign: 'left' })
     scene.onUpdate.add(() => {

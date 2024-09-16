@@ -48,4 +48,10 @@ describe('ticker', () => {
     expect(ticker.container).not.toBeDefined()
     expect(label.parent).not.toBeDefined()
   })
+
+  it('自由に値を追加・参照できる', () => {
+    expect(ticker.vars).not.toBeDefined()
+    ticker.vars = 'Hello'
+    expect(ticker.vars).toBe('Hello')
+  })
 })
