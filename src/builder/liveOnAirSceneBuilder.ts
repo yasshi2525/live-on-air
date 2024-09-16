@@ -248,7 +248,7 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
         comments: [] // ここにいれると CommentSupplierBuilder が更にデフォルト値を足してしまう
       })
       const commentDeployer = new CommentDeployerConfigSupplier({
-        speed: 1,
+        speed: 4,
         intervalY: 40,
         font: new g.DynamicFont({ game, fontFamily: 'sans-serif', size: 35, strokeColor: 'white', strokeWidth: 4 })
       })
