@@ -116,8 +116,7 @@ export class NumberLabelImpl implements NumberLabel {
   add (value: number): void {
     if (this._status === 'enabled') {
       this._value += value
-      this._view.text = this.format()
-      this._view.invalidate()
+      this.updateTextIf()
       this.onValue.fire(value)
     }
   }
@@ -125,8 +124,7 @@ export class NumberLabelImpl implements NumberLabel {
   set (value: number): void {
     if (this._status === 'enabled') {
       this._value = value
-      this._view.text = this.format()
-      this._view.invalidate()
+      this.updateTextIf()
       this.onValue.fire(value)
     }
   }
@@ -181,5 +179,14 @@ export class NumberLabelImpl implements NumberLabel {
 
   private format (): string {
     return `${this.prefix}${this.value.toString().padStart(this._digit)}${this.suffix}`
+  }
+
+  private updateTextIf () {
+    const oldText = this._view.text
+    const newText = this.format()
+    if (oldText !== newText) {
+      this._view.text = this.format()
+      this._view.invalidate()
+    }
   }
 }
