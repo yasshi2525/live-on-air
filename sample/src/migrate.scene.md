@@ -13,7 +13,7 @@
 以降で内容を説明します.
 
 ```diff typescript
-+ import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Layer, LayerBuilder, Scorer, ScorerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
++ import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Layer, LayerBuilder, Scorer, ScorerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder, Ticker, TickerBuilder } from '@yasshi2525/live-on-air';
 
   export const main = (param: GameMainParameterObject): void => {
     // 自身で実装している g.Scene
@@ -41,6 +41,10 @@
 +     scorer.container = layer.header;
 +     commentSupplier.onSupply.add(() => scorer.add(1));
 +     scorer.enable();
++     const ticker: Ticker = new TickerBuilder(scene).build();
++     ticker.container = layer.header;
++     ticker.onExpire.add(() => scorer.disable());
++     ticker.enable();
     });
     g.game.pushScene(scene);
   };
@@ -51,8 +55,8 @@
 > [!NOTE]
 > 独自レイアウトの場合、 `Layer` は不要なので初期化・設定処理を削除してください.
 > ```diff typescript
-> - import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Layer, LayerBuilder, Scorer, ScorerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
-> + import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Scorer, ScorerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder } from '@yasshi2525/live-on-air';
+> - import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Layer, LayerBuilder, Scorer, ScorerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder, Ticker, TickerBuilder } from '@yasshi2525/live-on-air';
+> + import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Scorer, ScorerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder, Ticker, TickerBuilder } from '@yasshi2525/live-on-air';
 >   // ...
 >     // 以下から本ライブラリの初期化処理です
 > -   const layer: Layer = new LayerBuilder(scene).build();
@@ -75,6 +79,10 @@
 > -   scorer.container = layer.header;
 >     commentSupplier.onSupply.add(() => scorer.add(1));
 >     scorer.enable();
+>     const ticker: Ticker = new TickerBuilder(scene).build();
+> -   ticker.container = layer.header;
+>     ticker.onExpire.add(() => scorer.disable());
+>     ticker.enable();
 >   });
 >   // ...
 > ```
@@ -230,7 +238,7 @@ const spot: Spot = new SpotBuilder(scene).build();
 
 ## `Scorer` (スコア制御コンポーネント) の初期化
 
-最後に `Scorer` を初期化します. `Scorer` は得点の保持と描画を行います.
+次に `Scorer` を初期化します. `Scorer` は得点の保持と描画を行います.
 
 `Scorer` は `ScorerBuilder` の `build()` を使用して作成してください.
 
@@ -269,16 +277,60 @@ const spot: Spot = new SpotBuilder(scene).build();
 > 例:
 > ```diff typescript
 >   const scorer: Scorer = new ScorerBuilder(scene).build();
->   scorer.container = layer.header;
->   commentSupplier.onSupply.add(() => scorer.add(1));
->   scorer.enable();
 > - scorer.container = layer.header;
-> + commentDeployer.container = <自身で定義した、コメント描画用エンティティ>
+> + scorer.container = <自身で定義した、コメント描画用エンティティ>
 >   commentSupplier.onSupply.add(() => scorer.add(1));
 >   scorer.enable();
 >   ```
 
-以上がすでに存在する `g.Scene` に本ライブラリを組み込む手順です.
+## `Ticker` (残り時間制御コンポーネント) の初期化
+
+最後に `Ticker` を初期化します. `Ticker` は残り時間のカウントダウンと描画を行います.
+
+`Ticker` は `TickerBuilder` の `build()` を使用して作成してください.
+
+```typescript
+    import { Ticker, TickerBuilder } from '@yasshi2525/live-on-air'
+    const ticker: Ticker = new TickerBuilder(scene).build();
+```
+
+まず、 `Ticker` が描画内容を画面に出力するため、 `Layer` と紐づけます.
+
+```diff typescript
+    const ticker: Ticker = new TickerBuilder(scene).build();
++   ticker.container = layer.header;
+```
+
+次に、残り時間がなくなったら得点が加算されないよう `Ticker` の `onExpire` トリガにハンドラを追加します.
+
+```diff typescript
+    const ticker: Ticker = new TickerBuilder(scene).build();
+    ticker.container = layer.header;
++   ticker.onExpire.addOnce(() => scorer.disable());
+```
+
+そして、残り時間のカウントダウンを開始するため `Ticker` の `enable()` を実行します.
+
+```diff typescript
+    const ticker: Ticker = new TickerBuilder(scene).build();
+    ticker.container = layer.header;
+    ticker.onExpire.addOnce(() => scorer.disable());
++   ticker.enable();
+```
+
+> [!NOTE]
+> 独自レイアウトの場合、 `Ticker` の `container` フィールドを自身で定義したエンティティにしてください.
+>
+> 例:
+> ```diff typescript
+>   const ticker: Ticker = new TickerBuilder(scene).build();
+> - ticker.container = layer.header;
+> + ticker.container = <自身で定義した、コメント描画用エンティティ>
+>   ticker.onExpire.addOnce(() => ticker.disable());
+>   ticker.enable();
+>   ```
+
+お疲れ様でした. 以上がすでに存在する `g.Scene` に本ライブラリを組み込む手順です.
 
 上記を実行すると下記のような画面が出力されます.
 

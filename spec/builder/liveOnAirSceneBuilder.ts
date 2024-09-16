@@ -37,6 +37,8 @@ describe('liveOnAirSceneBuilder', () => {
       .spot({})
       .commentSupplier({})
       .commentDeployer({})
+      .scorer({})
+      .ticker({})
     expect(_default.layer()).toEqual({
       field: { x: 100, y: 100, width: 1080, height: 520 },
       screen: { x: 100, y: 100, width: 1080, height: 520 },
@@ -51,6 +53,7 @@ describe('liveOnAirSceneBuilder', () => {
     expect(_default.commentSupplier()).toMatchObject({ interval: 1000, comments: [] })
     expect(_default.commentDeployer()).toMatchObject({ speed: 1, intervalY: 40, font: { size: 35 } })
     expect(_default.scorer()).toMatchObject({ font: { size: 40 }, digit: 4, prefix: 'スコア', suffix: '点' })
+    expect(_default.ticker()).toMatchObject({ frame: 1800, font: { size: 40 }, digit: 2, prefix: '残り', suffix: '秒' })
   })
   it('デフォルト要素が自動で定義される', () => {
     expect(_default.layer()).toEqual({
@@ -82,6 +85,8 @@ describe('liveOnAirSceneBuilder', () => {
       .commentSupplier({ interval: 500, comments: [{ comment: 'hoge', conditions: [] }] })
       .commentDeployer({ speed: 2, intervalY: 10, font: new g.DynamicFont({ game: g.game, fontFamily: 'sans-serif', size: 15 }) })
       .scorer({ font: new g.DynamicFont({ game: g.game, fontFamily: 'sans-serif', size: 25 }), digit: 0, prefix: 'SCORE', suffix: 'pt' })
+      .ticker({ frame: 1500, font: new g.DynamicFont({ game: g.game, fontFamily: 'sans-serif', size: 25 }), digit: 0, prefix: 'TIME', suffix: 'sec' })
+
     expect(_default.layer()).toEqual({
       field: { x: 150, y: 200, width: 1000, height: 800 },
       screen: { x: 250, y: 300, width: 1500, height: 1800 },
@@ -95,6 +100,7 @@ describe('liveOnAirSceneBuilder', () => {
     expect(_default.commentSupplier()).toMatchObject({ interval: 500, comments: [{ comment: 'hoge', conditions: [] }] })
     expect(_default.commentDeployer()).toMatchObject({ speed: 2, intervalY: 10, font: { size: 15 } })
     expect(_default.scorer()).toMatchObject({ font: { size: 25 }, digit: 0, prefix: 'SCORE', suffix: 'pt' })
+    expect(_default.ticker()).toMatchObject({ frame: 1500, font: { size: 25 }, digit: 0, prefix: 'TIME', suffix: 'sec' })
     const sb = new LiveOnAirSceneBuilder(g.game)
     expect(sb.layer()).toEqual({
       field: { x: 150, y: 200, width: 1000, height: 800 },
@@ -109,6 +115,7 @@ describe('liveOnAirSceneBuilder', () => {
     expect(sb.commentSupplier()).toMatchObject({ interval: 500, comments: [{ comment: 'hoge', conditions: [] }] })
     expect(sb.commentDeployer()).toMatchObject({ speed: 2, intervalY: 10, font: { size: 15 } })
     expect(sb.scorer()).toMatchObject({ font: { size: 25 }, digit: 0, prefix: 'SCORE', suffix: 'pt' })
+    expect(sb.ticker()).toMatchObject({ frame: 1500, font: { size: 25 }, digit: 0, prefix: 'TIME', suffix: 'sec' })
   })
   it('すべて未指定で定義した構成要素を参照できる', async () => {
     const sb = new LiveOnAirSceneBuilder(g.game)
@@ -121,6 +128,7 @@ describe('liveOnAirSceneBuilder', () => {
       .commentSupplier({})
       .commentDeployer({})
       .scorer({})
+      .ticker({})
     expect(sb.layer()).toEqual({
       field: { x: 100, y: 100, width: 1080, height: 520 },
       screen: { x: 100, y: 100, width: 1080, height: 520 },
@@ -134,6 +142,7 @@ describe('liveOnAirSceneBuilder', () => {
     expect(sb.commentSupplier()).toMatchObject({ interval: 1000, comments: [] })
     expect(sb.commentDeployer()).toMatchObject({ speed: 1, intervalY: 40, font: { size: 35 } })
     expect(sb.scorer()).toMatchObject({ font: { size: 40 }, digit: 4, prefix: 'スコア', suffix: '点' })
+    expect(sb.ticker()).toMatchObject({ frame: 1800, font: { size: 40 }, digit: 2, prefix: '残り', suffix: '秒' })
     const s = sb.build()
     g.game.pushScene(s)
     await gameContext.step()
@@ -155,6 +164,11 @@ describe('liveOnAirSceneBuilder', () => {
     expect(s.scorer.digit).toBe(4)
     expect(s.scorer.prefix).toEqual('スコア')
     expect(s.scorer.suffix).toEqual('点')
+    expect(s.ticker.value).toEqual(60)
+    expect(s.ticker.font.size).toBe(40)
+    expect(s.ticker.digit).toBe(2)
+    expect(s.ticker.prefix).toEqual('残り')
+    expect(s.ticker.suffix).toEqual('秒')
     screenshot('scene.default.png')
   })
   it('定義したカスタム構成要素（すべて指定）を参照できる', async () => {
@@ -172,6 +186,7 @@ describe('liveOnAirSceneBuilder', () => {
       .commentSupplier({ interval: 400, comments: [{ comment: 'hoge', conditions: [() => false] }] })
       .commentDeployer({ speed: 4, intervalY: 200, font: new g.DynamicFont({ game: g.game, fontFamily: 'sans-serif', size: 150 }) })
       .scorer({ font: new g.DynamicFont({ game: g.game, fontFamily: 'sans-serif', size: 60 }), digit: 7, prefix: 'SCORE', suffix: 'pt' })
+      .ticker({ frame: 1200, font: new g.DynamicFont({ game: g.game, fontFamily: 'sans-serif', size: 60 }), digit: 7, prefix: 'TIME', suffix: 'sec' })
     expect(sb.layer()).toEqual({
       field: { x: 150, y: 200, width: 1000, height: 800 },
       screen: { x: 250, y: 300, width: 1200, height: 500 },
@@ -185,6 +200,7 @@ describe('liveOnAirSceneBuilder', () => {
     expect(sb.commentSupplier()).toMatchObject({ interval: 400, comments: [{ comment: 'hoge' }] })
     expect(sb.commentDeployer()).toMatchObject({ speed: 4, intervalY: 200, font: { size: 150 } })
     expect(sb.scorer()).toMatchObject({ font: { size: 60 }, digit: 7, prefix: 'SCORE', suffix: 'pt' })
+    expect(sb.ticker()).toMatchObject({ frame: 1200, font: { size: 60 }, digit: 7, prefix: 'TIME', suffix: 'sec' })
     const s = sb.build()
     g.game.pushScene(s)
     await gameContext.step()
@@ -207,6 +223,11 @@ describe('liveOnAirSceneBuilder', () => {
     expect(s.scorer.digit).toBe(7)
     expect(s.scorer.prefix).toEqual('SCORE')
     expect(s.scorer.suffix).toEqual('pt')
+    expect(s.ticker.value).toEqual(40)
+    expect(s.ticker.font.size).toBe(60)
+    expect(s.ticker.digit).toBe(7)
+    expect(s.ticker.prefix).toEqual('TIME')
+    expect(s.ticker.suffix).toEqual('sec')
     screenshot('scene.custom.png')
   })
   it('一度定義したカスタム構成要素を更新できる', () => {
@@ -231,6 +252,8 @@ describe('liveOnAirSceneBuilder', () => {
       .commentDeployer({ speed: 4, intervalY: 100, font: new g.DynamicFont({ game: g.game, fontFamily: 'sans-serif', size: 100 }) })
       .scorer({ font: new g.DynamicFont({ game: g.game, fontFamily: 'sans-serif', size: 500 }), digit: 10, prefix: '￥', suffix: '円' })
       .scorer({ font: new g.DynamicFont({ game: g.game, fontFamily: 'sans-serif', size: 30 }), digit: 2, prefix: 'SCORE', suffix: 'pt' })
+      .ticker({ frame: 1500, font: new g.DynamicFont({ game: g.game, fontFamily: 'sans-serif', size: 500 }), digit: 10, prefix: 'hh:mm', suffix: 'SEC' })
+      .ticker({ frame: 1200, font: new g.DynamicFont({ game: g.game, fontFamily: 'sans-serif', size: 30 }), digit: 2, prefix: 'TIME', suffix: 'sec' })
     expect(sb.layer()).toEqual({
       field: { x: 300, y: 400, width: 500, height: 400 },
       screen: { x: 50, y: 100, width: 200, height: 300 },
@@ -241,6 +264,7 @@ describe('liveOnAirSceneBuilder', () => {
     expect(sb.commentSupplier()).toMatchObject({ interval: 200, comments: [{ comment: 'hoge' }] })
     expect(sb.commentDeployer()).toMatchObject({ speed: 4, intervalY: 100, font: { size: 100 } })
     expect(sb.scorer()).toMatchObject({ font: { size: 30 }, digit: 2, prefix: 'SCORE', suffix: 'pt' })
+    expect(sb.ticker()).toMatchObject({ frame: 1200, font: { size: 30 }, digit: 2, prefix: 'TIME', suffix: 'sec' })
   })
   it('無効な値は設定できない', () => {
     const sb = new LiveOnAirSceneBuilder(g.game)
@@ -256,5 +280,9 @@ describe('liveOnAirSceneBuilder', () => {
     expect(sb.commentDeployer().speed).toBe(1)
     expect(() => sb.scorer({ digit: -1 })).toThrow()
     expect(sb.scorer().digit).toBe(4)
+    expect(() => sb.ticker({ digit: -1 })).toThrow()
+    expect(sb.ticker().digit).toBe(2)
+    expect(() => sb.ticker({ frame: 0 })).toThrow()
+    expect(sb.ticker().frame).toBe(1800)
   })
 })
