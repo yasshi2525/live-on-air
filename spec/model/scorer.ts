@@ -14,7 +14,7 @@ describe('scorer', () => {
     expect(scorer.status).toBe('disabled')
     scorer.add(1)
     scorer.set(2)
-    expect(scorer.score).toBe(0)
+    expect(scorer.value).toBe(0)
     expect(g.game.vars.gameState.score).toBe(0)
   })
 
@@ -23,7 +23,7 @@ describe('scorer', () => {
     expect(scorer.status).toBe('disabled')
     scorer.add(1)
     scorer.set(2)
-    expect(scorer.score).toBe(0)
+    expect(scorer.value).toBe(0)
     expect(g.game.vars.gameState.score).toBe(0)
   })
 
@@ -32,29 +32,29 @@ describe('scorer', () => {
     expect(scorer.status).toBe('enabled')
     scorer.set(2)
     scorer.add(1)
-    expect(scorer.score).toBe(3)
+    expect(scorer.value).toBe(3)
     expect(g.game.vars.gameState.score).toBe(3)
   })
 
   it('0点以下は0と表示する', () => {
     scorer.enable()
     scorer.add(-1)
-    expect(scorer.score).toBe(0)
+    expect(scorer.value).toBe(0)
     expect(g.game.vars.gameState.score).toBe(0)
-    expect(scorer.rawScore).toBe(-1)
+    expect(scorer.rawValue).toBe(-1)
   })
 
   it('内部的には小数点管理', () => {
     scorer.enable()
     scorer.add(0.4)
     scorer.add(0.4)
-    expect(scorer.score).toBe(0)
+    expect(scorer.value).toBe(0)
     expect(g.game.vars.gameState.score).toBe(0)
-    expect(scorer.rawScore).toBe(0.8)
+    expect(scorer.rawValue).toBe(0.8)
     scorer.add(0.4)
-    expect(scorer.score).toBe(1)
+    expect(scorer.value).toBe(1)
     expect(g.game.vars.gameState.score).toBe(1)
-    expect(scorer.rawScore).toBeCloseTo(1.2)
+    expect(scorer.rawValue).toBeCloseTo(1.2)
   })
 
   it('描画される', async () => {

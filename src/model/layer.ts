@@ -27,7 +27,7 @@ export interface Layer {
   /**
    * ヘッダー層
    *
-   * {@link Scorer} が得点と残り時間を配置するためのレイヤ
+   * {@link Scorer} が得点, {@link Ticker} が残り時間を配置するためのレイヤ
    */
   readonly header: g.E
   /**

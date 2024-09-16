@@ -9,6 +9,7 @@ import { SampleLive } from '../model/live'
 import { CommentSupplierConfig, CommentSupplierConfigSupplier } from '../value/commentSupplierConfig'
 import { CommentDeployerConfig, CommentDeployerConfigSupplier } from '../value/commentDeployerConfig'
 import { ScorerConfig, ScorerConfigSupplier } from '../value/scorerConfig'
+import { TickerConfig, TickerConfigSupplier } from '../value/tickerConfig'
 
 /**
  * ゲームが動作する g.Scene を簡便に作るためのクラス.
@@ -183,6 +184,25 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
   }
 
   /**
+   * 作成する {@link Ticker} の属性情報を設定します.
+   * @param config Ticker の設定値
+   */
+  ticker(config: Partial<TickerConfig>): LiveOnAirSceneBuilder
+
+  /**
+   * 作成する{@link Ticker} の属性情報を取得します.
+   */
+  ticker(): Readonly<TickerConfig>
+
+  ticker (args?: Partial<TickerConfig>): LiveOnAirSceneBuilder | Readonly<TickerConfig> {
+    if (args) {
+      super.ticker(args)
+      return this
+    }
+    return super.ticker()
+  }
+
+  /**
    * 各属性値に値を設定しなかった際に使用されるデフォルト値を設定します.
    *
    * @param game g.game を指定してください.
@@ -238,7 +258,14 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
         prefix: 'スコア',
         suffix: '点'
       })
-      LiveOnAirSceneBuilder.defaultConfig = { game, layer, field, broadcaster, screen, spot, commentSupplier, commentDeployer, scorer }
+      const ticker = new TickerConfigSupplier({
+        frame: 1800,
+        font: new g.DynamicFont({ game, fontFamily: 'monospace', size: 40 }),
+        digit: 2,
+        prefix: '残り',
+        suffix: '秒'
+      })
+      LiveOnAirSceneBuilder.defaultConfig = { game, layer, field, broadcaster, screen, spot, commentSupplier, commentDeployer, scorer, ticker }
     }
     this.lastUsedScene = game.scene()
     return LiveOnAirSceneBuilder.defaultConfig

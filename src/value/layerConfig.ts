@@ -27,7 +27,7 @@ export interface LayerConfig {
    */
   comment: g.CommonArea
   /**
-   * {@link Scorer} が得点と残り時間を配置する領域の大きさ
+   * {@link Scorer} が得点、 {@link Ticker} が残り時間を配置する領域の大きさ
    */
   header: g.CommonArea
 }

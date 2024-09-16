@@ -29,7 +29,7 @@
 
 ```diff typescript
 - import { LiveOnAirScene, LiveOnAirSceneBuilder } from "@yasshi2525/live-on-air";
-+ import { LiveOnAirScene, LiveOnAirSceneBuilder, Broadcaster, Spot, Field, Screen, CommentSupplier, CommentDeployer, Layer } from "@yasshi2525/live-on-air";
++ import { LiveOnAirScene, LiveOnAirSceneBuilder, Broadcaster, Spot, Field, Screen, CommentSupplier, CommentDeployer, Scorer, Ticker Layer } from "@yasshi2525/live-on-air";
 scene.onLoad.add(() => {
     // 各コンポーネントの参照
     const broadcaster: Broadcaster = scene.broadcaster;
@@ -39,6 +39,7 @@ scene.onLoad.add(() => {
     const commentSupplier: CommentSupplier = scene.commentSupplier;
     const commentDeployer: CommentDeployer = scene.commentDeployer;
     const scorer: Scorer = scene.scorer;
+    const ticker: Ticker = scene.ticker;
     const layer: Layer = scene.layer;
 });
 ```
@@ -54,4 +55,5 @@ scene.onLoad.add(() => {
 * `CommentSupplier`: 画面に表示するコメントを保持し、定期的に出力指示を出す.
 * `CommentDeployer`: 出力対象のコメントを画面上に配置する.
 * `Scorer`: 得点の保持と描画を制御する.
+* `Ticker`: 残り時間のカウントダウンと描画を制御する.
 * `Layer`: 描画管理. 各要素を前後関係をつけて描画する.

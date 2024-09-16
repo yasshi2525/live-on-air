@@ -21,6 +21,9 @@ import { CommentContextSupplier } from './commentContextSupplier'
 import { Scorer } from './scorer'
 import { ScorerBuilder } from '../builder/scorerBuilder'
 import { ScorerConfig } from '../value/scorerConfig'
+import { Ticker } from './ticker'
+import { TickerBuilder } from '../builder/tickerBuilder'
+import { TickerConfig } from '../value/tickerConfig'
 
 /**
  * 本ゲームが動作する g.Scene が持つゲーム情報を格納したパラメタ一覧です.
@@ -58,12 +61,16 @@ export interface LiveOnAirScene {
    * 得点制御器.
    */
   readonly scorer: Scorer
+  /**
+   * 残り時間制御器
+   */
+  readonly ticker: Ticker
 }
 
 export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
-  private context: { loaded: false } | { loaded: true, layer: Layer, field: Field, broadcaster: Broadcaster, screen: Screen, spots: Set<Spot>, commentSupplier: CommentSupplier, commentDeployer: CommentDeployer, scorer: Scorer }
+  private context: { loaded: false } | { loaded: true, layer: Layer, field: Field, broadcaster: Broadcaster, screen: Screen, spots: Set<Spot>, commentSupplier: CommentSupplier, commentDeployer: CommentDeployer, scorer: Scorer, ticker: Ticker }
 
-  constructor (param: g.SceneParameterObject & { layer: LayerConfig, broadcaster: BroadcasterConfig, spots: readonly SpotConfig[], commentSupplier: CommentSupplierConfig, commentDeployer: CommentDeployerConfig, scorer: ScorerConfig }) {
+  constructor (param: g.SceneParameterObject & { layer: LayerConfig, broadcaster: BroadcasterConfig, spots: readonly SpotConfig[], commentSupplier: CommentSupplierConfig, commentDeployer: CommentDeployerConfig, scorer: ScorerConfig, ticker: TickerConfig }) {
     super(param)
     this.context = { loaded: false }
     this.onLoad.add(() => {
@@ -118,7 +125,17 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
       scorer.container = layer.header
       commentSupplier.onSupply.add(() => scorer.add(1))
       scorer.enable()
-      this.context = { loaded: true, layer, field, broadcaster, screen, spots, commentSupplier, commentDeployer, scorer }
+      const ticker = new TickerBuilder(this)
+        .frame(param.ticker.frame)
+        .font(param.ticker.font)
+        .digit(param.ticker.digit)
+        .prefix(param.ticker.prefix)
+        .suffix(param.ticker.suffix)
+        .build()
+      ticker.container = layer.header
+      ticker.onExpire.addOnce(() => scorer.disable())
+      ticker.enable()
+      this.context = { loaded: true, layer, field, broadcaster, screen, spots, commentSupplier, commentDeployer, scorer, ticker }
     })
   }
 
@@ -176,5 +193,12 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
       throw new Error('onLoad が実行されていません. onLoad が実行されてから本パラメタを取得してください')
     }
     return this.context.scorer
+  }
+
+  get ticker (): Ticker {
+    if (!this.context.loaded) {
+      throw new Error('onLoad が実行されていません. onLoad が実行されてから本パラメタを取得してください')
+    }
+    return this.context.ticker
   }
 }

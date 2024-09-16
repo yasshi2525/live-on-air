@@ -7,6 +7,7 @@ import { ScreenConfigSupplier } from '../value/screenConfig'
 import { CommentSupplierConfig, CommentSupplierConfigSupplier } from '../value/commentSupplierConfig'
 import { CommentDeployerConfig, CommentDeployerConfigSupplier } from '../value/commentDeployerConfig'
 import { ScorerConfig, ScorerConfigSupplier } from '../value/scorerConfig'
+import { TickerConfig, TickerConfigSupplier } from '../value/tickerConfig'
 
 /**
  * {@link LiveOnAirScene} を新規作成する際の各種設定を格納します.
@@ -107,6 +108,18 @@ export interface LiveOnAirSceneConfigure {
    * 作成する{@link Scorer} の属性情報を取得します.
    */
   scorer(): Readonly<ScorerConfig>
+
+  /**
+   * 作成する {@link Ticker} の属性情報を設定します.
+   *
+   * @param config Ticker の設定値
+   */
+  ticker(config: Partial<TickerConfig>): LiveOnAirSceneConfigure
+
+  /**
+   * 作成する {@link Ticker} の属性情報を取得します.
+   */
+  ticker(): Readonly<TickerConfig>
 }
 
 export interface LiveOnAirSceneConfigSupplierOptions {
@@ -119,6 +132,7 @@ export interface LiveOnAirSceneConfigSupplierOptions {
   commentSupplier: CommentSupplierConfigSupplier
   commentDeployer: CommentDeployerConfigSupplier
   scorer: ScorerConfigSupplier
+  ticker: TickerConfigSupplier
   isDefault: boolean
 }
 
@@ -136,6 +150,7 @@ export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
   private readonly commentSupplierGetter: () => CommentSupplierConfig
   private readonly commentDeployerGetter: () => CommentDeployerConfig
   private readonly scorerGetter: () => ScorerConfig
+  private readonly tickerGetter: () => TickerConfig
 
   private readonly layerSetter: (obj: Partial<LayerConfig>) => void
   private readonly fieldSetter: (obj: object) => void
@@ -144,8 +159,9 @@ export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
   private readonly commentSupplierSetter: (obj: Partial<CommentSupplierConfig>) => void
   private readonly commentDeployerSetter: (obj: Partial<CommentDeployerConfig>) => void
   private readonly scorerSetter: (obj: Partial<ScorerConfig>) => void
+  private readonly tickerSetter: (obj: Partial<TickerConfig>) => void
 
-  constructor ({ game, layer, field, broadcaster, screen, spot, commentSupplier, commentDeployer, scorer, isDefault }: LiveOnAirSceneConfigSupplierOptions) {
+  constructor ({ game, layer, field, broadcaster, screen, spot, commentSupplier, commentDeployer, scorer, ticker, isDefault }: LiveOnAirSceneConfigSupplierOptions) {
     this.isDefault = isDefault
     this.game = game
     this.spotConfig = spot
@@ -158,6 +174,7 @@ export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
     this.commentSupplierGetter = () => isDefault ? commentSupplier.default() : commentSupplier.get()
     this.commentDeployerGetter = () => isDefault ? commentDeployer.default() : commentDeployer.get()
     this.scorerGetter = () => isDefault ? scorer.default() : scorer.get()
+    this.tickerGetter = () => isDefault ? ticker.default() : ticker.get()
 
     this.layerSetter = obj => isDefault ? layer.defaultIf(obj) : layer.setIf(obj)
     this.fieldSetter = obj => isDefault ? field.defaultIf(obj) : field.setIf(obj)
@@ -166,6 +183,7 @@ export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
     this.commentSupplierSetter = obj => isDefault ? commentSupplier.defaultIf(obj) : commentSupplier.setIf(obj)
     this.commentDeployerSetter = obj => isDefault ? commentDeployer.defaultIf(obj) : commentDeployer.setIf(obj)
     this.scorerSetter = obj => isDefault ? scorer.defaultIf(obj) : scorer.setIf(obj)
+    this.tickerSetter = obj => isDefault ? ticker.defaultIf(obj) : ticker.setIf(obj)
   }
 
   layer (config: Partial<LayerConfig>): LiveOnAirSceneConfigure
@@ -270,10 +288,22 @@ export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
     return this.scorerGetter()
   }
 
+  ticker (config: Partial<TickerConfig>): LiveOnAirSceneConfigure
+
+  ticker (): Readonly<TickerConfig>
+
+  ticker (args?: Partial<TickerConfig>): LiveOnAirSceneConfigure | Readonly<TickerConfig> {
+    if (args) {
+      this.tickerSetter(args)
+      return this
+    }
+    return this.tickerGetter()
+  }
+
   /**
    * 指定された設定で {@link LiveOnAirScene} を作成します.
    */
   build (): LiveOnAirScene & g.Scene {
-    return new LiveOnAirSceneImpl({ game: this.game, layer: this.layer(), broadcaster: this.broadcaster(), spots: this.spot(), commentSupplier: this.commentSupplier(), commentDeployer: this.commentDeployer(), scorer: this.scorer() })
+    return new LiveOnAirSceneImpl({ game: this.game, layer: this.layer(), broadcaster: this.broadcaster(), spots: this.spot(), commentSupplier: this.commentSupplier(), commentDeployer: this.commentDeployer(), scorer: this.scorer(), ticker: this.ticker() })
   }
 }
