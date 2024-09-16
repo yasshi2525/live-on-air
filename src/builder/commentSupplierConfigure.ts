@@ -53,8 +53,8 @@ export class CommentSupplierConfigureImpl implements CommentSupplierConfigure {
     this.commentAdder = obj => isDefault ? config.addDefaultComment(obj) : config.addComment(obj)
   }
 
-  interval(): number
-  interval(value: number): CommentSupplierConfigure
+  interval (): number
+  interval (value: number): CommentSupplierConfigure
 
   interval (args?: number): number | CommentSupplierConfigure {
     if (typeof args === 'number') {

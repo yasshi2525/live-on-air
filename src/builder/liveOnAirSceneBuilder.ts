@@ -28,7 +28,7 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    *
    * @param config 設定されている各レイヤーについての領域の位置・大きさ
    */
-  layer(config: Partial<LayerConfig>): LiveOnAirSceneBuilder
+  layer (config: Partial<LayerConfig>): LiveOnAirSceneBuilder
 
   /**
    * g.Scene 上に配置される各レイヤーの領域値を取得します.
@@ -49,7 +49,7 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    *
    * @param config Field の設定値
    */
-  field(config: object): LiveOnAirSceneBuilder
+  field (config: object): LiveOnAirSceneBuilder
 
   /**
    * マップ ({@link Field}) の属性情報を取得します.
@@ -69,7 +69,7 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    *
    * @param config Broadcaster の設定値
    */
-  broadcaster(config: Partial<BroadcasterConfig>): LiveOnAirSceneBuilder
+  broadcaster (config: Partial<BroadcasterConfig>): LiveOnAirSceneBuilder
 
   /**
    * 作成する {@link Broadcaster} の属性情報を取得します.
@@ -89,7 +89,7 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    *
    * @param config Field の設定値
    */
-  screen(config: object): LiveOnAirSceneBuilder
+  screen (config: object): LiveOnAirSceneBuilder
 
   /**
    * 生放送の画面 ({@link Screen}) の属性情報を取得します.
@@ -109,7 +109,7 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    *
    * @param config Spot の設定値
    */
-  spot(config: Partial<SpotConfig>): LiveOnAirSceneBuilder
+  spot (config: Partial<SpotConfig>): LiveOnAirSceneBuilder
 
   /**
    * 作成する {@link Spot} の属性情報を取得します.
@@ -129,7 +129,7 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    *
    * @param config CommentSupplier の設定値
    */
-  commentSupplier(config: Partial<CommentSupplierConfig>): LiveOnAirSceneBuilder
+  commentSupplier (config: Partial<CommentSupplierConfig>): LiveOnAirSceneBuilder
 
   /**
    * 作成する {@link CommentSupplier} の属性情報を取得します.
@@ -149,7 +149,7 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    *
    * @param config CommentSupplier の設定値
    */
-  commentDeployer(config: Partial<CommentDeployerConfig>): LiveOnAirSceneBuilder
+  commentDeployer (config: Partial<CommentDeployerConfig>): LiveOnAirSceneBuilder
 
   /**
    * 作成する {@link CommentSupplier} の属性情報を取得します.
@@ -168,12 +168,12 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    * 作成する {@link Scorer} の属性情報を設定します.
    * @param config Scorer の設定値
    */
-  scorer(config: Partial<ScorerConfig>): LiveOnAirSceneBuilder
+  scorer (config: Partial<ScorerConfig>): LiveOnAirSceneBuilder
 
   /**
    * 作成する{@link Scorer} の属性情報を取得します.
    */
-  scorer(): Readonly<ScorerConfig>
+  scorer (): Readonly<ScorerConfig>
 
   scorer (args?: Partial<ScorerConfig>): LiveOnAirSceneBuilder | Readonly<ScorerConfig> {
     if (args) {
@@ -187,12 +187,12 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
    * 作成する {@link Ticker} の属性情報を設定します.
    * @param config Ticker の設定値
    */
-  ticker(config: Partial<TickerConfig>): LiveOnAirSceneBuilder
+  ticker (config: Partial<TickerConfig>): LiveOnAirSceneBuilder
 
   /**
    * 作成する{@link Ticker} の属性情報を取得します.
    */
-  ticker(): Readonly<TickerConfig>
+  ticker (): Readonly<TickerConfig>
 
   ticker (args?: Partial<TickerConfig>): LiveOnAirSceneBuilder | Readonly<TickerConfig> {
     if (args) {

@@ -22,7 +22,7 @@ export class SpotBuilder extends SpotConfigureImpl {
    *
    * @param assets 状態ごとに使用する画像アセット
    */
-  image(assets: Partial<SpotAssetRecord>): SpotBuilder
+  image (assets: Partial<SpotAssetRecord>): SpotBuilder
 
   /**
    * 描画に使用される画像アセットをすべての状態について取得します.
@@ -60,14 +60,14 @@ export class SpotBuilder extends SpotConfigureImpl {
   /**
    * 作成する Spot に到達すると開始する生放送を取得します.
    */
-  liveClass(): new () => Live
+  liveClass (): new () => Live
 
   /**
    * 作成する Spot に到達すると開始する生放送を設定します.
    *
    * @param liveClass 開始する生放送クラス名. インスタンスでない点にご留意ください.
    */
-  liveClass(liveClass: new () => Live): SpotBuilder
+  liveClass (liveClass: new () => Live): SpotBuilder
 
   liveClass (args?: new () => Live): SpotBuilder | Readonly<new () => Live> {
     if (args) {

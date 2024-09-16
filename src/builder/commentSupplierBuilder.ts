@@ -20,14 +20,14 @@ export class CommentSupplierBuilder extends CommentSupplierConfigureImpl {
   /**
    * 作成する CommentSupplier に設定するコメント生成間隔(ミリ秒)を取得します.
    */
-  interval(): number
+  interval (): number
 
   /**
    * 作成する CommentSupplier に設定するコメント生成間隔(ミリ秒)を設定します.
    *
    * @param interval コメントの生成間隔(ミリ秒)
    */
-  interval(interval: number): CommentSupplierBuilder
+  interval (interval: number): CommentSupplierBuilder
 
   interval (args?: number): number | CommentSupplierBuilder {
     if (typeof args === 'number') {
@@ -51,7 +51,7 @@ export class CommentSupplierBuilder extends CommentSupplierConfigureImpl {
   /**
    * 登録されたコメント設定を取得します
    */
-  comments(): CommentSchema[]
+  comments (): CommentSchema[]
 
   /**
    * 出力するコメントを設定します.

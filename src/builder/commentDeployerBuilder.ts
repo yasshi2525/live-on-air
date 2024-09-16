@@ -58,7 +58,7 @@ export class CommentDeployerBuilder extends CommentDeployerConfigureImpl {
   /**
    * 作成する CommentDeployer に設定するコメントのフォントを取得します.
    */
-  font(): g.Font
+  font (): g.Font
 
   /**
    * 作成する CommentDeployer に設定するコメントのフォントを設定します.
