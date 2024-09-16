@@ -1,4 +1,4 @@
-import { NumberLabel, NumberLabelImpl, NumberLabelStatus } from './numberLabel'
+import { NumberLabel, NumberLabelImpl, NumberLabelOptions } from './numberLabel'
 
 /**
  * {@link Scorer} の状態.
@@ -7,7 +7,7 @@ import { NumberLabel, NumberLabelImpl, NumberLabelStatus } from './numberLabel'
  *
  * 'disabled': 得点を変更しようとしても無視します.
  */
-export type ScorerStatus = NumberLabelStatus
+export type ScorerStatus = 'enabled' | 'disabled'
 
 /**
  * プレイヤーの得点を制御、描画します.
@@ -53,13 +53,7 @@ export interface Scorer extends NumberLabel {
   disable (): void
 }
 
-export interface ScorerOptions {
-  scene: g.Scene
-  font: g.Font
-  digit: number
-  prefix: string
-  suffix: string
-}
+export type ScorerOptions = Omit<NumberLabelOptions, 'value' | 'textAlign'>
 
 export class ScorerImpl extends NumberLabelImpl implements Scorer {
   constructor ({ scene, font, digit, prefix, suffix }: ScorerOptions) {
