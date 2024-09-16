@@ -16,7 +16,7 @@ export interface LiveOnAirSceneConfigure {
   /**
    * g.Scene 上に配置される各レイヤーの領域値を設定します.
    *
-   * @param config 設定されている各レイヤーについての領域の位置・大きさ
+   * @param config 各レイヤーの領域の位置・大きさ
    */
   layer(config: Partial<LayerConfig>): LiveOnAirSceneConfigure
 
@@ -100,6 +100,7 @@ export interface LiveOnAirSceneConfigure {
 
   /**
    * 作成する {@link Scorer} の属性情報を設定します.
+   *
    * @param config Scorer の設定値
    */
   scorer(config: Partial<ScorerConfig>): LiveOnAirSceneConfigure
