@@ -1,7 +1,6 @@
 {
   "name": "@yasshi2525/live-on-air",
-  "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0-alpha.0",
   "description": "live game library for akashic",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
