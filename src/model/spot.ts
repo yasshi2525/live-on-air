@@ -112,6 +112,25 @@ export interface Spot {
   enable(): void
 
   /**
+   * 引数で指定された Spot を攻略しなければ訪問可能にならないようにします.
+   *
+   * @param spot 前提となる Spot
+   */
+  lockedBy(spot: Spot): void
+
+  /**
+   * この Spot が訪問可能になるまで攻略が必要な Spot 一覧を取得します.
+   */
+  lockedBy(): readonly Spot[]
+
+  /**
+   * 引数で指定された Spot が攻略されたことを通知します.
+   *
+   * @param spot 攻略された Spot
+   */
+  unlock(spot: Spot): void
+
+  /**
    * 放送者（プレイヤー）が訪問済であると登録します.
    *
    * 放送者（プレイヤー）が滞在している必要があります.
@@ -132,6 +151,7 @@ export class SpotImpl implements Spot {
   private _status: SpotStatus = 'non-deployed'
   private _visited = false
   private _screen?: Screen
+  private readonly _lockedBy = new Set<Spot>()
 
   constructor (
     scene: g.Scene,
@@ -223,6 +243,9 @@ export class SpotImpl implements Spot {
     if (!this._field) {
       throw new Error('spotがfieldに配置されていないため訪問先として指定可能にできませんでした. spotをfieldに配置してください')
     }
+    if (this._lockedBy.size > 0) {
+      return
+    }
     this._status = 'enabled'
     this._view.touchable = true
     this._view.src = this._visited ? this.assets.normal : this.assets.unvisited
@@ -232,6 +255,9 @@ export class SpotImpl implements Spot {
   disable (): void {
     if (!this._field) {
       throw new Error('spotがfieldに配置されていないため訪問先として指定不可能にできませんでした. spotをfieldに配置してください')
+    }
+    if (this._lockedBy.size > 0) {
+      return
     }
     this._status = 'disabled'
     this._view.touchable = false
@@ -254,6 +280,30 @@ export class SpotImpl implements Spot {
     }
 
     this._visited = true
+  }
+
+  lockedBy (spot: Spot): void
+
+  lockedBy (): readonly Spot[]
+
+  lockedBy (args?: Spot): void | readonly Spot[] {
+    if (args) {
+      this._lockedBy.add(args)
+      this._status = 'disabled'
+      this._view.touchable = false
+      this._view.src = this.assets.locked
+      this._view.invalidate()
+    } else {
+      return [...this._lockedBy]
+    }
+  }
+
+  unlock (spot: Spot) {
+    this._lockedBy.delete(spot)
+    if (this._lockedBy.size === 0) {
+      this._view.src = this.assets.disabled
+      this._view.invalidate()
+    }
   }
 
   get field (): Field | undefined {
