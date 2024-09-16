@@ -117,7 +117,7 @@ export class ScorerBuilder extends ScorerConfigureImpl {
     }
     if (!ScorerBuilder.defaultConfig) {
       ScorerBuilder.defaultConfig = new ScorerConfigSupplier({
-        font: new g.DynamicFont({ game: scene.game, fontFamily: 'monospace', size: 40 }),
+        font: new g.DynamicFont({ game: scene.game, fontFamily: 'monospace', size: 40, strokeColor: 'white', strokeWidth: 4 }),
         digit: 4,
         prefix: 'スコア',
         suffix: '点'

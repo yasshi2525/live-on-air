@@ -97,7 +97,7 @@ export class CommentDeployerBuilder extends CommentDeployerConfigureImpl {
     }
     if (!CommentDeployerBuilder.defaultConfig) {
       CommentDeployerBuilder.defaultConfig = new CommentDeployerConfigSupplier({
-        speed: 1, intervalY: 40, font: new g.DynamicFont({ game: scene.game, fontFamily: 'sans-serif', size: 35 })
+        speed: 1, intervalY: 40, font: new g.DynamicFont({ game: scene.game, fontFamily: 'sans-serif', size: 35, strokeColor: 'white', strokeWidth: 4 })
       })
     }
     CommentDeployerBuilder.lastUsedScene = scene

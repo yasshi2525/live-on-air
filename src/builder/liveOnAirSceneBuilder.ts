@@ -250,17 +250,17 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
       const commentDeployer = new CommentDeployerConfigSupplier({
         speed: 1,
         intervalY: 40,
-        font: new g.DynamicFont({ game, fontFamily: 'sans-serif', size: 35 })
+        font: new g.DynamicFont({ game, fontFamily: 'sans-serif', size: 35, strokeColor: 'white', strokeWidth: 4 })
       })
       const scorer = new ScorerConfigSupplier({
-        font: new g.DynamicFont({ game, fontFamily: 'monospace', size: 40 }),
+        font: new g.DynamicFont({ game, fontFamily: 'monospace', size: 40, strokeColor: 'white', strokeWidth: 4 }),
         digit: 4,
         prefix: 'スコア',
         suffix: '点'
       })
       const ticker = new TickerConfigSupplier({
         frame: 1800,
-        font: new g.DynamicFont({ game, fontFamily: 'monospace', size: 40 }),
+        font: new g.DynamicFont({ game, fontFamily: 'monospace', size: 40, strokeColor: 'white', strokeWidth: 4 }),
         digit: 2,
         prefix: '残り',
         suffix: '秒'

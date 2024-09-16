@@ -138,7 +138,7 @@ export class TickerBuilder extends TickerConfigureImpl {
     if (!TickerBuilder.defaultConfig) {
       TickerBuilder.defaultConfig = new TickerConfigSupplier({
         frame: 1800,
-        font: new g.DynamicFont({ game: scene.game, fontFamily: 'monospace', size: 40 }),
+        font: new g.DynamicFont({ game: scene.game, fontFamily: 'monospace', size: 40, strokeColor: 'white', strokeWidth: 4 }),
         digit: 2,
         prefix: '残り',
         suffix: '秒'
