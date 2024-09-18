@@ -76,6 +76,26 @@ export class CommentDeployerBuilder extends CommentDeployerConfigureImpl {
   }
 
   /**
+   * 作成する CommentDeployer のライブラリ利用者が自由に使えるフィールドを取得します.
+   */
+  override vars (): unknown
+
+  /**
+   * 作成する CommentDeployer のライブラリ利用者が自由に使えるフィールドを設定します.
+   *
+   * @param vars ライブラリ利用者が自由に使えるフィールド
+   */
+  override vars (vars: unknown): CommentDeployerBuilder
+
+  override vars (args?: unknown): unknown | CommentDeployerBuilder {
+    if (arguments.length > 0) {
+      super.vars(args)
+      return this
+    }
+    return super.vars()
+  }
+
+  /**
    * 各属性値に値を設定しなかった際に使用されるデフォルト値を設定します.
    *
    * @param scene 現在の scene を指定してください.
@@ -97,7 +117,7 @@ export class CommentDeployerBuilder extends CommentDeployerConfigureImpl {
     }
     if (!CommentDeployerBuilder.defaultConfig) {
       CommentDeployerBuilder.defaultConfig = new CommentDeployerConfigSupplier({
-        speed: 4, intervalY: 40, font: new g.DynamicFont({ game: scene.game, fontFamily: 'sans-serif', size: 35, strokeColor: 'white', strokeWidth: 4 })
+        speed: 4, intervalY: 40, font: new g.DynamicFont({ game: scene.game, fontFamily: 'sans-serif', size: 35, strokeColor: 'white', strokeWidth: 4 }), vars: undefined
       })
     }
     CommentDeployerBuilder.lastUsedScene = scene

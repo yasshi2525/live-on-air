@@ -21,14 +21,14 @@ describe('field', () => {
   })
 
   it('スポットが自身に登録できる', () => {
-    const field: Field = new FieldBuilder().build()
+    const field: Field = new FieldBuilder(scene).build()
     field.addSpot(spot1)
     expect(field.spots).toContain(spot1)
     expect(spot1.field).toBe(field)
   })
 
   it('同じSpotが二回登録を試みても警告だけで何もしない', () => {
-    const field: Field = new FieldBuilder().build()
+    const field: Field = new FieldBuilder(scene).build()
     field.addSpot(spot1)
     field.addSpot(spot1)
     expect(field.spots).toContain(spot1)
@@ -36,8 +36,8 @@ describe('field', () => {
   })
 
   it('異なるFieldに属するspotの登録は受け付けない', () => {
-    const field: Field = new FieldBuilder().build()
-    const otherField: Field = new FieldBuilder().build()
+    const field: Field = new FieldBuilder(scene).build()
+    const otherField: Field = new FieldBuilder(scene).build()
     otherField.addSpot(spot1)
     expect(() => field.addSpot(spot1)).toThrow()
     expect(otherField.spots).toContain(spot1)
@@ -45,14 +45,14 @@ describe('field', () => {
   })
 
   it('放送者（プレイヤー）が自身に登録できる', () => {
-    const field: Field = new FieldBuilder().build()
+    const field: Field = new FieldBuilder(scene).build()
     field.addBroadcaster(broadcaster)
     expect(field.broadcaster).toBe(broadcaster)
     expect(broadcaster.field).toBe(field)
   })
 
   it('同じBroadcasterが二回登録を試みても警告だけで何もしない', () => {
-    const field: Field = new FieldBuilder().build()
+    const field: Field = new FieldBuilder(scene).build()
     field.addBroadcaster(broadcaster)
     field.addBroadcaster(broadcaster)
     expect(field.broadcaster).toBe(broadcaster)
@@ -60,7 +60,7 @@ describe('field', () => {
   })
 
   it('Broadcasterは二人以上(otherBroadcaster)登録できない', () => {
-    const field: Field = new FieldBuilder().build()
+    const field: Field = new FieldBuilder(scene).build()
     const otherBroadcaster = new BroadcasterBuilder(scene).build()
     field.addBroadcaster(broadcaster)
     expect(() => field.addBroadcaster(otherBroadcaster)).toThrow()
@@ -70,8 +70,8 @@ describe('field', () => {
   })
 
   it('異なるFieldに属するbroadcasterの登録は受け付けない', () => {
-    const field: Field = new FieldBuilder().build()
-    const otherField: Field = new FieldBuilder().build()
+    const field: Field = new FieldBuilder(scene).build()
+    const otherField: Field = new FieldBuilder(scene).build()
     otherField.addBroadcaster(broadcaster)
     expect(() => field.addBroadcaster(broadcaster)).toThrow()
     expect(otherField.broadcaster).toBe(broadcaster)
@@ -79,7 +79,7 @@ describe('field', () => {
   })
 
   it('特定のSpot(spot1)以外のSpot(spot2)を目的地として設定できないようになる', () => {
-    const field: Field = new FieldBuilder().build()
+    const field: Field = new FieldBuilder(scene).build()
     field.addSpot(spot1)
     field.addSpot(spot2)
     expect(spot1.status).toBe('enabled')
@@ -90,7 +90,7 @@ describe('field', () => {
   })
 
   it('特定のSpot(spot1)以外のSpot(spot2)が訪問可能になる', () => {
-    const field: Field = new FieldBuilder().build()
+    const field: Field = new FieldBuilder(scene).build()
     field.addSpot(spot1)
     field.addSpot(spot2)
     field.addBroadcaster(broadcaster)
@@ -103,7 +103,7 @@ describe('field', () => {
   })
 
   it('g.Eを登録すると今まで登録されたspot,broadcasterが画面に描画される', async () => {
-    const field: Field = new FieldBuilder().build()
+    const field: Field = new FieldBuilder(scene).build()
     field.addSpot(spot1)
     field.addSpot(spot2)
     field.addBroadcaster(broadcaster)
@@ -121,7 +121,7 @@ describe('field', () => {
   })
 
   it('先にg.Eを登録してからspot,broadcasterを登録しても描画される', async () => {
-    const field: Field = new FieldBuilder().build()
+    const field: Field = new FieldBuilder(scene).build()
     field.container = layer1
     field.addSpot(spot1)
     field.addBroadcaster(broadcaster)
@@ -136,7 +136,7 @@ describe('field', () => {
   })
 
   it('viewを差し替えるとspot,broadcasterは差し替え後の方に所属する', async () => {
-    const field: Field = new FieldBuilder().build()
+    const field: Field = new FieldBuilder(scene).build()
     field.addSpot(spot1)
     field.addSpot(spot2)
     field.addBroadcaster(broadcaster)
@@ -151,7 +151,7 @@ describe('field', () => {
   })
 
   it('viewが削除されるとspot,broadcasterも孤立する', async () => {
-    const field: Field = new FieldBuilder().build()
+    const field: Field = new FieldBuilder(scene).build()
     field.addSpot(spot1)
     field.addSpot(spot2)
     field.addBroadcaster(broadcaster)
@@ -166,7 +166,7 @@ describe('field', () => {
   })
 
   it('自由に値を追加・参照できる', () => {
-    const field = new FieldBuilder().build()
+    const field = new FieldBuilder(scene).build()
     expect(field.vars).not.toBeDefined()
     field.vars = 'Hello'
     expect(field.vars).toBe('Hello')

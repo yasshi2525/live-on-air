@@ -71,6 +71,26 @@ export class CommentSupplierBuilder extends CommentSupplierConfigureImpl {
   }
 
   /**
+   * 作成する CommentSupplier のライブラリ利用者が自由に使えるフィールドを取得します.
+   */
+  override vars (): unknown
+
+  /**
+   * 作成する CommentSupplier のライブラリ利用者が自由に使えるフィールドを設定します.
+   *
+   * @param vars ライブラリ利用者が自由に使えるフィールド
+   */
+  override vars (vars: unknown): CommentSupplierBuilder
+
+  override vars (args?: unknown): unknown | CommentSupplierBuilder {
+    if (arguments.length > 0) {
+      super.vars(args)
+      return this
+    }
+    return super.vars()
+  }
+
+  /**
    * 各属性値に値を設定しなかった際に使用されるデフォルト値を設定します.
    *
    * @param scene 現在の scene を指定してください.
@@ -104,7 +124,8 @@ export class CommentSupplierBuilder extends CommentSupplierConfigureImpl {
               return true
             }
           }]
-        }]
+        }],
+        vars: undefined
       })
     }
     CommentSupplierBuilder.lastUsedScene = scene

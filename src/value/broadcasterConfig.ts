@@ -1,4 +1,4 @@
-import { ObjectSupplier, PrimitiveValueSupplier, ValueSupplier, ValueValidator } from './value'
+import { ObjectSupplier, OptionalValueSupplier, PrimitiveValueSupplier, ValueSupplier, ValueValidator } from './value'
 
 /**
  * {@link Broadcaster} 生成時に利用する設定値
@@ -20,6 +20,10 @@ export interface BroadcasterConfig {
    * 作成する Broadcaster に使用される画像アセット
    */
   asset: g.ImageAsset
+  /**
+   * ライブラリ利用者が自由に使えるフィールドです
+   */
+  vars: unknown
 }
 
 /**
@@ -29,6 +33,7 @@ export class BroadcasterConfigSupplier implements ValueSupplier<BroadcasterConfi
   private readonly speed: PrimitiveValueSupplier<number>
   private readonly location: ObjectSupplier<g.CommonOffset>
   private readonly asset: PrimitiveValueSupplier<g.ImageAsset>
+  private readonly vars: OptionalValueSupplier<unknown>
 
   constructor (initial: BroadcasterConfig) {
     this.speed = PrimitiveValueSupplier.create(initial.speed, new class extends ValueValidator<number> {
@@ -42,19 +47,22 @@ export class BroadcasterConfigSupplier implements ValueSupplier<BroadcasterConfi
     }())
     this.location = ObjectSupplier.create({ x: initial.x, y: initial.y })
     this.asset = PrimitiveValueSupplier.create(initial.asset)
+    this.vars = OptionalValueSupplier.create(initial.vars)
   }
 
   setIf (obj: Partial<BroadcasterConfig>): void {
     this.speed.setIf(obj.speed)
     this.location.setIf(obj)
     this.asset.setIf(obj.asset)
+    this.vars.setIf(obj.vars)
   }
 
   get (): BroadcasterConfig {
     return {
       speed: this.speed.get(),
       ...this.location.get(),
-      asset: this.asset.get()
+      asset: this.asset.get(),
+      vars: this.vars.get()
     }
   }
 
@@ -62,7 +70,8 @@ export class BroadcasterConfigSupplier implements ValueSupplier<BroadcasterConfi
     return {
       speed: this.speed.default(),
       ...this.location.default(),
-      asset: this.asset.default()
+      asset: this.asset.default(),
+      vars: this.vars.default()
     }
   }
 
@@ -70,5 +79,6 @@ export class BroadcasterConfigSupplier implements ValueSupplier<BroadcasterConfi
     this.speed.defaultIf(obj.speed)
     this.location.defaultIf(obj)
     this.asset.defaultIf(obj.asset)
+    this.vars.defaultIf(obj.vars)
   }
 }

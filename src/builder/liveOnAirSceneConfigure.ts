@@ -1,9 +1,9 @@
 import { LayerConfig, LayerConfigSupplier } from '../value/layerConfig'
 import { BroadcasterConfig, BroadcasterConfigSupplier } from '../value/broadcasterConfig'
 import { SpotConfig, SpotConfigSupplier } from '../value/spotConfig'
-import { FieldConfigSupplier } from '../value/fieldConfig'
+import { FieldConfig, FieldConfigSupplier } from '../value/fieldConfig'
 import { LiveOnAirScene, LiveOnAirSceneImpl } from '../model/liveOnAirScene'
-import { ScreenConfigSupplier } from '../value/screenConfig'
+import { ScreenConfig, ScreenConfigSupplier } from '../value/screenConfig'
 import { CommentSupplierConfig, CommentSupplierConfigSupplier } from '../value/commentSupplierConfig'
 import { CommentDeployerConfig, CommentDeployerConfigSupplier } from '../value/commentDeployerConfig'
 import { ScorerConfig, ScorerConfigSupplier } from '../value/scorerConfig'
@@ -145,18 +145,18 @@ export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
   private readonly spotConfigs: SpotConfigSupplier[]
 
   private readonly layerGetter: () => LayerConfig
-  private readonly fieldGetter: () => object
+  private readonly fieldGetter: () => FieldConfig
   private readonly broadcasterGetter: () => BroadcasterConfig
-  private readonly screenGetter: () => object
+  private readonly screenGetter: () => ScreenConfig
   private readonly commentSupplierGetter: () => CommentSupplierConfig
   private readonly commentDeployerGetter: () => CommentDeployerConfig
   private readonly scorerGetter: () => ScorerConfig
   private readonly tickerGetter: () => TickerConfig
 
   private readonly layerSetter: (obj: Partial<LayerConfig>) => void
-  private readonly fieldSetter: (obj: object) => void
+  private readonly fieldSetter: (obj: Partial<FieldConfig>) => void
   private readonly broadcasterSetter: (obj: Partial<BroadcasterConfig>) => void
-  private readonly screenSetter: (obj: object) => void
+  private readonly screenSetter: (obj: Partial<ScreenConfig>) => void
   private readonly commentSupplierSetter: (obj: Partial<CommentSupplierConfig>) => void
   private readonly commentDeployerSetter: (obj: Partial<CommentDeployerConfig>) => void
   private readonly scorerSetter: (obj: Partial<ScorerConfig>) => void
@@ -199,11 +199,11 @@ export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
     return this.layerGetter()
   }
 
-  field (config: object): LiveOnAirSceneConfigure
+  field (config: Partial<FieldConfig>): LiveOnAirSceneConfigure
 
-  field (): Readonly<object>
+  field (): Readonly<FieldConfig>
 
-  field (args?: object): LiveOnAirSceneConfigure | Readonly<object> {
+  field (args?: Partial<FieldConfig>): LiveOnAirSceneConfigure | Readonly<FieldConfig> {
     if (args) {
       this.fieldSetter(args)
       return this
@@ -223,11 +223,11 @@ export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
     return this.broadcasterGetter()
   }
 
-  screen (config: object): LiveOnAirSceneConfigure
+  screen (config: Partial<ScreenConfig>): LiveOnAirSceneConfigure
 
-  screen (): Readonly<object>
+  screen (): Readonly<ScreenConfig>
 
-  screen (args?: object): LiveOnAirSceneConfigure | Readonly<object> {
+  screen (args?: Partial<ScreenConfig>): LiveOnAirSceneConfigure | Readonly<ScreenConfig> {
     if (args) {
       this.screenSetter(args)
       return this
@@ -305,6 +305,6 @@ export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
    * 指定された設定で {@link LiveOnAirScene} を作成します.
    */
   build (): LiveOnAirScene & g.Scene {
-    return new LiveOnAirSceneImpl({ game: this.game, layer: this.layer(), broadcaster: this.broadcaster(), spots: this.spot(), commentSupplier: this.commentSupplier(), commentDeployer: this.commentDeployer(), scorer: this.scorer(), ticker: this.ticker() })
+    return new LiveOnAirSceneImpl({ game: this.game, layer: this.layer(), field: this.field(), broadcaster: this.broadcaster(), spots: this.spot(), commentSupplier: this.commentSupplier(), commentDeployer: this.commentDeployer(), screen: this.screen(), scorer: this.scorer(), ticker: this.ticker() })
   }
 }

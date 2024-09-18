@@ -4,7 +4,7 @@ describe('broadcasterConfig', () => {
   let config: BroadcasterConfigSupplier
 
   beforeEach(() => {
-    config = new BroadcasterConfigSupplier({ x: 0, y: 0, speed: 1, asset: scene.asset.getImageById('broadcaster.default') })
+    config = new BroadcasterConfigSupplier({ x: 0, y: 0, speed: 1, asset: scene.asset.getImageById('broadcaster.default'), vars: undefined })
   })
 
   it('デフォルトの座標だけ更新ができる', () => {

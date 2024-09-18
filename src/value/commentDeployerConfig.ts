@@ -1,4 +1,4 @@
-import { PrimitiveValueSupplier, ValueSupplier, ValueValidator } from './value'
+import { OptionalValueSupplier, PrimitiveValueSupplier, ValueSupplier, ValueValidator } from './value'
 
 /**
  * {@link CommentDeployer} 生成時に利用する設定値
@@ -18,6 +18,10 @@ export interface CommentDeployerConfig {
    * 作成する CommentDeployer に設定する、コメントのフォント
    */
   font: g.Font
+  /**
+   * ライブラリ利用者が自由に使えるフィールドです
+   */
+  vars: unknown
 }
 
 /**
@@ -27,6 +31,7 @@ export class CommentDeployerConfigSupplier implements ValueSupplier<CommentDeplo
   private readonly speed: PrimitiveValueSupplier<number>
   private readonly intervalY: PrimitiveValueSupplier<number>
   private readonly font: PrimitiveValueSupplier<g.Font>
+  private readonly vars: OptionalValueSupplier<unknown>
 
   constructor (initial: CommentDeployerConfig) {
     this.speed = PrimitiveValueSupplier.create(initial.speed, new class extends ValueValidator<number> {
@@ -48,19 +53,22 @@ export class CommentDeployerConfigSupplier implements ValueSupplier<CommentDeplo
       }
     }())
     this.font = PrimitiveValueSupplier.create(initial.font)
+    this.vars = OptionalValueSupplier.create(initial.vars)
   }
 
   setIf (obj: Partial<CommentDeployerConfig>): void {
     this.speed.setIf(obj.speed)
     this.intervalY.setIf(obj.intervalY)
     this.font.setIf(obj.font)
+    this.vars.setIf(obj.vars)
   }
 
   get (): CommentDeployerConfig {
     return {
       speed: this.speed.get(),
       intervalY: this.intervalY.get(),
-      font: this.font.get()
+      font: this.font.get(),
+      vars: this.vars.get()
     }
   }
 
@@ -68,13 +76,15 @@ export class CommentDeployerConfigSupplier implements ValueSupplier<CommentDeplo
     this.speed.defaultIf(obj.speed)
     this.intervalY.defaultIf(obj.intervalY)
     this.font.defaultIf(obj.font)
+    this.vars.defaultIf(obj.vars)
   }
 
   default (): CommentDeployerConfig {
     return {
       speed: this.speed.default(),
       intervalY: this.intervalY.default(),
-      font: this.font.default()
+      font: this.font.default(),
+      vars: this.vars.default()
     }
   }
 }

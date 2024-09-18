@@ -80,4 +80,12 @@ describe('spotBuilder', () => {
     expect(((spot.view as g.Sprite).src as g.ImageAsset).path).toBe('./image/spot.default.normal.png')
     expect(spot.view).toMatchObject({ x: 100, y: 200 })
   })
+  it('varsにundefinedを入れられる', () => {
+    const sb = new SpotBuilder(scene)
+      .vars('hoge')
+      .vars(undefined)
+    expect(sb.vars()).not.toBeDefined()
+    const spot = sb.build()
+    expect(spot.vars).not.toBeDefined()
+  })
 })

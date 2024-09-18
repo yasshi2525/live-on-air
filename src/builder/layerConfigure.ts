@@ -52,6 +52,18 @@ export interface LayerConfigure {
    * @param area 設定する領域
    */
   header (area: g.CommonArea): LayerConfigure
+
+  /**
+   * ライブラリ利用者が自由に使えるフィールドを取得します.
+   */
+  vars (): unknown
+
+  /**
+   * ライブラリ利用者が自由に使えるフィールドを設定します.
+   *
+   * @param vars ライブラリ利用者が自由に使えるフィールド
+   */
+  vars (vars: unknown): LayerConfigure
 }
 
 export class LayerConfigureImpl implements LayerConfigure {
@@ -109,6 +121,18 @@ export class LayerConfigureImpl implements LayerConfigure {
       return this
     }
     return this.getter().header
+  }
+
+  vars (): unknown
+
+  vars (vars: unknown): LayerConfigure
+
+  vars (args?: unknown): unknown | LayerConfigure {
+    if (arguments.length > 0) {
+      this.setter({ vars: args })
+      return this
+    }
+    return this.getter().vars
   }
 
   /**

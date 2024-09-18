@@ -116,6 +116,26 @@ export class TickerBuilder extends TickerConfigureImpl {
   }
 
   /**
+   * 作成する Ticker のライブラリ利用者が自由に使えるフィールドを取得します.
+   */
+  override vars (): unknown
+
+  /**
+   * 作成する Ticker のライブラリ利用者が自由に使えるフィールドを設定します.
+   *
+   * @param vars ライブラリ利用者が自由に使えるフィールド
+   */
+  override vars (vars: unknown): TickerBuilder
+
+  override vars (args?: unknown): unknown | TickerBuilder {
+    if (arguments.length > 0) {
+      super.vars(args)
+      return this
+    }
+    return super.vars()
+  }
+
+  /**
    * 各属性値に値を設定しなかった際に使用されるデフォルト値を設定します.
    *
    * @param scene 現在の scene を指定してください.
@@ -141,7 +161,8 @@ export class TickerBuilder extends TickerConfigureImpl {
         font: new g.DynamicFont({ game: scene.game, fontFamily: 'monospace', size: 40, strokeColor: 'white', strokeWidth: 4 }),
         digit: 2,
         prefix: '残り',
-        suffix: '秒'
+        suffix: '秒',
+        vars: undefined
       })
     }
     TickerBuilder.lastUsedScene = scene

@@ -11,7 +11,7 @@ describe('commentSupplierBuilder', () => {
   beforeEach(() => {
     commentContextSupplier = new CommentContextSupplier({
       broadcaster: new BroadcasterBuilder(scene).build(),
-      field: new FieldBuilder().build(),
+      field: new FieldBuilder(scene).build(),
       screen: new ScreenBuilder(scene).build()
     })
   })
@@ -65,5 +65,13 @@ describe('commentSupplierBuilder', () => {
     expect(cs.status).toBe('scheduled')
     expect(() => cs.start(commentContextSupplier)).toThrow()
     expect(cs.status).toBe('scheduled')
+  })
+  it('varsにundefinedを入れられる', () => {
+    const csb = new CommentSupplierBuilder(scene)
+      .vars('hoge')
+      .vars(undefined)
+    expect(csb.vars()).not.toBeDefined()
+    const cs = csb.build()
+    expect(cs.vars).not.toBeDefined()
   })
 })

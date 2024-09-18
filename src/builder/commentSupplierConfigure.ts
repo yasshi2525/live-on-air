@@ -40,6 +40,17 @@ export interface CommentSupplierConfigure {
    */
     comments(comments: CommentSchema[]): CommentSupplierConfigure
 
+  /**
+   * 作成する CommentSupplier のライブラリ利用者が自由に使えるフィールドを取得します.
+   */
+  vars (): unknown
+
+  /**
+   * 作成する CommentSupplier のライブラリ利用者が自由に使えるフィールドを設定します.
+   *
+   * @param vars ライブラリ利用者が自由に使えるフィールド
+   */
+  vars (vars: unknown): CommentSupplierConfigure
 }
 
 export class CommentSupplierConfigureImpl implements CommentSupplierConfigure {
@@ -80,6 +91,18 @@ export class CommentSupplierConfigureImpl implements CommentSupplierConfigure {
     return this.getter().comments
   }
 
+  vars (): unknown
+
+  vars (vars: unknown): CommentSupplierConfigure
+
+  vars (args?: unknown): unknown | CommentSupplierConfigure {
+    if (arguments.length > 0) {
+      this.setter({ vars: args })
+      return this
+    }
+    return this.getter().vars
+  }
+
   /**
    * CommentSupplier を作成します.
    */
@@ -89,7 +112,8 @@ export class CommentSupplierConfigureImpl implements CommentSupplierConfigure {
       scene: this.scene,
       interval: config.interval,
       fps: this.scene.game.fps,
-      comments: config.comments
+      comments: config.comments,
+      vars: config.vars
     })
   }
 }

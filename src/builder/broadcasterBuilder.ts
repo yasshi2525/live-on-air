@@ -77,6 +77,26 @@ export class BroadcasterBuilder extends BroadcasterConfigureImpl {
   }
 
   /**
+   * 作成する Broadcaster のライブラリ利用者が自由に使えるフィールドを取得します.
+   */
+  override vars (): unknown
+
+  /**
+   * 作成する Broadcaster のライブラリ利用者が自由に使えるフィールドを設定します.
+   *
+   * @param vars ライブラリ利用者が自由に使えるフィールド
+   */
+  override vars (vars: unknown): BroadcasterBuilder
+
+  override vars (args?: unknown): unknown | BroadcasterBuilder {
+    if (arguments.length > 0) {
+      super.vars(args)
+      return this
+    }
+    return super.vars()
+  }
+
+  /**
    * 各属性値に値を設定しなかった際に使用されるデフォルト値を設定します.
    *
    * @param scene 現在の scene を指定してください.
@@ -98,7 +118,7 @@ export class BroadcasterBuilder extends BroadcasterConfigureImpl {
     }
     if (!BroadcasterBuilder.defaultConfig) {
       BroadcasterBuilder.defaultConfig = new BroadcasterConfigSupplier({
-        x: 0, y: 0, speed: 1, asset: image(scene, 'image/broadcaster.default.png')
+        x: 0, y: 0, speed: 1, asset: image(scene, 'image/broadcaster.default.png'), vars: undefined
       })
     }
     BroadcasterBuilder.lastUsedScene = scene

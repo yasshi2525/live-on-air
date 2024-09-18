@@ -11,8 +11,8 @@ describe('Broadcaster', () => {
   let spot2: Spot
 
   beforeEach(() => {
-    field1 = new FieldBuilder().build()
-    field2 = new FieldBuilder().build()
+    field1 = new FieldBuilder(scene).build()
+    field2 = new FieldBuilder(scene).build()
     sb = new SpotBuilder(scene)
     spot1 = sb.location({ x: 100, y: 0 }).build()
     spot2 = sb.location({ x: 0, y: 100 }).build()

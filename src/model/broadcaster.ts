@@ -164,11 +164,20 @@ export interface Broadcaster {
   backFromLive(): void
 }
 
+export interface BroadcasterOptions {
+  scene: g.Scene
+  asset: g.ImageAsset
+  speed: number
+  location: g.CommonOffset
+  vars: unknown
+}
+
 export class BroadcasterImpl implements Broadcaster {
   readonly onEnter = new g.Trigger<Spot>()
   readonly onLiveEnd = new g.Trigger()
   vars?: unknown
 
+  private _speed: number
   private _field?: Field
   private readonly _view: g.E
   private _staying?: Spot
@@ -177,15 +186,17 @@ export class BroadcasterImpl implements Broadcaster {
   private _tween?: Tween
   private _live?: Live
 
-  constructor (_scene: g.Scene, _asset: g.ImageAsset, private _speed: number, location: g.CommonOffset) {
+  constructor ({ scene, asset, speed, location, vars }: BroadcasterOptions) {
+    this._speed = speed
     this._view = new g.Sprite({
-      scene: _scene,
-      src: _asset,
+      scene,
+      src: asset,
       x: location.x,
       y: location.y,
       anchorX: 0.5,
       anchorY: 0.5
     })
+    this.vars = vars
   }
 
   standOn (field: Field): void {

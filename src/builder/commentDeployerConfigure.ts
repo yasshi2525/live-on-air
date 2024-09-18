@@ -40,6 +40,18 @@ export interface CommentDeployerConfigure {
    * @param font コメントのフォント
    */
   font(font: g.Font): CommentDeployerConfigure
+
+  /**
+   * 作成する CommentDeployer のライブラリ利用者が自由に使えるフィールドを取得します.
+   */
+  vars (): unknown
+
+  /**
+   * 作成する CommentDeployer のライブラリ利用者が自由に使えるフィールドを設定します.
+   *
+   * @param vars ライブラリ利用者が自由に使えるフィールド
+   */
+  vars (vars: unknown): CommentDeployerConfigure
 }
 
 export class CommentDeployerConfigureImpl implements CommentDeployerConfigure {
@@ -84,11 +96,23 @@ export class CommentDeployerConfigureImpl implements CommentDeployerConfigure {
     return this.getter().font
   }
 
+  vars (): unknown
+
+  vars (vars: unknown): CommentDeployerConfigure
+
+  vars (args?: unknown): unknown | CommentDeployerConfigure {
+    if (arguments.length > 0) {
+      this.setter({ vars: args })
+      return this
+    }
+    return this.getter().vars
+  }
+
   /**
    * CommentDeployer を作成します.
    */
   build (): CommentDeployer {
     const config = this.config.get()
-    return new CommentDeployerImpl({ scene: this.scene, speed: config.speed, intervalY: config.intervalY, font: config.font })
+    return new CommentDeployerImpl({ scene: this.scene, speed: config.speed, intervalY: config.intervalY, font: config.font, vars: config.vars })
   }
 }

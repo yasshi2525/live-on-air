@@ -96,6 +96,26 @@ export class LayerBuilder extends LayerConfigureImpl {
   }
 
   /**
+   * ライブラリ利用者が自由に使えるフィールドを取得します.
+   */
+  override vars (): unknown
+
+  /**
+   * ライブラリ利用者が自由に使えるフィールドを設定します.
+   *
+   * @param vars ライブラリ利用者が自由に使えるフィールド
+   */
+  override vars (vars: unknown): LayerBuilder
+
+  override vars (args?: unknown): unknown | LayerBuilder {
+    if (arguments.length > 0) {
+      super.vars(args)
+      return this
+    }
+    return super.vars()
+  }
+
+  /**
    * 各属性値に値を設定しなかった際に使用されるデフォルト値を設定します.
    *
    * @param scene 現在の scene を指定してください.
@@ -120,7 +140,8 @@ export class LayerBuilder extends LayerConfigureImpl {
         field: { x: 100, y: 100, width: scene.game.width - 200, height: scene.game.height - 200 },
         screen: { x: 100, y: 100, width: scene.game.width - 200, height: scene.game.height - 200 },
         comment: { x: 100, y: 100, width: scene.game.width - 200, height: scene.game.height - 200 },
-        header: { x: 0, y: 0, width: scene.game.width, height: 100 }
+        header: { x: 0, y: 0, width: scene.game.width, height: 100 },
+        vars: undefined
       })
     }
     LayerBuilder.lastUsedScene = scene

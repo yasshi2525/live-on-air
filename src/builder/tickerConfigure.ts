@@ -64,6 +64,18 @@ export interface TickerConfigure {
    * @param suffix 後置テキスト
    */
   suffix (suffix: string): TickerConfigure
+
+  /**
+   * 作成する Ticker のライブラリ利用者が自由に使えるフィールドを取得します.
+   */
+  vars (): unknown
+
+  /**
+   * 作成する Ticker のライブラリ利用者が自由に使えるフィールドを設定します.
+   *
+   * @param vars ライブラリ利用者が自由に使えるフィールド
+   */
+  vars (vars: unknown): TickerConfigure
 }
 
 export class TickerConfigureImpl implements TickerConfigure {
@@ -135,11 +147,23 @@ export class TickerConfigureImpl implements TickerConfigure {
     return this.getter().suffix
   }
 
+  vars (): unknown
+
+  vars (vars: unknown): TickerConfigure
+
+  vars (args?: unknown): unknown | TickerConfigure {
+    if (arguments.length > 0) {
+      this.setter({ vars: args })
+      return this
+    }
+    return this.getter().vars
+  }
+
   /**
    * 指定された設定で {@link Ticker} を作成します.
    */
   build (): Ticker {
     const config = this.config.get()
-    return new TickerImpl({ scene: this.scene, frame: this.frame(), font: this.font(), digit: config.digit, prefix: config.prefix, suffix: config.suffix })
+    return new TickerImpl({ scene: this.scene, frame: this.frame(), font: this.font(), digit: config.digit, prefix: config.prefix, suffix: config.suffix, vars: config.vars })
   }
 }

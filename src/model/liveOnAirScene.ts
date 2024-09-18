@@ -24,6 +24,8 @@ import { ScorerConfig } from '../value/scorerConfig'
 import { Ticker } from './ticker'
 import { TickerBuilder } from '../builder/tickerBuilder'
 import { TickerConfig } from '../value/tickerConfig'
+import { FieldConfig } from '../value/fieldConfig'
+import { ScreenConfig } from '../value/screenConfig'
 
 /**
  * 本ゲームが動作する g.Scene が持つゲーム情報を格納したパラメタ一覧です.
@@ -70,7 +72,7 @@ export interface LiveOnAirScene {
 export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
   private context: { loaded: false } | { loaded: true, layer: Layer, field: Field, broadcaster: Broadcaster, screen: Screen, spots: Set<Spot>, commentSupplier: CommentSupplier, commentDeployer: CommentDeployer, scorer: Scorer, ticker: Ticker }
 
-  constructor (param: g.SceneParameterObject & { layer: LayerConfig, broadcaster: BroadcasterConfig, spots: readonly SpotConfig[], commentSupplier: CommentSupplierConfig, commentDeployer: CommentDeployerConfig, scorer: ScorerConfig, ticker: TickerConfig }) {
+  constructor (param: g.SceneParameterObject & { layer: LayerConfig, field: FieldConfig, broadcaster: BroadcasterConfig, spots: readonly SpotConfig[], commentSupplier: CommentSupplierConfig, commentDeployer: CommentDeployerConfig, screen: ScreenConfig, scorer: ScorerConfig, ticker: TickerConfig }) {
     super(param)
     this.context = { loaded: false }
     this.onLoad.add(() => {
@@ -79,17 +81,21 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
         .screen(param.layer.screen)
         .comment(param.layer.comment)
         .header(param.layer.header)
+        .vars(param.layer.vars)
         .build()
-      const field = new FieldBuilder()
+      const field = new FieldBuilder(this)
+        .vars(param.field.vars)
         .build()
       field.container = layer.field
       const broadcaster = new BroadcasterBuilder(this)
         .location({ x: param.broadcaster.x, y: param.broadcaster.y })
         .speed(param.broadcaster.speed)
         .asset(param.broadcaster.asset)
+        .vars(param.broadcaster.vars)
         .build()
       broadcaster.standOn(field)
       const screen = new ScreenBuilder(this)
+        .vars(param.screen.vars)
         .build()
       screen.container = layer.screen
       const spots = new Set<Spot>()
@@ -98,6 +104,7 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
           .location({ x: spot.x, y: spot.y })
           .image(spot)
           .liveClass(spot.liveClass)
+          .vars(spot.vars)
           .build()
         inst.deployOn(field)
         inst.attach(screen)
@@ -106,11 +113,13 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
       const commentSupplier = new CommentSupplierBuilder(this)
         .interval(param.commentSupplier.interval)
         .comments(param.commentSupplier.comments)
+        .vars(param.commentSupplier.vars)
         .build()
       const commentDeployer = new CommentDeployerBuilder(this)
         .speed(param.commentDeployer.speed)
         .intervalY(param.commentDeployer.intervalY)
         .font(param.commentDeployer.font)
+        .vars(param.commentDeployer.vars)
         .build()
       commentDeployer.container = layer.comment
       const commentContextSupplier = new CommentContextSupplier({ broadcaster, field, screen })
@@ -121,6 +130,7 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
         .digit(param.scorer.digit)
         .prefix(param.scorer.prefix)
         .suffix(param.scorer.suffix)
+        .vars(param.scorer.vars)
         .build()
       scorer.container = layer.header
       commentSupplier.onSupply.add(() => scorer.add(1))
@@ -131,6 +141,7 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
         .digit(param.ticker.digit)
         .prefix(param.ticker.prefix)
         .suffix(param.ticker.suffix)
+        .vars(param.ticker.vars)
         .build()
       ticker.container = layer.header
       ticker.onExpire.addOnce(() => scorer.disable())

@@ -49,4 +49,12 @@ describe('tickerBuilder', () => {
     const tb = new TickerBuilder(scene)
     expect(() => tb.digit(-1)).toThrow()
   })
+  it('varsにundefinedを入れられる', () => {
+    const tb = new TickerBuilder(scene)
+      .vars('hoge')
+      .vars(undefined)
+    expect(tb.vars()).not.toBeDefined()
+    const ticker = tb.build()
+    expect(ticker.vars).not.toBeDefined()
+  })
 })
