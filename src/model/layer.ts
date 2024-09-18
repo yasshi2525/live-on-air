@@ -48,6 +48,7 @@ export class LayerImpl implements Layer {
     this.screen = this.createEntity('screen')
     this.comment = this.createEntity('comment')
     this.header = this.createEntity('header')
+    this.vars = config.vars
   }
 
   private createEntity (typ: LayerType) {

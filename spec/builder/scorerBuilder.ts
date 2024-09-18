@@ -49,4 +49,12 @@ describe('scorerBuilder', () => {
     const sb = new ScorerBuilder(scene)
     expect(() => sb.digit(-1)).toThrow()
   })
+  it('varsにundefinedを入れられる', () => {
+    const sb = new ScorerBuilder(scene)
+      .vars('hoge')
+      .vars(undefined)
+    expect(sb.vars()).not.toBeDefined()
+    const scorer = sb.build()
+    expect(scorer.vars).not.toBeDefined()
+  })
 })

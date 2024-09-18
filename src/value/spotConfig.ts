@@ -1,4 +1,4 @@
-import { ObjectSupplier, PrimitiveValueSupplier, RecordSupplier, ValueSupplier } from './value'
+import { ObjectSupplier, OptionalValueSupplier, PrimitiveValueSupplier, RecordSupplier, ValueSupplier } from './value'
 import { Live } from '../model/live'
 
 /**
@@ -63,6 +63,10 @@ export interface SpotConfig {
    * @return 生放送処理が定義されたクラス名
    */
   liveClass: new () => Live
+  /**
+   * ライブラリ利用者が自由に使えるフィールドです
+   */
+  vars: unknown
 }
 
 /**
@@ -72,6 +76,7 @@ export class SpotConfigSupplier implements ValueSupplier<SpotConfig> {
   private readonly location: ObjectSupplier<g.CommonOffset>
   private readonly assets: RecordSupplier<SpotAssetType, g.ImageAsset>
   private readonly liveClass: PrimitiveValueSupplier<new () => Live>
+  private readonly vars: OptionalValueSupplier<unknown>
 
   constructor (initial: SpotConfig) {
     this.location = ObjectSupplier.create({ x: initial.x, y: initial.y })
@@ -82,13 +87,15 @@ export class SpotConfigSupplier implements ValueSupplier<SpotConfig> {
       normal: initial.normal
     })
     this.liveClass = PrimitiveValueSupplier.create(initial.liveClass)
+    this.vars = OptionalValueSupplier.create(initial.vars)
   }
 
   get (): SpotConfig {
     return {
       ...this.location.get(),
       ...this.assets.get(),
-      liveClass: this.liveClass.get()
+      liveClass: this.liveClass.get(),
+      vars: this.vars.get()
     }
   }
 
@@ -96,13 +103,15 @@ export class SpotConfigSupplier implements ValueSupplier<SpotConfig> {
     this.location.setIf(obj)
     this.assets.setIf(obj)
     this.liveClass.setIf(obj.liveClass)
+    this.vars.setIf(obj.vars)
   }
 
   default (): SpotConfig {
     return {
       ...this.location.default(),
       ...this.assets.default(),
-      liveClass: this.liveClass.default()
+      liveClass: this.liveClass.default(),
+      vars: this.vars.default()
     }
   }
 
@@ -110,5 +119,6 @@ export class SpotConfigSupplier implements ValueSupplier<SpotConfig> {
     this.location.defaultIf(obj)
     this.assets.defaultIf(obj)
     this.liveClass.defaultIf(obj.liveClass)
+    this.vars.defaultIf(obj.vars)
   }
 }

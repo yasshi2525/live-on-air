@@ -7,7 +7,7 @@ describe('commentContextSupplier', () => {
 
   beforeEach(() => {
     broadcaster = new BroadcasterBuilder(scene).build()
-    field = new FieldBuilder().build()
+    field = new FieldBuilder(scene).build()
     screen = new ScreenBuilder(scene).build()
   })
 

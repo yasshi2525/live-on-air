@@ -43,4 +43,12 @@ describe('commentDeployerBuilder', () => {
     expect(() => builder.speed(0)).toThrow()
     expect(() => builder.intervalY(0)).toThrow()
   })
+  it('varsにundefinedを入れられる', () => {
+    const cdb = new CommentDeployerBuilder(scene)
+      .vars('hoge')
+      .vars(undefined)
+    expect(cdb.vars()).not.toBeDefined()
+    const cd = cdb.build()
+    expect(cd.vars).not.toBeDefined()
+  })
 })

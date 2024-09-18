@@ -41,6 +41,18 @@ export interface SpotConfigure {
    * @param liveClass 開始する生放送クラス名. インスタンスでない点にご留意ください.
    */
   liveClass(liveClass: new() => Live): SpotConfigure
+
+  /**
+   * 作成する Spot のライブラリ利用者が自由に使えるフィールドを取得します.
+   */
+  vars (): unknown
+
+  /**
+   * 作成する Spot のライブラリ利用者が自由に使えるフィールドを設定します.
+   *
+   * @param vars ライブラリ利用者が自由に使えるフィールド
+   */
+  vars (vars: unknown): SpotConfigure
 }
 
 export class SpotConfigureImpl implements SpotConfigure {
@@ -95,10 +107,22 @@ export class SpotConfigureImpl implements SpotConfigure {
     return this.getter().liveClass
   }
 
+  vars (): unknown
+
+  vars (vars: unknown): SpotConfigure
+
+  vars (args?: unknown): unknown | SpotConfigure {
+    if (arguments.length > 0) {
+      this.setter({ vars: args })
+      return this
+    }
+    return this.getter().vars
+  }
+
   /**
    * 指定された設定で Spot を作成します
    */
   build (): Spot {
-    return new SpotImpl(this.scene, this.image(), this.location(), this.liveClass())
+    return new SpotImpl({ scene: this.scene, image: this.image(), location: this.location(), liveClass: this.liveClass(), vars: this.vars() })
   }
 }

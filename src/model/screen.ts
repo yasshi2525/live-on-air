@@ -62,15 +62,23 @@ export interface Screen {
 
 }
 
+export interface ScreenOptions {
+  scene: g.Scene
+  vars: unknown
+}
+
 export class ScreenImpl implements Screen {
   readonly onLiveStart = new g.Trigger<Live>()
   vars?: unknown
+  private readonly scene: g.Scene
   private _container?: g.E
   private readonly _view: g.E
   private _now?: Live
 
-  constructor (private readonly scene: g.Scene) {
+  constructor ({ scene, vars }: ScreenOptions) {
+    this.scene = scene
     this._view = new g.E({ scene })
+    this.vars = vars
   }
 
   addSpot (spot: Spot): void {

@@ -1,4 +1,4 @@
-import { ArraySupplier, PrimitiveValueSupplier, ValueSupplier, ValueValidator } from './value'
+import { ArraySupplier, OptionalValueSupplier, PrimitiveValueSupplier, ValueSupplier, ValueValidator } from './value'
 import { CommentSchema } from '../model/commentSupplier'
 
 /**
@@ -13,6 +13,10 @@ export interface CommentSupplierConfig {
    * 作成する CommentSupplier に設定する、コメント情報
    */
   comments: CommentSchema[]
+  /**
+   * ライブラリ利用者が自由に使えるフィールドです
+   */
+  vars: unknown
 }
 
 /**
@@ -21,6 +25,7 @@ export interface CommentSupplierConfig {
 export class CommentSupplierConfigSupplier implements ValueSupplier<CommentSupplierConfig> {
   private readonly interval: PrimitiveValueSupplier<number>
   private readonly comments: ArraySupplier<CommentSchema>
+  private readonly vars: OptionalValueSupplier<unknown>
 
   constructor (initial: CommentSupplierConfig) {
     this.interval = PrimitiveValueSupplier.create(initial.interval, new class extends ValueValidator<number> {
@@ -33,11 +38,13 @@ export class CommentSupplierConfigSupplier implements ValueSupplier<CommentSuppl
       }
     }())
     this.comments = ArraySupplier.create(initial.comments)
+    this.vars = OptionalValueSupplier.create(initial.vars)
   }
 
   setIf (obj: Partial<CommentSupplierConfig>): void {
     this.interval.setIf(obj.interval)
     this.comments.setIf(obj.comments)
+    this.vars.setIf(obj.vars)
   }
 
   addComment (comment: CommentSchema): void {
@@ -47,7 +54,8 @@ export class CommentSupplierConfigSupplier implements ValueSupplier<CommentSuppl
   get (): CommentSupplierConfig {
     return {
       interval: this.interval.get(),
-      comments: this.comments.get()
+      comments: this.comments.get(),
+      vars: this.vars.get()
     }
   }
 
@@ -58,12 +66,14 @@ export class CommentSupplierConfigSupplier implements ValueSupplier<CommentSuppl
   defaultIf (obj: Partial<CommentSupplierConfig>):void {
     this.interval.defaultIf(obj.interval)
     this.comments.defaultIf(obj.comments)
+    this.vars.defaultIf(obj.vars)
   }
 
   default (): CommentSupplierConfig {
     return {
       interval: this.interval.default(),
-      comments: this.comments.default()
+      comments: this.comments.default(),
+      vars: this.vars.default()
     }
   }
 }

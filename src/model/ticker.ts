@@ -66,13 +66,15 @@ export interface Ticker extends NumberLabel {
 
 export type TickerOptions = Omit<NumberLabelOptions, 'value' | 'textAlign'> & {
   frame: number
+  vars: unknown
 }
 
 export class TickerImpl extends NumberLabelImpl implements Ticker {
   readonly onExpire = new g.Trigger()
   vars?: unknown
-  constructor ({ scene, frame, font, digit, prefix, suffix }: TickerOptions) {
+  constructor ({ scene, frame, font, digit, prefix, suffix, vars }: TickerOptions) {
     super({ scene, value: frame, font, digit, prefix, suffix, textAlign: 'left' })
+    this.vars = vars
     scene.onUpdate.add(() => {
       if (this.status === 'enabled') {
         this.add(-1)

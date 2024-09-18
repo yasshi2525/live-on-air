@@ -1,4 +1,4 @@
-import { PrimitiveValueSupplier, ValueSupplier, ValueValidator } from './value'
+import { OptionalValueSupplier, PrimitiveValueSupplier, ValueSupplier, ValueValidator } from './value'
 import { NumberLabelConfig, NumberLabelConfigSupplier } from './numberLabelConfig'
 
 /**
@@ -25,10 +25,15 @@ export interface TickerConfig extends NumberLabelConfig {
    * 作成する Ticker に設定する後置テキスト
    */
   suffix: string
+  /**
+   * ライブラリ利用者が自由に使えるフィールドです
+   */
+  vars: unknown
 }
 
 export class TickerConfigSupplier extends NumberLabelConfigSupplier implements ValueSupplier<TickerConfig> {
   private readonly frame: PrimitiveValueSupplier<number>
+  private readonly vars: OptionalValueSupplier<unknown>
 
   constructor (initial: TickerConfig) {
     super(initial)
@@ -41,29 +46,34 @@ export class TickerConfigSupplier extends NumberLabelConfigSupplier implements V
         return super.getMessage(value) + ' 残り時間(フレーム数)は0より大きな値でなければなりません.'
       }
     }())
+    this.vars = OptionalValueSupplier.create(initial.vars)
   }
 
   override setIf (obj: Partial<TickerConfig>): void {
     super.setIf(obj)
     this.frame.setIf(obj.frame)
+    this.vars.setIf(obj.vars)
   }
 
   override get (): TickerConfig {
     return {
       ...super.get(),
-      frame: this.frame.get()
+      frame: this.frame.get(),
+      vars: this.vars.get()
     }
   }
 
   override defaultIf (obj: Partial<TickerConfig>): void {
     super.defaultIf(obj)
     this.frame.defaultIf(obj.frame)
+    this.vars.defaultIf(obj.vars)
   }
 
   override default (): TickerConfig {
     return {
       ...super.default(),
-      frame: this.frame.default()
+      frame: this.frame.default(),
+      vars: this.vars.default()
     }
   }
 }

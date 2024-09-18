@@ -78,6 +78,26 @@ export class SpotBuilder extends SpotConfigureImpl {
   }
 
   /**
+   * 作成する Spot のライブラリ利用者が自由に使えるフィールドを取得します.
+   */
+  override vars (): unknown
+
+  /**
+   * 作成する Spot のライブラリ利用者が自由に使えるフィールドを設定します.
+   *
+   * @param vars ライブラリ利用者が自由に使えるフィールド
+   */
+  override vars (vars: unknown): SpotBuilder
+
+  override vars (args?: unknown): unknown | SpotBuilder {
+    if (arguments.length > 0) {
+      super.vars(args)
+      return this
+    }
+    return super.vars()
+  }
+
+  /**
    * {@link build} を使用して Spot を作成する際、
    * 個別の設定を省略した際のデフォルト値.
    *
@@ -107,7 +127,8 @@ export class SpotBuilder extends SpotConfigureImpl {
         unvisited: image(scene, 'image/spot.default.unvisited.png'),
         disabled: image(scene, 'image/spot.default.disabled.png'),
         normal: image(scene, 'image/spot.default.normal.png'),
-        liveClass: SampleLive
+        liveClass: SampleLive,
+        vars: undefined
       })
     }
     SpotBuilder.lastUsedScene = scene

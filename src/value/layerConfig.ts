@@ -1,4 +1,4 @@
-import { RecordSupplier, ValueSupplier } from './value'
+import { OptionalValueSupplier, RecordSupplier, ValueSupplier } from './value'
 
 /**
  * {@link Layer} のレイアウトのためのレイヤ名一覧
@@ -30,10 +30,15 @@ export interface LayerConfig {
    * {@link Scorer} が得点、 {@link Ticker} が残り時間を配置する領域の大きさ
    */
   header: g.CommonArea
+  /**
+   * ライブラリ利用者が自由に使えるフィールドです
+   */
+  vars: unknown
 }
 
 export class LayerConfigSupplier implements ValueSupplier<LayerConfig> {
   private layouts: RecordSupplier<LayerType, g.CommonArea>
+  private readonly vars: OptionalValueSupplier<unknown>
 
   constructor (initial: LayerConfig) {
     this.layouts = RecordSupplier.create({
@@ -42,25 +47,30 @@ export class LayerConfigSupplier implements ValueSupplier<LayerConfig> {
       comment: initial.comment,
       header: initial.header
     })
+    this.vars = OptionalValueSupplier.create(initial.vars)
   }
 
   get (): LayerConfig {
     return {
-      ...this.layouts.get()
+      ...this.layouts.get(),
+      vars: this.vars.get()
     }
   }
 
   setIf (obj: Partial<LayerConfig>) {
     this.layouts.setIf(obj)
+    this.vars.setIf(obj.vars)
   }
 
   default (): LayerConfig {
     return {
-      ...this.layouts.default()
+      ...this.layouts.default(),
+      vars: this.vars.default()
     }
   }
 
   defaultIf (obj: Partial<LayerConfig>) {
     this.layouts.defaultIf(obj)
+    this.vars.defaultIf(obj.vars)
   }
 }

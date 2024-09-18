@@ -24,7 +24,7 @@ describe('screen', () => {
     broadcaster = new BroadcasterBuilder(scene).build()
     sb = new SpotBuilder(scene)
     scb = new ScreenBuilder(scene)
-    field = new FieldBuilder().build()
+    field = new FieldBuilder(scene).build()
     const layer = new LayerBuilder(scene).build()
     field.container = layer.field
     broadcaster.standOn(field)

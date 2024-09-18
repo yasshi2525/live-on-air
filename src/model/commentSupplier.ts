@@ -96,6 +96,7 @@ export interface CommentSupplierOptions {
   interval: number
   fps: number
   comments: CommentSchema[]
+  vars: unknown
 }
 
 export class CommentSupplierImpl implements CommentSupplier {
@@ -110,7 +111,7 @@ export class CommentSupplierImpl implements CommentSupplier {
   private intervalCount = 0
   private _status: CommentSupplierStatus = 'initialized'
 
-  constructor ({ scene, interval, fps, comments }: CommentSupplierOptions) {
+  constructor ({ scene, interval, fps, comments, vars }: CommentSupplierOptions) {
     this.scene = scene
     if (comments.length === 0) {
       throw new Error('コメント候補が登録されていません. 1つ以上のエントリを登録してください.')
@@ -126,6 +127,7 @@ export class CommentSupplierImpl implements CommentSupplier {
       }
     }())
     this._fps = fps
+    this.vars = vars
   }
 
   fetch (context: CommentContext): string[] {

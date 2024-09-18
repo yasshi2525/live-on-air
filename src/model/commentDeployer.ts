@@ -71,6 +71,7 @@ export interface CommentDeployerOptions {
   speed: number
   intervalY: number
   font: g.Font
+  vars: unknown
 }
 
 export class CommentDeployerImpl implements CommentDeployer {
@@ -85,11 +86,12 @@ export class CommentDeployerImpl implements CommentDeployer {
   private readonly _intervalY: number
   private readonly _suppliers = new Set<CommentSupplier>()
 
-  constructor ({ scene, font, speed, intervalY }: CommentDeployerOptions) {
+  constructor ({ scene, font, speed, intervalY, vars }: CommentDeployerOptions) {
     this.scene = scene
     this._font = font
     this._speed = speed
     this._intervalY = intervalY
+    this.vars = vars
   }
 
   get container (): g.E | undefined {

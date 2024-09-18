@@ -234,3 +234,30 @@ export class ArraySupplier<T> implements ValueSupplier<T[]> {
     return new ArraySupplier(initial, validator)
   }
 }
+
+export class OptionalValueSupplier<T> implements ValueSupplier<T | undefined> {
+  private _value?: T
+
+  // eslint-disable-next-line no-useless-constructor
+  constructor (private _default?: T) {}
+
+  default (): T | undefined {
+    return this._default
+  }
+
+  defaultIf (value: T | undefined) {
+    this._default = value
+  }
+
+  get (): T | undefined {
+    return this._value ?? this._default
+  }
+
+  setIf (value: T | undefined) {
+    this._value = value
+  }
+
+  static create <V> (initial?: V): OptionalValueSupplier<V> {
+    return new OptionalValueSupplier<V>(initial)
+  }
+}

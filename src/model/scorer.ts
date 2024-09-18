@@ -58,11 +58,11 @@ export interface Scorer extends NumberLabel {
   disable (): void
 }
 
-export type ScorerOptions = Omit<NumberLabelOptions, 'value' | 'textAlign'>
+export type ScorerOptions = Omit<NumberLabelOptions, 'value' | 'textAlign'> & { vars: unknown }
 
 export class ScorerImpl extends NumberLabelImpl implements Scorer {
   vars?: unknown
-  constructor ({ scene, font, digit, prefix, suffix }: ScorerOptions) {
+  constructor ({ scene, font, digit, prefix, suffix, vars }: ScorerOptions) {
     if (!scene.game.vars) {
       scene.game.vars = { gameState: { score: 0 } }
     }
@@ -73,6 +73,7 @@ export class ScorerImpl extends NumberLabelImpl implements Scorer {
       scene.game.vars.gameState.score = 0
     }
     super({ scene, value: scene.game.vars.gameState.score as number, font, digit, prefix, suffix, textAlign: 'right' })
+    this.vars = vars
     this.onValue.add(() => {
       scene.game.vars.gameState.score = this.value
     })

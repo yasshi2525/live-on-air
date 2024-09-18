@@ -68,11 +68,19 @@ export interface Field {
   enableSpotExcept(spot: Spot): void
 }
 
+export interface FieldOptions {
+  vars: unknown
+}
+
 export class FieldImpl implements Field {
   vars?: unknown
   private _container?: g.E
   private readonly _spots: Set<Spot> = new Set<Spot>()
   private _broadcaster?: Broadcaster
+
+  constructor ({ vars }: FieldOptions) {
+    this.vars = vars
+  }
 
   addBroadcaster (broadcaster: Broadcaster): void {
     if (this._broadcaster && this._broadcaster !== broadcaster) {

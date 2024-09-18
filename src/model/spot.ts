@@ -143,9 +143,20 @@ export interface Spot {
   markAsVisited(): void
 }
 
+export interface SpotOptions {
+  scene: g.Scene
+  image: Readonly<SpotAssetRecord>
+  location: g.CommonOffset
+  liveClass: new () => Live
+  vars: unknown
+}
+
 export class SpotImpl implements Spot {
   vars?: unknown
 
+  private readonly _location: g.CommonOffset
+  private readonly _liveClass: new () => Live
+  readonly assets: Readonly<SpotAssetRecord>
   private readonly _view: g.Sprite
   private _field?: Field
   private _status: SpotStatus = 'non-deployed'
@@ -153,17 +164,21 @@ export class SpotImpl implements Spot {
   private _screen?: Screen
   private readonly _lockedBy = new Set<Spot>()
 
-  constructor (
-    scene: g.Scene,
-    readonly assets: Readonly<SpotAssetRecord>,
-    private readonly _location: g.CommonOffset,
-    private readonly _liveClass: new () => Live
-  ) {
+  constructor ({ scene, image, location, liveClass, vars } : SpotOptions) {
+    this._location = { x: location.x, y: location.y }
+    this.assets = {
+      locked: image.locked,
+      unvisited: image.unvisited,
+      disabled: image.disabled,
+      normal: image.normal
+    }
+    this._liveClass = liveClass
+    this.vars = vars
     this._view = new g.Sprite({
       scene,
-      src: assets.normal,
-      x: _location.x,
-      y: _location.y,
+      src: image.normal,
+      x: location.x,
+      y: location.y,
       anchorX: 0.5,
       anchorY: 0.5,
       touchable: true

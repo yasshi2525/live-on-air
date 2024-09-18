@@ -1,24 +1,35 @@
-import { ValueSupplier } from './value'
+import { OptionalValueSupplier, ValueSupplier } from './value'
 
-export class ScreenConfigSupplier implements ValueSupplier<object> {
-  private value?: object
+/**
+ * {@link Screen} 生成時に利用する設定値
+ */
+export interface ScreenConfig {
+  /**
+   * ライブラリ利用者が自由に使えるフィールドです
+   */
+  vars: unknown
+}
 
-  // eslint-disable-next-line no-useless-constructor
-  constructor (private _default: object) {}
+export class ScreenConfigSupplier implements ValueSupplier<ScreenConfig> {
+  private readonly vars: OptionalValueSupplier<unknown>
 
-  get (): object {
-    return this.value ? { ...this.value } : { ...this._default }
+  constructor (initial: ScreenConfig) {
+    this.vars = OptionalValueSupplier.create(initial.vars)
   }
 
-  setIf (obj: object) {
-    this.value = obj
+  get (): ScreenConfig {
+    return { vars: this.vars.get() }
   }
 
-  default (): object {
-    return { ...this._default }
+  setIf (obj: Partial<ScreenConfig>) {
+    this.vars.setIf(obj.vars)
   }
 
-  defaultIf (obj: object) {
-    this._default = { ...obj }
+  default (): ScreenConfig {
+    return { vars: this.vars.default() }
+  }
+
+  defaultIf (obj: Partial<ScreenConfig>) {
+    this.vars.defaultIf(obj.vars)
   }
 }

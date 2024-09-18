@@ -65,4 +65,12 @@ describe('LayerBuilder', () => {
     await gameContext.step()
     screenshot('layer-builder.custom.png')
   })
+  it('varsにundefinedを入れられる', () => {
+    const lb = new LayerBuilder(scene)
+      .vars('hoge')
+      .vars(undefined)
+    expect(lb.vars()).not.toBeDefined()
+    const layer = lb.build()
+    expect(layer.vars).not.toBeDefined()
+  })
 })

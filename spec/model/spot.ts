@@ -10,9 +10,9 @@ describe('Spot', () => {
 
   beforeEach(() => {
     sb = new SpotBuilder(scene)
-    field1 = new FieldBuilder().build()
+    field1 = new FieldBuilder(scene).build()
     field1.container = new g.FilledRect({ scene, parent: scene, x: 20, y: 20, width: 700, height: 500, cssColor: '#ffaaaa' })
-    field2 = new FieldBuilder().build()
+    field2 = new FieldBuilder(scene).build()
     broadcaster = new BroadcasterBuilder(scene).build()
     broadcaster.standOn(field1)
     screen = new ScreenBuilder(scene).build()
@@ -126,7 +126,7 @@ describe('Spot', () => {
   })
 
   it('broadcasterがいない場合、移動対象として設定できない', () => {
-    const freeField = new FieldBuilder().build()
+    const freeField = new FieldBuilder(scene).build()
     const spot = sb.build()
     spot.deployOn(freeField)
     expect(() => spot.setAsDestination()).toThrow()
