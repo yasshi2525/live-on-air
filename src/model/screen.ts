@@ -11,6 +11,10 @@ import { LiveContext } from './liveContext'
  */
 export interface Screen {
   /**
+   * 生放送が始まった際に発火するトリガ.
+   */
+  readonly onLiveStart: g.Trigger<Live>
+  /**
    * 生放送スクリーンの領域座標.
    *
    * {@link container} に値が登録されているとき値を返します.
@@ -59,9 +63,6 @@ export interface Screen {
 }
 
 export class ScreenImpl implements Screen {
-  /**
-   * 生放送が始まった際に発火するトリガ.
-   */
   readonly onLiveStart = new g.Trigger<Live>()
   vars?: unknown
   private _container?: g.E
