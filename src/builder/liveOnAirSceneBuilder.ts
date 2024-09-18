@@ -242,6 +242,15 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
         unvisited: image(game.scene()!, 'image/spot.default.unvisited.png'),
         disabled: image(game.scene()!, 'image/spot.default.disabled.png'),
         normal: image(game.scene()!, 'image/spot.default.normal.png'),
+        name: '',
+        labelFont: new g.DynamicFont({
+          game,
+          fontFamily: 'sans-serif',
+          size: 25,
+          fontColor: 'black',
+          strokeColor: 'white',
+          strokeWidth: 3
+        }),
         liveClass: SampleLive,
         vars: undefined
       })

@@ -56,6 +56,16 @@ export interface SpotConfig {
    */
   normal: g.ImageAsset
   /**
+   * 表示名
+   *
+   * 指定した値がマップ上で表示されます.
+   */
+  name: string
+  /**
+   * スポット名を描画する際、用いるフォント.
+   */
+  labelFont: g.Font
+  /**
    * 訪問時に始まる生放送.
    *
    * 生放送での処理を定義したクラス名を設定してください. インスタンスでない点にご留意ください.
@@ -75,6 +85,8 @@ export interface SpotConfig {
 export class SpotConfigSupplier implements ValueSupplier<SpotConfig> {
   private readonly location: ObjectSupplier<g.CommonOffset>
   private readonly assets: RecordSupplier<SpotAssetType, g.ImageAsset>
+  private readonly name: PrimitiveValueSupplier<string>
+  private readonly labelFont: PrimitiveValueSupplier<g.Font>
   private readonly liveClass: PrimitiveValueSupplier<new () => Live>
   private readonly vars: OptionalValueSupplier<unknown>
 
@@ -86,6 +98,8 @@ export class SpotConfigSupplier implements ValueSupplier<SpotConfig> {
       disabled: initial.disabled,
       normal: initial.normal
     })
+    this.name = PrimitiveValueSupplier.create(initial.name)
+    this.labelFont = PrimitiveValueSupplier.create(initial.labelFont)
     this.liveClass = PrimitiveValueSupplier.create(initial.liveClass)
     this.vars = OptionalValueSupplier.create(initial.vars)
   }
@@ -94,6 +108,8 @@ export class SpotConfigSupplier implements ValueSupplier<SpotConfig> {
     return {
       ...this.location.get(),
       ...this.assets.get(),
+      name: this.name.get(),
+      labelFont: this.labelFont.get(),
       liveClass: this.liveClass.get(),
       vars: this.vars.get()
     }
@@ -102,6 +118,8 @@ export class SpotConfigSupplier implements ValueSupplier<SpotConfig> {
   setIf (obj: Partial<SpotConfig>): void {
     this.location.setIf(obj)
     this.assets.setIf(obj)
+    this.name.setIf(obj.name)
+    this.labelFont.setIf(obj.labelFont)
     this.liveClass.setIf(obj.liveClass)
     this.vars.setIf(obj.vars)
   }
@@ -110,6 +128,8 @@ export class SpotConfigSupplier implements ValueSupplier<SpotConfig> {
     return {
       ...this.location.default(),
       ...this.assets.default(),
+      name: this.name.default(),
+      labelFont: this.labelFont.default(),
       liveClass: this.liveClass.default(),
       vars: this.vars.default()
     }
@@ -118,6 +138,8 @@ export class SpotConfigSupplier implements ValueSupplier<SpotConfig> {
   defaultIf (obj: Partial<SpotConfig>): void {
     this.location.defaultIf(obj)
     this.assets.defaultIf(obj)
+    this.name.defaultIf(obj.name)
+    this.labelFont.defaultIf(obj.labelFont)
     this.liveClass.defaultIf(obj.liveClass)
     this.vars.defaultIf(obj.vars)
   }

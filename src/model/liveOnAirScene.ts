@@ -103,6 +103,8 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
         const inst = new SpotBuilder(this)
           .location({ x: spot.x, y: spot.y })
           .image(spot)
+          .name(spot.name)
+          .labelFont(spot.labelFont)
           .liveClass(spot.liveClass)
           .vars(spot.vars)
           .build()
