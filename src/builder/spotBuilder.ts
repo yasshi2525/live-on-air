@@ -38,6 +38,46 @@ export class SpotBuilder extends SpotConfigureImpl {
   }
 
   /**
+   * マップに表示される名称を取得します.
+   */
+  override name (): string
+
+  /**
+   * マップに表示される名称を設定します.
+   *
+   * @param name 名称
+   */
+  override name (name: string): SpotBuilder
+
+  override name (args?: string): SpotBuilder | string {
+    if (args === '' || args) {
+      super.name(args)
+      return this
+    }
+    return super.name()
+  }
+
+  /**
+   * 名称の描画に用いるフォントを取得します.
+   */
+  override labelFont (): g.Font
+
+  /**
+   * 名称の描画に用いるフォントを設定します.
+   *
+   * @param font 名称描画用のフォント
+   */
+  override labelFont (font: g.Font): SpotBuilder
+
+  override labelFont (args?: g.Font): SpotBuilder | g.Font {
+    if (args) {
+      super.labelFont(args)
+      return this
+    }
+    return super.labelFont()
+  }
+
+  /**
    * 作成する Spot を配置する座標を設定します.
    *
    * @param location Spot を配置する座標
@@ -127,6 +167,15 @@ export class SpotBuilder extends SpotConfigureImpl {
         unvisited: image(scene, 'image/spot.default.unvisited.png'),
         disabled: image(scene, 'image/spot.default.disabled.png'),
         normal: image(scene, 'image/spot.default.normal.png'),
+        name: '',
+        labelFont: new g.DynamicFont({
+          game: scene.game,
+          fontFamily: 'sans-serif',
+          size: 25,
+          fontColor: 'black',
+          strokeColor: 'white',
+          strokeWidth: 3
+        }),
         liveClass: SampleLive,
         vars: undefined
       })

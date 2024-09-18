@@ -19,6 +19,30 @@ export interface SpotConfigure {
   image(): Readonly<SpotAssetRecord>
 
   /**
+   * マップに表示される名称を取得します.
+   */
+  name(): string
+
+  /**
+   * マップに表示される名称を設定します.
+   *
+   * @param name 名称
+   */
+  name(name: string): SpotConfigure
+
+  /**
+   * 名称の描画に用いるフォントを取得します.
+   */
+  labelFont(): g.Font
+
+  /**
+   * 名称の描画に用いるフォントを設定します.
+   *
+   * @param font 名称描画用のフォント
+   */
+  labelFont(font: g.Font): SpotConfigure
+
+  /**
    * 作成する Spot を配置する座標を設定します.
    *
    * @param location Spot を配置する座標
@@ -82,6 +106,30 @@ export class SpotConfigureImpl implements SpotConfigure {
     }
   }
 
+  name (): string
+
+  name (name: string): SpotConfigure
+
+  name (args?: string): SpotConfigure | string {
+    if (args === '' || args) {
+      this.setter({ name: args })
+      return this
+    }
+    return this.getter().name
+  }
+
+  labelFont (): g.Font
+
+  labelFont (name: g.Font): SpotConfigure
+
+  labelFont (args?: g.Font): SpotConfigure | g.Font {
+    if (args) {
+      this.setter({ labelFont: args })
+      return this
+    }
+    return this.getter().labelFont
+  }
+
   location (location: g.CommonOffset): SpotConfigure
 
   location (): Readonly<g.CommonOffset>
@@ -123,6 +171,6 @@ export class SpotConfigureImpl implements SpotConfigure {
    * 指定された設定で Spot を作成します
    */
   build (): Spot {
-    return new SpotImpl({ scene: this.scene, image: this.image(), location: this.location(), liveClass: this.liveClass(), vars: this.vars() })
+    return new SpotImpl({ scene: this.scene, image: this.image(), name: this.name(), labelFont: this.labelFont(), location: this.location(), liveClass: this.liveClass(), vars: this.vars() })
   }
 }

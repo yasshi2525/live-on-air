@@ -39,6 +39,16 @@ export interface Spot {
   readonly assets: Readonly<SpotAssetRecord>
 
   /**
+   * マップに表示される名称を取得します.
+   */
+  readonly name: string
+
+  /**
+   * マップに名称を描画するとき用いるフォントを取得します.
+   */
+  readonly labelFont: g.Font
+
+  /**
    * Spot が登録されたマップを取得します.
    *
    * マップ Field 上に配置されていないときは undefined が返されます
@@ -146,6 +156,8 @@ export interface Spot {
 export interface SpotOptions {
   scene: g.Scene
   image: Readonly<SpotAssetRecord>
+  name: string,
+  labelFont: g.Font
   location: g.CommonOffset
   liveClass: new () => Live
   vars: unknown
@@ -157,6 +169,8 @@ export class SpotImpl implements Spot {
   private readonly _location: g.CommonOffset
   private readonly _liveClass: new () => Live
   readonly assets: Readonly<SpotAssetRecord>
+  private readonly _name: string
+  readonly labelFont: g.Font
   private readonly _view: g.Sprite
   private _field?: Field
   private _status: SpotStatus = 'non-deployed'
@@ -164,7 +178,7 @@ export class SpotImpl implements Spot {
   private _screen?: Screen
   private readonly _lockedBy = new Set<Spot>()
 
-  constructor ({ scene, image, location, liveClass, vars } : SpotOptions) {
+  constructor ({ scene, image, name, labelFont, location, liveClass, vars } : SpotOptions) {
     this._location = { x: location.x, y: location.y }
     this.assets = {
       locked: image.locked,
@@ -172,6 +186,8 @@ export class SpotImpl implements Spot {
       disabled: image.disabled,
       normal: image.normal
     }
+    this._name = name
+    this.labelFont = labelFont
     this._liveClass = liveClass
     this.vars = vars
     this._view = new g.Sprite({
@@ -183,6 +199,15 @@ export class SpotImpl implements Spot {
       anchorY: 0.5,
       touchable: true
     })
+    const nameLabel = new g.Label({
+      scene,
+      parent: this._view,
+      y: image.normal.height,
+      font: this.labelFont,
+      text: this._name
+    })
+    nameLabel.x = (this._view.width - nameLabel.width) / 2
+    nameLabel.modified()
     this.view.onPointDown.add(() => {
       if (this.status === 'target') {
         this.unsetAsDestination()
@@ -319,6 +344,10 @@ export class SpotImpl implements Spot {
       this._view.src = this.assets.disabled
       this._view.invalidate()
     }
+  }
+
+  get name (): string {
+    return this._name
   }
 
   get field (): Field | undefined {
