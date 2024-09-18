@@ -33,6 +33,13 @@ export interface Live {
    * ```
    */
   start (context: LiveContext, end: () => void): void
+
+  /**
+   * Spot を攻略済みとしてマークするかどうか取得します.
+   *
+   * 未定義の場合、生放送開始をもって攻略済みとしてマークします.
+   */
+  satisfiesUnlockSpotCondition? (): boolean
 }
 
 /**

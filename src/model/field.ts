@@ -66,6 +66,13 @@ export interface Field {
    * 指定した Spot 以外を Broadcaster が目的地として選択できるようにします.
    */
   enableSpotExcept(spot: Spot): void
+
+  /**
+   * 指定した Spot を攻略済みとしてマークし、他の Spot を解放します.
+   *
+   * @param spot 攻略済みとする Spot
+   */
+  unlock(spot: Spot): void
 }
 
 export interface FieldOptions {
@@ -127,6 +134,12 @@ export class FieldImpl implements Field {
   enableSpotExcept (spot: Spot): void {
     for (const s of [...this._spots].filter(sp => sp !== spot)) {
       s.enable()
+    }
+  }
+
+  unlock (spot: Spot): void {
+    for (const s of this._spots) {
+      s.unlock(spot)
     }
   }
 

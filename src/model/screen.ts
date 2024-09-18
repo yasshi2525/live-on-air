@@ -89,6 +89,9 @@ export class ScreenImpl implements Screen {
   }
 
   startLive (broadcaster: Broadcaster): void {
+    if (!broadcaster.field) {
+      throw new Error('broadcasterがfield上に配置されていません. broadcasterをfieldに配置してから実行してください')
+    }
     if (!broadcaster.staying) {
       throw new Error('broadcasterが放送準備ができていません. broadcasterがspotに到着してから実行してください')
     }
@@ -104,6 +107,7 @@ export class ScreenImpl implements Screen {
     const context: LiveContext = {
       scene: this.scene,
       screen: this,
+      field: broadcaster.field,
       spot: broadcaster.staying,
       broadcaster,
       container: liveContainer,
@@ -113,6 +117,9 @@ export class ScreenImpl implements Screen {
     this._now = live
     broadcaster.goToLive(live)
     live.start(context, () => {
+      if (!live.satisfiesUnlockSpotCondition || live.satisfiesUnlockSpotCondition()) {
+        context.field.unlock(context.spot)
+      }
       this._now = undefined
       liveContainer.destroy()
       broadcaster.backFromLive()

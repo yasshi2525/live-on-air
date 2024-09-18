@@ -94,4 +94,19 @@ describe('liveGame', () => {
     screenshot('liveGame.result.png')
     screenshot('liveGame.end.png')
   })
+
+  it('成績がunlockThresholdを超えるとspotがクリア扱いされる', async () => {
+    const otherSpot = new SpotBuilder(scene).build()
+    otherSpot.deployOn(field)
+    otherSpot.attach(screen)
+    otherSpot.lockedBy(spot)
+    broadcaster.jumpTo(spot)
+    await gameContext.step()
+    const live = broadcaster.live as LiveGame
+    live.unlockThreshold = 0
+    await waitFor(live.onIntroduce)
+    gameClient.sendPointDown(g.game.width / 2, 200, 1)
+    await waitFor(broadcaster.onLiveEnd)
+    expect(otherSpot.lockedBy()).toHaveLength(0)
+  })
 })

@@ -73,6 +73,17 @@ describe('screen', () => {
     screenshot('screen.broadcaster.off-air.png')
   })
 
+  it('放送が終わるとspotは解放される', async () => {
+    broadcaster.jumpTo(spot)
+    const otherSpot = new SpotBuilder(scene).build()
+    otherSpot.deployOn(field)
+    otherSpot.attach(screen)
+    otherSpot.lockedBy(spot)
+    expect(otherSpot.lockedBy()).toHaveLength(1)
+    await waitFor(broadcaster.onLiveEnd)
+    expect(otherSpot.lockedBy()).toHaveLength(0)
+  })
+
   it('同じクラスインスタンスなら二重登録しても無視', () => {
     spot.attach(screen)
     screen.addSpot(spot)
@@ -87,6 +98,12 @@ describe('screen', () => {
   it('spotに到着していないと放送開始できない', () => {
     screen.addSpot(spot)
     expect(() => screen.startLive(broadcaster)).toThrow()
+  })
+
+  it('fieldにいないと放送開始できない', () => {
+    const b = new BroadcasterBuilder(scene).build()
+    expect(b.field).not.toBeDefined()
+    expect(() => screen.startLive(b)).toThrow()
   })
 
   it('放送中に放送開始できない', () => {
