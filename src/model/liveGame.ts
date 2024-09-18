@@ -69,6 +69,15 @@ export abstract class LiveGame implements Live {
   readonly onResult = new g.Trigger()
 
   /**
+   * 成績がこの値以上のとき、 Spot を攻略済みとして取り扱います.
+   *
+   * @protected
+   */
+  unlockThreshold = 75
+
+  private satisfiesUnlock = false
+
+  /**
    * ライブラリ利用者は本メソッドをオーバライドして実装する必要はありません.
    *
    * @param context 利用可能な環境情報
@@ -84,6 +93,9 @@ export abstract class LiveGame implements Live {
       const submitCleanUp = this.handleSubmit(context, () => {
         const rawScore = this.evaluateScore(context)
         const score = Math.min(Math.max(rawScore, 0), 100)
+        if (score >= this.unlockThreshold) {
+          this.satisfiesUnlock = true
+        }
         this.onSubmit.fire({ score, text: this.toResultText(context, score) })
         if (gamePlayCleanUp) {
           gamePlayCleanUp()
@@ -371,5 +383,9 @@ export abstract class LiveGame implements Live {
     return () => {
       result.destroy()
     }
+  }
+
+  satisfiesUnlockSpotCondition (): boolean {
+    return this.satisfiesUnlock
   }
 }

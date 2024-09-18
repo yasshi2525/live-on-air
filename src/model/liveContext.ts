@@ -1,6 +1,7 @@
 import { Spot } from './spot'
 import { Broadcaster } from './broadcaster'
 import { Screen } from './screen'
+import { Field } from './field'
 
 /**
  * 生放送 {@link Live} の処理を定義する際、参照可能な値
@@ -16,6 +17,10 @@ export interface LiveContext {
    * 生放送中の描画内容は本エンティティの子に指定してください.
    */
   readonly container: g.E
+  /**
+   * Broadcaster, Spot を管理するマップ
+   */
+  readonly field: Field
   /**
    * 全放送情報や描画情報を格納しているスクリーン
    */
