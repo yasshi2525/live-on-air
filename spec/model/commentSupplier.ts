@@ -70,6 +70,17 @@ describe('commentSupplier', () => {
       cs.interval = 0
     }).toThrow()
   })
+  it('コメントが順番に提供される', () => {
+    const cs = new CommentSupplierBuilder(scene)
+      .addComment('1')
+      .addComment('2')
+      .build()
+    cs.interval = 1000 / 30
+    expect(cs.fetch(context)).toHaveLength(0)
+    expect(cs.fetch(context)).toEqual(['わこつ'])
+    expect(cs.fetch(context)).toEqual(['1'])
+    expect(cs.fetch(context)).toEqual(['2'])
+  })
   it('自由に値を追加・参照できる', () => {
     const cs = new CommentSupplierBuilder(scene).build()
     expect(cs.vars).not.toBeDefined()
