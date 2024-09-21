@@ -53,8 +53,11 @@ describe('commentSupplier', () => {
     const cs = new CommentSupplierBuilder(scene)
       .addComment('hoge', () => false)
       .build()
+    cs.interval = 1000 / 30
     expect(cs.fetch(context)).toHaveLength(0)
     expect(cs.fetch(context)).toEqual(['わこつ'])
+    expect(cs.fetch(context)).toHaveLength(0)
+    expect(cs.fetch(context)).toHaveLength(0)
   })
   it('コメント率を設定できる', () => {
     const cs = new CommentSupplierBuilder(scene).addComment('hoge').build()
