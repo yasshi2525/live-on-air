@@ -1,5 +1,18 @@
 # 更新履歴 Change Log
 
+## v1.0.0-alpha.2
+
+Features:
+
+* CommentContext vars を初期化時に設定可能に #63
+
+Bug Fixes:
+
+* CommentContextSupplier の vars の初期値が登録されない #60
+* CommentSupplier が同じコメントを返し続ける #61
+* CommentSupplier の候補コメントがない状態が2回続くと無限ループする #62
+* LiveOnAirSceneConfigure の引数定義に誤り #64
+
 ## v1.0.0-alpha.1
 
 Features:
