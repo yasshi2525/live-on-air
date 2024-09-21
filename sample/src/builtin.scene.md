@@ -29,13 +29,14 @@
 
 ```diff typescript
 - import { LiveOnAirScene, LiveOnAirSceneBuilder } from "@yasshi2525/live-on-air";
-+ import { LiveOnAirScene, LiveOnAirSceneBuilder, Broadcaster, Spot, Field, Screen, CommentSupplier, CommentDeployer, Scorer, Ticker Layer } from "@yasshi2525/live-on-air";
++ import { LiveOnAirScene, LiveOnAirSceneBuilder, Broadcaster, Spot, Field, Screen, CommentContext, CommentSupplier, CommentDeployer, Scorer, Ticker Layer } from "@yasshi2525/live-on-air";
 scene.onLoad.add(() => {
     // 各コンポーネントの参照
     const broadcaster: Broadcaster = scene.broadcaster;
     const spots: Spot[] = scene.spots;
     const field: Field = scene.field;
     const screen: Screen = scene.screen;
+    const commentContext: CommentContext = scene.commentContext;
     const commentSupplier: CommentSupplier = scene.commentSupplier;
     const commentDeployer: CommentDeployer = scene.commentDeployer;
     const scorer: Scorer = scene.scorer;
@@ -52,6 +53,7 @@ scene.onLoad.add(() => {
 * `Spot`: 訪問先. 放送者が訪れると生放送イベントを始める.
 * `Field`: マップ画面. 放送者が訪問先を巡回していく様子を制御する.
 * `Screen`: 生放送画面. 生放送中のミニイベントの流れを制御する.
+* `CommentContext`: 条件つきコメントを表示する際に利用可能な環境情報
 * `CommentSupplier`: 画面に表示するコメントを保持し、定期的に出力指示を出す.
 * `CommentDeployer`: 出力対象のコメントを画面上に配置する.
 * `Scorer`: 得点の保持と描画を制御する.

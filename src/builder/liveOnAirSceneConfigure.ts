@@ -8,6 +8,7 @@ import { CommentSupplierConfig, CommentSupplierConfigSupplier } from '../value/c
 import { CommentDeployerConfig, CommentDeployerConfigSupplier } from '../value/commentDeployerConfig'
 import { ScorerConfig, ScorerConfigSupplier } from '../value/scorerConfig'
 import { TickerConfig, TickerConfigSupplier } from '../value/tickerConfig'
+import { CommentContextConfig, CommentContextConfigSupplier } from '../value/commentContextConfig'
 
 /**
  * {@link LiveOnAirScene} を新規作成する際の各種設定を格納します.
@@ -75,6 +76,18 @@ export interface LiveOnAirSceneConfigure {
   spot(): readonly SpotConfig[]
 
   /**
+   * 作成する {@link CommentContext} の属性情報を設定します.
+   *
+   * @param config CommentContext の設定値
+   */
+  commentContext(config: Partial<CommentContextConfig>): LiveOnAirSceneConfigure
+
+  /**
+   * 作成する {@link CommentContext} の属性情報を取得します.
+   */
+  commentContext(): Readonly<CommentContextConfig>
+
+  /**
    * 作成する {@link CommentSupplier} の属性情報を設定します.
    *
    * @param config CommentSupplier の設定値
@@ -130,6 +143,7 @@ export interface LiveOnAirSceneConfigSupplierOptions {
   broadcaster: BroadcasterConfigSupplier
   screen: ScreenConfigSupplier
   spot: SpotConfigSupplier
+  commentContext: CommentContextConfigSupplier
   commentSupplier: CommentSupplierConfigSupplier
   commentDeployer: CommentDeployerConfigSupplier
   scorer: ScorerConfigSupplier
@@ -148,6 +162,7 @@ export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
   private readonly fieldGetter: () => FieldConfig
   private readonly broadcasterGetter: () => BroadcasterConfig
   private readonly screenGetter: () => ScreenConfig
+  private readonly commentContextGetter: () => CommentContextConfig
   private readonly commentSupplierGetter: () => CommentSupplierConfig
   private readonly commentDeployerGetter: () => CommentDeployerConfig
   private readonly scorerGetter: () => ScorerConfig
@@ -157,12 +172,13 @@ export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
   private readonly fieldSetter: (obj: Partial<FieldConfig>) => void
   private readonly broadcasterSetter: (obj: Partial<BroadcasterConfig>) => void
   private readonly screenSetter: (obj: Partial<ScreenConfig>) => void
+  private readonly commentContextSetter: (obj: Partial<CommentContextConfig>) => void
   private readonly commentSupplierSetter: (obj: Partial<CommentSupplierConfig>) => void
   private readonly commentDeployerSetter: (obj: Partial<CommentDeployerConfig>) => void
   private readonly scorerSetter: (obj: Partial<ScorerConfig>) => void
   private readonly tickerSetter: (obj: Partial<TickerConfig>) => void
 
-  constructor ({ game, layer, field, broadcaster, screen, spot, commentSupplier, commentDeployer, scorer, ticker, isDefault }: LiveOnAirSceneConfigSupplierOptions) {
+  constructor ({ game, layer, field, broadcaster, screen, spot, commentContext, commentSupplier, commentDeployer, scorer, ticker, isDefault }: LiveOnAirSceneConfigSupplierOptions) {
     this.isDefault = isDefault
     this.game = game
     this.spotConfig = spot
@@ -172,6 +188,7 @@ export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
     this.fieldGetter = () => isDefault ? field.default() : field.get()
     this.broadcasterGetter = () => isDefault ? broadcaster.default() : broadcaster.get()
     this.screenGetter = () => isDefault ? screen.default() : screen.get()
+    this.commentContextGetter = () => isDefault ? commentContext.default() : commentContext.get()
     this.commentSupplierGetter = () => isDefault ? commentSupplier.default() : commentSupplier.get()
     this.commentDeployerGetter = () => isDefault ? commentDeployer.default() : commentDeployer.get()
     this.scorerGetter = () => isDefault ? scorer.default() : scorer.get()
@@ -181,6 +198,7 @@ export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
     this.fieldSetter = obj => isDefault ? field.defaultIf(obj) : field.setIf(obj)
     this.broadcasterSetter = obj => isDefault ? broadcaster.defaultIf(obj) : broadcaster.setIf(obj)
     this.screenSetter = obj => isDefault ? screen.defaultIf(obj) : screen.setIf(obj)
+    this.commentContextSetter = obj => isDefault ? commentContext.defaultIf(obj) : commentContext.setIf(obj)
     this.commentSupplierSetter = obj => isDefault ? commentSupplier.defaultIf(obj) : commentSupplier.setIf(obj)
     this.commentDeployerSetter = obj => isDefault ? commentDeployer.defaultIf(obj) : commentDeployer.setIf(obj)
     this.scorerSetter = obj => isDefault ? scorer.defaultIf(obj) : scorer.setIf(obj)
@@ -253,6 +271,18 @@ export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
     return this.isDefault ? [this.spotConfig.default()] : [...this.spotConfigs.map(config => config.get())]
   }
 
+  commentContext (config: Partial<CommentContextConfig>): LiveOnAirSceneConfigure
+
+  commentContext (): Readonly<CommentContextConfig>
+
+  commentContext (args?: Partial<CommentContextConfig>): LiveOnAirSceneConfigure | Readonly<CommentContextConfig> {
+    if (args) {
+      this.commentContextSetter(args)
+      return this
+    }
+    return this.commentContextGetter()
+  }
+
   commentSupplier (config: Partial<CommentSupplierConfig>): LiveOnAirSceneConfigure
 
   commentSupplier (): Readonly<CommentSupplierConfig>
@@ -305,6 +335,6 @@ export class LiveOnAirSceneConfigureImpl implements LiveOnAirSceneConfigure {
    * 指定された設定で {@link LiveOnAirScene} を作成します.
    */
   build (): LiveOnAirScene & g.Scene {
-    return new LiveOnAirSceneImpl({ game: this.game, layer: this.layer(), field: this.field(), broadcaster: this.broadcaster(), spots: this.spot(), commentSupplier: this.commentSupplier(), commentDeployer: this.commentDeployer(), screen: this.screen(), scorer: this.scorer(), ticker: this.ticker() })
+    return new LiveOnAirSceneImpl({ game: this.game, layer: this.layer(), field: this.field(), broadcaster: this.broadcaster(), spots: this.spot(), commentContext: this.commentContext(), commentSupplier: this.commentSupplier(), commentDeployer: this.commentDeployer(), screen: this.screen(), scorer: this.scorer(), ticker: this.ticker() })
   }
 }
