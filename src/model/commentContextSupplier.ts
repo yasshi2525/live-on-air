@@ -37,10 +37,11 @@ export class CommentContextSupplier {
   private readonly _field: Field
   private readonly _screen: Screen
 
-  constructor ({ broadcaster, field, screen }: CommentContextSupplierOptions) {
+  constructor ({ broadcaster, field, screen, vars }: CommentContextSupplierOptions) {
     this._broadcaster = broadcaster
     this._field = field
     this._screen = screen
+    this.vars = vars
   }
 
   /**
@@ -49,7 +50,7 @@ export class CommentContextSupplier {
   get (): CommentContext {
     return {
       live: this._broadcaster.live,
-      vars: undefined
+      vars: this.vars
     }
   }
 }
