@@ -17,7 +17,7 @@ describe('commentContextSupplier', () => {
     ccs.vars = 'Hello'
     expect(ccs.vars).toBe('Hello')
     const cc = ccs.get()
-    expect(cc.vars).not.toBeDefined()
+    expect(cc.vars).toBe('Hello')
     cc.vars = 'Hello'
     expect(cc.vars).toBe('Hello')
   })
