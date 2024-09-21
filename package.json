@@ -7,7 +7,8 @@
   "files": [
     "lib",
     "image",
-    "akashic-lib.json"
+    "akashic-lib.json",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "ts-node build.ts",
