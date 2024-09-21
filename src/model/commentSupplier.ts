@@ -133,7 +133,7 @@ export class CommentSupplierImpl implements CommentSupplier {
   fetch (context: CommentContext): string[] {
     const result: string[] = []
     while (this.intervalCount > 0) {
-      const tailIndex = this.index - 1
+      const tailIndex = this.prevIndex
       let matched = false
       while (!(matched = this.match(context)) && !this.loops(tailIndex)) {
         this.next()
@@ -208,6 +208,14 @@ export class CommentSupplierImpl implements CommentSupplier {
 
   private get index (): number {
     return this.indexCount % this._comments.length
+  }
+
+  private get prevIndex () : number {
+    const index = this.index
+    if (index === 0) {
+      return this._comments.length - 1
+    }
+    return index - 1
   }
 
   private get schema (): CommentSchema {
