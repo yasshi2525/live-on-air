@@ -144,6 +144,7 @@ export class CommentSupplierImpl implements CommentSupplier {
           dest.deploy(this.comment)
         }
         this.onSupply.fire(this.comment)
+        this.next()
       }
       this.intervalCount -= this._interval.get()
     }
