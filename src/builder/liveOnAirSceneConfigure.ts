@@ -32,12 +32,12 @@ export interface LiveOnAirSceneConfigure {
    *
    * @param config Field の設定値
    */
-  field(config: object): LiveOnAirSceneConfigure
+  field(config: Partial<FieldConfig>): LiveOnAirSceneConfigure
 
   /**
    * マップ ({@link Field}) の属性情報を取得します.
    */
-  field(): Readonly<object>
+  field(): Readonly<FieldConfig>
 
   /**
    * 作成する {@link Broadcaster} の属性情報を設定します.
@@ -56,12 +56,12 @@ export interface LiveOnAirSceneConfigure {
    *
    * @param config Field の設定値
    */
-  screen(config: object): LiveOnAirSceneConfigure
+  screen(config: Partial<ScreenConfig>): LiveOnAirSceneConfigure
 
   /**
    * 生放送の画面 ({@link Screen}) の属性情報を取得します.
    */
-  screen(): Readonly<object>
+  screen(): Readonly<ScreenConfig>
 
   /**
    * 作成する {@link Spot} の属性情報を設定します.
