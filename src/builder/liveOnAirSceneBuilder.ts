@@ -10,6 +10,7 @@ import { CommentSupplierConfig, CommentSupplierConfigSupplier } from '../value/c
 import { CommentDeployerConfig, CommentDeployerConfigSupplier } from '../value/commentDeployerConfig'
 import { ScorerConfig, ScorerConfigSupplier } from '../value/scorerConfig'
 import { TickerConfig, TickerConfigSupplier } from '../value/tickerConfig'
+import { CommentContextConfig, CommentContextConfigSupplier } from '../value/commentContextConfig'
 
 /**
  * ゲームが動作する g.Scene を簡便に作るためのクラス.
@@ -122,6 +123,26 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
       return this
     }
     return super.spot()
+  }
+
+  /**
+   * 作成する {@link CommentContext} の属性情報を設定します.
+   *
+   * @param config CommentContext の設定値
+   */
+  override commentContext (config: Partial<CommentContextConfig>): LiveOnAirSceneBuilder
+
+  /**
+   * 作成する {@link CommentContext} の属性情報を取得します.
+   */
+  override commentContext (): Readonly<CommentContextConfig>
+
+  override commentContext (args?: Partial<CommentContextConfig>): LiveOnAirSceneBuilder | Readonly<CommentContextConfig> {
+    if (args) {
+      super.commentContext(args)
+      return this
+    }
+    return super.commentContext()
   }
 
   /**
@@ -254,6 +275,9 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
         liveClass: SampleLive,
         vars: undefined
       })
+      const commentContext = new CommentContextConfigSupplier({
+        vars: undefined
+      })
       const commentSupplier = new CommentSupplierConfigSupplier({
         interval: 1000,
         comments: [], // ここにいれると CommentSupplierBuilder が更にデフォルト値を足してしまう
@@ -280,7 +304,7 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
         suffix: '秒',
         vars: undefined
       })
-      LiveOnAirSceneBuilder.defaultConfig = { game, layer, field, broadcaster, screen, spot, commentSupplier, commentDeployer, scorer, ticker }
+      LiveOnAirSceneBuilder.defaultConfig = { game, layer, field, broadcaster, screen, spot, commentContext, commentSupplier, commentDeployer, scorer, ticker }
     }
     this.lastUsedScene = game.scene()
     return LiveOnAirSceneBuilder.defaultConfig
