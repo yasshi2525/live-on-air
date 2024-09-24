@@ -16,6 +16,7 @@ describe('LiveOnAirScene', () => {
     expect(() => scene.field).toThrow()
     expect(() => scene.broadcaster).toThrow()
     expect(() => scene.screen).toThrow()
+    expect(() => scene.liveContext).toThrow()
     expect(() => scene.spots).toThrow()
     expect(() => scene.commentContext).toThrow()
     expect(() => scene.commentSupplier).toThrow()
