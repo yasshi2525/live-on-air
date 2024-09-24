@@ -1,10 +1,21 @@
-import { CommentContext, CommentSupplierBuilder } from '../../src'
+import {
+  BroadcasterBuilder,
+  CommentContext,
+  CommentContextSupplier,
+  CommentSupplierBuilder,
+  FieldBuilder,
+  ScreenBuilder
+} from '../../src'
 
 describe('commentSupplier', () => {
   let context: CommentContext
   let oldFPS: number
   beforeEach(() => {
-    context = {}
+    context = new CommentContextSupplier({
+      broadcaster: new BroadcasterBuilder(scene).build(),
+      field: new FieldBuilder(scene).build(),
+      screen: new ScreenBuilder(scene).build()
+    }).get()
     oldFPS = g.game.fps
   })
   afterEach(() => {
