@@ -1,5 +1,12 @@
 # 更新履歴 Change Log
 
+## v1.0.0-alpha.3
+
+Features:
+
+* LiveContext の初期値設定機能 #66
+* CommentContext にフィールド追加 #67
+
 ## v1.0.0-alpha.2
 
 Features:
