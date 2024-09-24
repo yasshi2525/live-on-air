@@ -50,6 +50,10 @@ export class CommentContextSupplier {
   get (): CommentContext {
     return {
       live: this._broadcaster.live,
+      staying: this._broadcaster.staying,
+      broadcaster: this._broadcaster,
+      field: this._field,
+      screen: this._screen,
       vars: this.vars
     }
   }
