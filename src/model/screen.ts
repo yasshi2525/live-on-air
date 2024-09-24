@@ -36,6 +36,11 @@ export interface Screen {
   container?: g.E
 
   /**
+   * Live を開始する際、この値でデフォルトの LiveContext に上書きします.
+   */
+  customLiveContext?: Partial<LiveContext>
+
+  /**
    * ライブラリ利用者が自由に使えるフィールドです.
    */
   vars?: unknown
@@ -74,6 +79,7 @@ export class ScreenImpl implements Screen {
   private _container?: g.E
   private readonly _view: g.E
   private _now?: Live
+  private _customLiveContext?: Partial<LiveContext>
 
   constructor ({ scene, vars }: ScreenOptions) {
     this.scene = scene
@@ -111,7 +117,8 @@ export class ScreenImpl implements Screen {
       spot: broadcaster.staying,
       broadcaster,
       container: liveContainer,
-      vars: undefined
+      vars: undefined,
+      ...(this._customLiveContext ?? {})
     }
     const live = new (broadcaster.staying.liveClass!)()
     this._now = live
@@ -156,5 +163,13 @@ export class ScreenImpl implements Screen {
           height: this._container.height
         }
       : undefined
+  }
+
+  get customLiveContext (): Partial<LiveContext> | undefined {
+    return this._customLiveContext
+  }
+
+  set customLiveContext (value: Partial<LiveContext>) {
+    this._customLiveContext = value
   }
 }

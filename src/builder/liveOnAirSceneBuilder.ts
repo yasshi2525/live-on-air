@@ -11,6 +11,7 @@ import { CommentDeployerConfig, CommentDeployerConfigSupplier } from '../value/c
 import { ScorerConfig, ScorerConfigSupplier } from '../value/scorerConfig'
 import { TickerConfig, TickerConfigSupplier } from '../value/tickerConfig'
 import { CommentContextConfig, CommentContextConfigSupplier } from '../value/commentContextConfig'
+import { LiveContextConfig, LiveContextConfigSupplier } from '../value/liveContextConfig'
 
 /**
  * ゲームが動作する g.Scene を簡便に作るためのクラス.
@@ -103,6 +104,26 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
       return this
     }
     return super.screen()
+  }
+
+  /**
+   * {@link LiveContext} の初期値を取得します.
+   */
+  override liveContext (): Readonly<LiveContextConfig>
+
+  /**
+   * {@link LiveContext} の初期値を設定します.
+   *
+   * @param config LiveContext の初期値
+   */
+  override liveContext (config: Partial<LiveContextConfig>): LiveOnAirSceneBuilder
+
+  override liveContext (args?: Partial<LiveContextConfig>): LiveOnAirSceneBuilder | Readonly<LiveContextConfig> {
+    if (args) {
+      super.liveContext(args)
+      return this
+    }
+    return super.liveContext()
   }
 
   /**
@@ -256,6 +277,7 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
         x: 0, y: 0, speed: 1, asset: image(game, 'image/broadcaster.default.png'), vars: undefined
       })
       const screen = new ScreenConfigSupplier({ vars: undefined })
+      const liveContext = new LiveContextConfigSupplier({ vars: undefined })
       const spot = new SpotConfigSupplier({
         x: 0,
         y: 0,
@@ -304,7 +326,7 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
         suffix: '秒',
         vars: undefined
       })
-      LiveOnAirSceneBuilder.defaultConfig = { game, layer, field, broadcaster, screen, spot, commentContext, commentSupplier, commentDeployer, scorer, ticker }
+      LiveOnAirSceneBuilder.defaultConfig = { game, layer, field, broadcaster, screen, liveContext, spot, commentContext, commentSupplier, commentDeployer, scorer, ticker }
     }
     this.lastUsedScene = game.scene()
     return LiveOnAirSceneBuilder.defaultConfig

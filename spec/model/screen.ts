@@ -7,7 +7,8 @@ import {
   Screen,
   ScreenBuilder,
   Spot,
-  SpotBuilder
+  SpotBuilder,
+  LiveContext, Live
 } from '../../src'
 import { waitFor } from '../__helper'
 import { SampleLive } from '../../src/model/live'
@@ -71,6 +72,22 @@ describe('screen', () => {
     expect(broadcaster.status).toBe('staying-in-spot')
     expect(broadcaster.view.visible()).toBeTruthy()
     screenshot('screen.broadcaster.off-air.png')
+  })
+
+  it('liveContextに初期値を与えられる', async () => {
+    let liveContext: LiveContext | undefined
+    const spot1 = sb.liveClass(class implements Live {
+      start (context: LiveContext, next: () => void): void {
+        liveContext = context
+        next()
+      }
+    }).build()
+    spot1.attach(screen)
+    spot1.deployOn(field)
+    screen.customLiveContext = { vars: 'hoge' }
+    broadcaster.jumpTo(spot1)
+    await gameContext.step()
+    expect(liveContext!.vars).toEqual('hoge')
   })
 
   it('放送が終わるとspotは解放される', async () => {

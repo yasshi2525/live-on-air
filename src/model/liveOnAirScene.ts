@@ -28,6 +28,8 @@ import { TickerConfig } from '../value/tickerConfig'
 import { FieldConfig } from '../value/fieldConfig'
 import { ScreenConfig } from '../value/screenConfig'
 import { CommentContextConfig } from '../value/commentContextConfig'
+import { LiveContextConfig } from '../value/liveContextConfig'
+import { LiveContext } from './liveContext'
 
 /**
  * 本ゲームが動作する g.Scene が持つゲーム情報を格納したパラメタ一覧です.
@@ -49,6 +51,10 @@ export interface LiveOnAirScene {
    * 生放送環境情報.
    */
   readonly screen: Screen
+  /**
+   * 生放送中に利用可能な環境情報（ユーザ定義分）
+   */
+  readonly liveContext: Partial<LiveContext>
   /**
    * スポット情報一覧.
    */
@@ -76,9 +82,9 @@ export interface LiveOnAirScene {
 }
 
 export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
-  private context: { loaded: false } | { loaded: true, layer: Layer, field: Field, broadcaster: Broadcaster, screen: Screen, spots: Set<Spot>, commentContext: CommentContext, commentSupplier: CommentSupplier, commentDeployer: CommentDeployer, scorer: Scorer, ticker: Ticker }
+  private context: { loaded: false } | { loaded: true, layer: Layer, field: Field, broadcaster: Broadcaster, screen: Screen, liveContext: Partial<LiveContext>, spots: Set<Spot>, commentContext: CommentContext, commentSupplier: CommentSupplier, commentDeployer: CommentDeployer, scorer: Scorer, ticker: Ticker }
 
-  constructor (param: g.SceneParameterObject & { layer: LayerConfig, field: FieldConfig, broadcaster: BroadcasterConfig, spots: readonly SpotConfig[], commentContext: CommentContextConfig, commentSupplier: CommentSupplierConfig, commentDeployer: CommentDeployerConfig, screen: ScreenConfig, scorer: ScorerConfig, ticker: TickerConfig }) {
+  constructor (param: g.SceneParameterObject & { layer: LayerConfig, field: FieldConfig, broadcaster: BroadcasterConfig, spots: readonly SpotConfig[], commentContext: CommentContextConfig, commentSupplier: CommentSupplierConfig, commentDeployer: CommentDeployerConfig, screen: ScreenConfig, liveContext: LiveContextConfig, scorer: ScorerConfig, ticker: TickerConfig }) {
     super(param)
     this.context = { loaded: false }
     this.onLoad.add(() => {
@@ -104,6 +110,8 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
         .vars(param.screen.vars)
         .build()
       screen.container = layer.screen
+      const liveContext = param.liveContext
+      screen.customLiveContext = liveContext
       const spots = new Set<Spot>()
       for (const spot of param.spots) {
         const inst = new SpotBuilder(this)
@@ -154,7 +162,7 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
       ticker.container = layer.header
       ticker.onExpire.addOnce(() => scorer.disable())
       ticker.enable()
-      this.context = { loaded: true, layer, field, broadcaster, screen, spots, commentContext: commentContextSupplier.get(), commentSupplier, commentDeployer, scorer, ticker }
+      this.context = { loaded: true, layer, field, broadcaster, screen, liveContext, spots, commentContext: commentContextSupplier.get(), commentSupplier, commentDeployer, scorer, ticker }
     })
   }
 
@@ -184,6 +192,13 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
       throw new Error('onLoad が実行されていません. onLoad が実行されてから本パラメタを取得してください')
     }
     return this.context.screen
+  }
+
+  get liveContext (): Partial<LiveContext> {
+    if (!this.context.loaded) {
+      throw new Error('onLoad が実行されていません. onLoad が実行されてから本パラメタを取得してください')
+    }
+    return this.context.liveContext
   }
 
   get spots (): Spot[] {
