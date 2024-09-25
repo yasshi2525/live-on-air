@@ -1,5 +1,11 @@
 # 更新履歴 Change Log
 
+## v1.0.0-alpha.4
+
+Feature:
+
+* Broadcaster の onLiveEnd トリガに引数 Live を追加 #69
+
 ## v1.0.0-alpha.3
 
 Features:
