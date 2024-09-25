@@ -32,7 +32,7 @@ export interface Broadcaster {
   /**
    * Spot での生放送が終了した際発火されます.
    */
-  readonly onLiveEnd: g.Trigger
+  readonly onLiveEnd: g.Trigger<Live>
 
   /**
    * 移動速度. 1フレームで移動する距離 (画面座標系) で指定します
@@ -174,7 +174,7 @@ export interface BroadcasterOptions {
 
 export class BroadcasterImpl implements Broadcaster {
   readonly onEnter = new g.Trigger<Spot>()
-  readonly onLiveEnd = new g.Trigger()
+  readonly onLiveEnd = new g.Trigger<Live>()
   vars?: unknown
 
   private _speed: number
@@ -351,9 +351,10 @@ export class BroadcasterImpl implements Broadcaster {
     this._view.show()
     this._field.enableSpotExcept(this._staying)
     this._staying.enable()
+    const live = this._live as Live
     this._live = undefined
     this._status = 'staying-in-spot'
-    this.onLiveEnd.fire()
+    this.onLiveEnd.fire(live)
   }
 
   get speed (): number {
