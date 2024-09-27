@@ -58,7 +58,10 @@ describe('Broadcaster', () => {
   it('指定した目的地(spot1)に移動できる', () => {
     const broadcaster = new BroadcasterBuilder(scene).build()
     broadcaster.standOn(field1)
+    let departed = false
+    broadcaster.onDepart.addOnce(() => { departed = true })
     broadcaster.departTo(spot1)
+    expect(departed).toBe(true)
     expect(broadcaster.destination).toBe(spot1)
     expect(broadcaster.status).toBe('moving')
     expect(spot1.status).toBe('target')
@@ -143,7 +146,10 @@ describe('Broadcaster', () => {
     const broadcaster = new BroadcasterBuilder(scene).build()
     broadcaster.standOn(field1)
     broadcaster.departTo(spot1)
+    let stopped = false
+    broadcaster.onStop.addOnce(() => { stopped = true })
     broadcaster.stop()
+    expect(stopped).toBe(true)
     expect(broadcaster.destination).not.toBeDefined()
     expect(broadcaster.status).toBe('stopping-on-ground')
     expect(spot1.status).toBe('enabled')
@@ -174,9 +180,12 @@ describe('Broadcaster', () => {
   it('指定した位置に即時移動できる', () => {
     let goal: Spot | undefined
     const broadcaster = new BroadcasterBuilder(scene).build()
+    let departed = false
+    broadcaster.onDepart.addOnce(() => { departed = true })
     broadcaster.onEnter.add(s => { goal = s })
     broadcaster.standOn(field1)
     broadcaster.jumpTo(spot1)
+    expect(departed).toBe(true)
     expect(goal).toBe(spot1)
     expect(broadcaster.staying).toBe(spot1)
     expect(broadcaster.location).toEqual(spot1.location)

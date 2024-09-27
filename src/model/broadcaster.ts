@@ -25,6 +25,14 @@ export type BroadcasterStatus = 'non-field' | 'staying-in-spot' | 'moving' | 'st
  */
 export interface Broadcaster {
   /**
+   * Spot に向かって移動を開始した際発火されます.
+   */
+  readonly onDepart: g.Trigger
+  /**
+   * Spot への移動中に移動をキャンセルした際発火されます.
+   */
+  readonly onStop: g.Trigger
+  /**
    * Spot に到達した際発火されます. 引数には到達した Spot が格納されます.
    */
   readonly onEnter: g.Trigger<Spot>
@@ -173,6 +181,8 @@ export interface BroadcasterOptions {
 }
 
 export class BroadcasterImpl implements Broadcaster {
+  readonly onDepart = new g.Trigger()
+  readonly onStop = new g.Trigger()
   readonly onEnter = new g.Trigger<Spot>()
   readonly onLiveEnd = new g.Trigger<Live>()
   vars?: unknown
@@ -236,6 +246,7 @@ export class BroadcasterImpl implements Broadcaster {
       throw new Error('生放送中のためワープに失敗しました. 生放送が終わってから実行してください')
     }
 
+    this.onDepart.fire()
     this._view.x = spot.location.x
     this._view.y = spot.location.y
 
@@ -296,6 +307,7 @@ export class BroadcasterImpl implements Broadcaster {
     if (spot.status !== 'target') {
       spot.setAsDestination()
     }
+    this.onDepart.fire()
   }
 
   stop (): void {
@@ -316,6 +328,7 @@ export class BroadcasterImpl implements Broadcaster {
     if (oldDestination.status === 'target') {
       oldDestination.unsetAsDestination()
     }
+    this.onStop.fire()
   }
 
   goToLive (live: Live): void {
