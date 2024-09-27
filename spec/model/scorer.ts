@@ -57,6 +57,17 @@ describe('scorer', () => {
     expect(scorer.rawValue).toBeCloseTo(1.2)
   })
 
+  it('得点は記録してもサーバーには送らない', () => {
+    const refraining = new ScorerBuilder(scene).refrainsSendingScore(true).build()
+    expect(refraining.refrainsSendingScore).toBe(true)
+    refraining.enable()
+    refraining.add(100)
+    expect(refraining.value).toBe(100)
+    expect(g.game.vars.gameState.score).toBe(0)
+    refraining.keepSendingScore()
+    expect(g.game.vars.gameState.score).toBe(100)
+  })
+
   it('描画される', async () => {
     scorer.container = layer.header
     expect(scorer.container).toBe(layer.header)

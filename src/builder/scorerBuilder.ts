@@ -96,6 +96,25 @@ export class ScorerBuilder extends ScorerConfigureImpl {
   }
 
   /**
+   * 得点をサーバーに送信するかどうか取得します.
+   */
+  override refrainsSendingScore (): boolean
+
+  /**
+   * 得点をサーバーに送信するのを控えるかどうか設定します.
+   * @param refrains 送信しない場合 true
+   */
+  override refrainsSendingScore (refrains: boolean): ScorerBuilder
+
+  override refrainsSendingScore (args?: boolean): boolean | ScorerBuilder {
+    if (args !== undefined) {
+      super.refrainsSendingScore(args)
+      return this
+    }
+    return super.refrainsSendingScore()
+  }
+
+  /**
    * 作成する ScorerBuilder のライブラリ利用者が自由に使えるフィールドを取得します.
    */
   override vars (): unknown
@@ -141,6 +160,7 @@ export class ScorerBuilder extends ScorerConfigureImpl {
         digit: 4,
         prefix: 'スコア',
         suffix: '点',
+        refrainsSendingScore: false,
         vars: undefined
       })
     }

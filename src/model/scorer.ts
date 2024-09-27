@@ -29,6 +29,11 @@ export interface Scorer extends NumberLabel {
   readonly status: ScorerStatus
 
   /**
+   * 得点を記録しても、サーバーには送信しない設定か取得します.
+   */
+  readonly refrainsSendingScore: boolean
+
+  /**
    * ライブラリ利用者が自由に使えるフィールドです.
    */
   vars?: unknown
@@ -56,13 +61,24 @@ export interface Scorer extends NumberLabel {
    * 得点を設定しようとしても無視します.
    */
   disable (): void
+
+  /**
+   * 得点をサーバーに常時送るようにします.
+   *
+   * サーバーへの送信を抑止（refrainsSendingScore）している場合、
+   * 本メソッドを呼び出して抑止を解除する必要があります.
+   */
+  keepSendingScore (): void
 }
 
-export type ScorerOptions = Omit<NumberLabelOptions, 'value' | 'textAlign'> & { vars: unknown }
+export type ScorerOptions = Omit<NumberLabelOptions, 'value' | 'textAlign'> & { refrainsSendingScore: boolean, vars: unknown }
 
 export class ScorerImpl extends NumberLabelImpl implements Scorer {
   vars?: unknown
-  constructor ({ scene, font, digit, prefix, suffix, vars }: ScorerOptions) {
+  private game: g.Game
+  private _refrainsSendingScore: boolean
+
+  constructor ({ scene, font, digit, prefix, suffix, refrainsSendingScore, vars }: ScorerOptions) {
     if (!scene.game.vars) {
       scene.game.vars = { gameState: { score: 0 } }
     }
@@ -73,10 +89,19 @@ export class ScorerImpl extends NumberLabelImpl implements Scorer {
       scene.game.vars.gameState.score = 0
     }
     super({ scene, value: scene.game.vars.gameState.score as number, font, digit, prefix, suffix, textAlign: 'right' })
+    this.game = scene.game
+    this._refrainsSendingScore = refrainsSendingScore
     this.vars = vars
     this.onValue.add(() => {
-      scene.game.vars.gameState.score = this.value
+      if (!this._refrainsSendingScore) {
+        this.game.vars.gameState.score = this.value
+      }
     })
+  }
+
+  keepSendingScore () {
+    this._refrainsSendingScore = false
+    this.game.vars.gameState.score = this.value
   }
 
   override get value (): number {
@@ -85,5 +110,9 @@ export class ScorerImpl extends NumberLabelImpl implements Scorer {
 
   get rawValue (): number {
     return super.value
+  }
+
+  get refrainsSendingScore (): boolean {
+    return this._refrainsSendingScore
   }
 }

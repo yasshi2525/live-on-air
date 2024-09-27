@@ -146,6 +146,7 @@ export class LiveOnAirSceneImpl extends g.Scene implements LiveOnAirScene {
         .digit(param.scorer.digit)
         .prefix(param.scorer.prefix)
         .suffix(param.scorer.suffix)
+        .refrainsSendingScore(param.scorer.refrainsSendingScore)
         .vars(param.scorer.vars)
         .build()
       scorer.container = layer.header
