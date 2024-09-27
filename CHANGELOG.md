@@ -1,5 +1,12 @@
 # 更新履歴 Change Log
 
+## v1.0.0
+
+Feature:
+
+* Scorer に refrainsSendingScore を追加 #71
+* Broadcaster に onDepart, onStop を 追加 #72
+
 ## v1.0.0-alpha.4
 
 Feature:
