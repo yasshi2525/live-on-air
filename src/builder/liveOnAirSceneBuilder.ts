@@ -316,6 +316,7 @@ export class LiveOnAirSceneBuilder extends LiveOnAirSceneConfigureImpl {
         digit: 4,
         prefix: 'スコア',
         suffix: '点',
+        refrainsSendingScore: false,
         vars: undefined
       })
       const ticker = new TickerConfigSupplier({

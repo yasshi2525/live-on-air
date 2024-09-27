@@ -54,6 +54,17 @@ export interface ScorerConfigure {
   suffix (suffix: string): ScorerConfigure
 
   /**
+   * 得点をサーバーに送信するかどうか取得します.
+   */
+  refrainsSendingScore (): boolean
+
+  /**
+   * 得点をサーバーに送信するのを控えるかどうか設定します.
+   * @param refrains 送信しない場合 true
+   */
+  refrainsSendingScore (refrains: boolean): ScorerConfigure
+
+  /**
    * 作成する Scorer のライブラリ利用者が自由に使えるフィールドを取得します.
    */
   vars (): unknown
@@ -123,6 +134,18 @@ export class ScorerConfigureImpl implements ScorerConfigure {
     return this.getter().suffix
   }
 
+  refrainsSendingScore (): boolean
+
+  refrainsSendingScore (refrains: boolean): ScorerConfigure
+
+  refrainsSendingScore (args?: boolean): boolean | ScorerConfigure {
+    if (arguments.length > 0) {
+      this.setter({ refrainsSendingScore: args })
+      return this
+    }
+    return this.getter().refrainsSendingScore
+  }
+
   vars (): unknown
 
   vars (vars: unknown): ScorerConfigure
@@ -140,6 +163,6 @@ export class ScorerConfigureImpl implements ScorerConfigure {
    */
   build (): Scorer {
     const config = this.config.get()
-    return new ScorerImpl({ scene: this.scene, font: this.font(), digit: config.digit, prefix: config.prefix, suffix: config.suffix, vars: config.vars })
+    return new ScorerImpl({ scene: this.scene, font: this.font(), digit: config.digit, prefix: config.prefix, suffix: config.suffix, refrainsSendingScore: config.refrainsSendingScore, vars: config.vars })
   }
 }
