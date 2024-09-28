@@ -5,7 +5,8 @@
   },
   "scripts": {
     "debug": "ts-node debug.ts",
-    "lint:check": "eslint ."
+    "lint:check": "eslint .",
+    "build": "ts-node build.ts"
   },
   "devDependencies": {
     "@akashic/akashic-cli": "^2.17.22",

@@ -1,3 +1,8 @@
+---
+layout: page
+title: 新しく g.Scene を作成する
+---
+
 # 新しく `g.Scene` を作成する
 
 これからゲーム用の `g.Scene` を作成する場合、 `LiveOnAirSceneBuilder` を使います.

@@ -8,6 +8,11 @@
       <excludeFolder url="file://$MODULE_DIR$/lib" />
       <excludeFolder url="file://$MODULE_DIR$/coverage" />
       <excludeFolder url="file://$MODULE_DIR$/image" />
+      <excludeFolder url="file://$MODULE_DIR$/doc/.jekyll-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/doc/_site" />
+      <excludeFolder url="file://$MODULE_DIR$/doc/coverage" />
+      <excludeFolder url="file://$MODULE_DIR$/doc/jsdoc" />
+      <excludeFolder url="file://$MODULE_DIR$/doc/sample" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

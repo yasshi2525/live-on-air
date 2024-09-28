@@ -13,11 +13,12 @@
   "scripts": {
     "build": "ts-node build.ts",
     "build:image": "cross-env NODE_OPTIONS=--no-experimental-fetch pixi-image-packer-cli resource/image/index.ts -o image --sync",
-    "doc": "typedoc --out tmp/docs --plugin typedoc-github-theme src/index.ts",
+    "doc": "typedoc --out doc/jsdoc --plugin typedoc-github-theme src/index.ts",
     "doc:test": "typedoc --out tmp/docs --validation src/index.ts",
     "lint:check": "eslint .",
     "lint": "eslint --fix .",
     "test": "jest",
+    "coverage": "jest --coverageDirectory doc/coverage",
     "watch:image": "cross-env NODE_OPTIONS=--no-experimental-fetch pixi-image-packer-cli resource/image/index.ts -o image --onlyCreate"
   },
   "homepage": "https://github.com/yasshi2525/live-on-air",

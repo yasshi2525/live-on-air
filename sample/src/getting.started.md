@@ -1,3 +1,8 @@
+---
+layout: page
+title: 使ってみる
+---
+
 # 使ってみる
 
 ## Akashic Engine プロジェクトを構築する

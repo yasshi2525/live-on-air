@@ -4,28 +4,194 @@ on:
   push:
     branches:
       - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  make:
+  setup:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
+
       - name: Restore node_modules
         uses: actions/cache@v4
         id: node-cache-restore
         with:
           path: node_modules
           key: dependencies-${{ hashFiles('package-lock.json') }}
+
       - name: Install dependencies
         run: npm ci
         if: steps.node-cache-restore.outputs.cache-hit != 'true'
+
+      - name: Restore headless browser
+        uses: actions/cache@v4
+        id: chrome-cache-restore
+        with:
+          path: /home/runner/.cache/puppeteer
+          key: dependencies-${{ hashFiles('package-lock.json') }}
+
+      - name: Install headless browser
+        run: node node_modules/puppeteer/install.mjs
+        if: steps.chrome-cache-restore.outputs.cache-hit != 'true'
+
+      - name: Restore asset images
+        uses: actions/cache@v4
+        id: image-cache-restore
+        with:
+          path: image
+          key: image-${{ hashFiles('resource/image/**/*') }}
+
+      - name: Generate asset images
+        run: npm run build:image
+        if: steps.image-cache-restore.outputs.cache-hit != 'true'
+
+      - name: Restore node_modules for sample
+        uses: actions/cache@v4
+        id: sample-node-cache-restore
+        with:
+          path: node_modules
+          key: sample-dependencies-${{ hashFiles('sample/package-lock.json') }}
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: sample
+        if: steps.sample-node-cache-restore.outputs.cache-hit != 'true'
+
+  jsdoc:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+
+      - name: Restore node_modules
+        uses: actions/cache@v4
+        id: node-cache-restore
+        with:
+          path: node_modules
+          key: dependencies-${{ hashFiles('package-lock.json') }}
+
+      - name: Restore JsDoc
+        uses: actions/cache@v4
+        id: jsdoc-restore
+        with:
+          path: doc/jsdoc
+          key: src-${{ hashFiles('src/**/*') }}
+
       - name: Generate documents
         run: npm run doc
-      - run: echo "VERSION=$(cat package.json | jq '.version' | tr -d '"')" >> $GITHUB_ENV
-      - run: echo "TIMESTAMP=$(TZ='Asia/Tokyo' date "+%Y%m%d-%H%M%S")" >> $GITHUB_ENV
-      - name: Save documents
-        uses: actions/upload-artifact@v4
+        if: steps.jsdoc-restore.outputs.cache-hit != 'true'
+
+  coverage:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+
+      - name: Restore node_modules
+        uses: actions/cache@v4
+        id: node-cache-restore
         with:
-          name: yasshi2525-live-on-air-docs-${{ env.VERSION }}-${{ env.TIMESTAMP }}
-          path: tmp/docs
+          path: node_modules
+          key: dependencies-${{ hashFiles('package-lock.json') }}
+
+      - name: Restore asset images
+        uses: actions/cache@v4
+        with:
+          path: image
+          key: image-${{ hashFiles('resource/image/**') }}
+
+      - name: Restore coverage sites
+        uses: actions/cache@v4
+        id: coverage-restore
+        with:
+          path: doc/coverage
+          key: coverage-${{ hashFiles('src/**/*', 'spec/**/*') }}
+
+      - name: Collect coverage
+        run: npm run coverage
+        if: steps.coverage-restore.outputs.cache-hit != 'true'
+
+  sample:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Restore node_modules for sample
+        uses: actions/cache@v4
+        id: sample-node-cache-restore
+        with:
+          path: sample/node_modules
+          key: sample-dependencies-${{ hashFiles('sample/package-lock.json') }}
+
+      - name: Install dependencies for sample
+        run: npm ci
+        working-directory: sample
+        if: steps.sample-node-cache-restore.outputs.cache-hit != 'true'
+
+      - name: Restore sample
+        uses: actions/cache@v4
+        id: sample-restore
+        with:
+          path: doc/sample
+          key: sample-${{ hashFiles('sample/image/**/*', 'sample/src/**/*') }}
+
+      - name: Build sample
+        run: npm run build
+        working-directory: sample
+        if: steps.sample-restore.outputs.cache-hit != 'true'
+
+  build:
+    runs-on: ubuntu-latest
+    needs:
+      - jsdoc
+      - coverage
+      - sample
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+
+      - name: Restore JsDoc
+        uses: actions/cache@v4
+        with:
+          path: doc/jsdoc
+          key: src-${{ hashFiles('src/**/*') }}
+
+      - name: Restore coverage sites
+        uses: actions/cache@v4
+        with:
+          path: doc/coverage
+          key: coverage-${{ hashFiles('src/**/*', 'spec/**/*') }}
+
+      - name: Restore sample
+        uses: actions/cache@v4
+        id: sample-restore
+        with:
+          path: doc/sample
+          key: sample-${{ hashFiles('sample/image/**/*', 'sample/src/**/*') }}
+
+      - name: Build Pages
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: './doc'
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
