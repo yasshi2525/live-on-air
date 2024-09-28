@@ -30,7 +30,7 @@ github_username:  yasshi2525
 theme: minima
 plugins:
   - jekyll-feed
-
+markdown: GFM
 
 
 # Exclude from processing.
