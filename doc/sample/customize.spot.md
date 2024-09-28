@@ -104,9 +104,9 @@ title: 訪問先の画像を変更する
 -       normal: g.game.asset.getImageById('spot.custom.normal'),
 -       disabled: g.game.asset.getImageById('spot.custom.disabled')
 -     })
-+    .spot({ x: 100, y: 150 })
-     .spot({ x: 500, y: 350 })
-    .build();
++     .spot({ x: 100, y: 150 })
+      .spot({ x: 500, y: 350 })
+      .build();
 ```
 
 [コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/customize.default.spot.builtin.ts)

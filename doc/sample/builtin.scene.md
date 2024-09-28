@@ -33,7 +33,7 @@ title: 新しく g.Scene を作成する
 ```diff typescript
 - import { LiveOnAirScene, LiveOnAirSceneBuilder } from "@yasshi2525/live-on-air";
 + import { LiveOnAirScene, LiveOnAirSceneBuilder, Broadcaster, Spot, Field, Screen, CommentContext, CommentSupplier, CommentDeployer, Scorer, Ticker Layer } from "@yasshi2525/live-on-air";
-scene.onLoad.add(() => {
+  scene.onLoad.add(() => {
     // 各コンポーネントの参照
     const broadcaster: Broadcaster = scene.broadcaster;
     const spots: Spot[] = scene.spots;
@@ -45,7 +45,7 @@ scene.onLoad.add(() => {
     const scorer: Scorer = scene.scorer;
     const ticker: Ticker = scene.ticker;
     const layer: Layer = scene.layer;
-});
+  });
 ```
 
 [コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/builtin.scene.ts)

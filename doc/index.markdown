@@ -3,6 +3,7 @@
 # To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
 layout: home
+title: ミニゲーム集向けゲームテンプレート Live on Air
 ---
 
 本ライブラリは「複数のミニゲームから構成されるようなゲームの開発」を支援する、[Akashic Engine](https://akashic-games.github.io/)の拡張ライブラリです.
@@ -69,6 +70,12 @@ akashic install @yasshi2525/live-on-air
 
 * [訪問先を追加する](sample/add.spot.html)  
 * [訪問先の画像を変更する](sample/customize.spot.html)
+
+* [API 仕様書](jsdoc)
+
+## ライブラリ開発者向け
+
+* [coverage](coverage/lcov-report)
 
 ## 連絡先
 

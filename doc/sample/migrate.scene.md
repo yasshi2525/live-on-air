@@ -57,6 +57,7 @@ title: 自身で定義した g.Scene に組み込む
 
 > [!NOTE]
 > 独自レイアウトの場合、 `Layer` は不要なので初期化・設定処理を削除してください.
+
 > ```diff typescript
 > - import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Layer, LayerBuilder, Scorer, ScorerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder, Ticker, TickerBuilder } from '@yasshi2525/live-on-air';
 > + import { Broadcaster, BroadcasterBuilder, CommentContextSupplier, CommentDeployer, CommentDeployerBuilder, CommentSupplier, CommentSupplierBuilder, Field, FieldBuilder, Scorer, ScorerBuilder, Screen, ScreenBuilder, Spot, SpotBuilder, Ticker, TickerBuilder } from '@yasshi2525/live-on-air';
