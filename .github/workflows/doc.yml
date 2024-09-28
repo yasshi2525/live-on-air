@@ -56,10 +56,10 @@ jobs:
         uses: actions/cache@v4
         id: sample-node-cache-restore
         with:
-          path: node_modules
+          path: sample/node_modules
           key: sample-dependencies-${{ hashFiles('sample/package-lock.json') }}
 
-      - name: Install dependencies
+      - name: Install dependencies for sample
         run: npm ci
         working-directory: sample
         if: steps.sample-node-cache-restore.outputs.cache-hit != 'true'
@@ -73,7 +73,6 @@ jobs:
 
       - name: Restore node_modules
         uses: actions/cache@v4
-        id: node-cache-restore
         with:
           path: node_modules
           key: dependencies-${{ hashFiles('package-lock.json') }}
@@ -98,7 +97,6 @@ jobs:
 
       - name: Restore node_modules
         uses: actions/cache@v4
-        id: node-cache-restore
         with:
           path: node_modules
           key: dependencies-${{ hashFiles('package-lock.json') }}
@@ -126,15 +124,9 @@ jobs:
     steps:
       - name: Restore node_modules for sample
         uses: actions/cache@v4
-        id: sample-node-cache-restore
         with:
           path: sample/node_modules
           key: sample-dependencies-${{ hashFiles('sample/package-lock.json') }}
-
-      - name: Install dependencies for sample
-        run: npm ci
-        working-directory: sample
-        if: steps.sample-node-cache-restore.outputs.cache-hit != 'true'
 
       - name: Restore sample
         uses: actions/cache@v4
