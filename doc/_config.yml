@@ -21,8 +21,8 @@
 title: Live on Air Document
 description: >- # this means to ignore newlines until "baseurl:"
   Live on Air のインストール方法、使い方を説明します.
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "/live-on-air/" # the subpath of your site, e.g. /blog
+url: "https://yasshi2525.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: yasshi2525
 github_username:  yasshi2525
 
