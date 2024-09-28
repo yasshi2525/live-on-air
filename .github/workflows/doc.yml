@@ -136,7 +136,10 @@ jobs:
           key: sample-${{ hashFiles('sample/image/**/*', 'sample/src/**/*') }}
 
       - name: Build sample
-        run: npm run build
+        run: |
+          ls -la
+          ls -la ..
+          npm run build
         working-directory: ./sample
         if: steps.sample-restore.outputs.cache-hit != 'true'
 
