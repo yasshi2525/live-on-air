@@ -21,7 +21,7 @@ title: 訪問先の画像を変更する
 
 何も指定しない場合、下記の画像が使われます.
 
-![デフォルト](../image/spot.default.locked.png)
+![デフォルト](image/spot.default.locked.png)
 
 ### 'unvisited' 未訪問状態
 
@@ -30,7 +30,7 @@ title: 訪問先の画像を変更する
 
 何も指定しない場合、下記の画像が使われます.
 
-![デフォルト](../image/spot.default.unvisited.png)
+![デフォルト](image/spot.default.unvisited.png)
 
 ### 'normal' 訪問可能状態
 
@@ -39,7 +39,7 @@ title: 訪問先の画像を変更する
 
 何も指定しない場合、下記の画像が使われます.
 
-![デフォルト](../image/spot.default.normal.png)
+![デフォルト](image/spot.default.normal.png)
 
 ### 'disabled' 訪問操作受付禁止状態
 
@@ -49,7 +49,7 @@ title: 訪問先の画像を変更する
 
 何も指定しない場合、下記の画像が使われます.
 
-![デフォルト](../image/spot.default.disabled.png)
+![デフォルト](image/spot.default.disabled.png)
 
 ## 組み込みの `LiveOnAirScene` を使用している場合
 
@@ -78,7 +78,7 @@ title: 訪問先の画像を変更する
 > [!NOTE]
 > `g.ImageAsset` として指定するために、画像アセットはグローバルアセットにしてください. ([参考](https://akashic-games.github.io/reverse-reference/v3/asset/global-asset.html))
 
-[コード全文](customize.spot.builtin.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/customize.spot.builtin.ts)
 
 左上の `Spot` の画像が変更されました.
 
@@ -111,7 +111,7 @@ title: 訪問先の画像を変更する
     .build();
 ```
 
-[コード全文](customize.default.spot.builtin.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/customize.default.spot.builtin.ts)
 
 2つとも画像が変更されました.
 
@@ -136,7 +136,7 @@ title: 訪問先の画像を変更する
 > [!NOTE]
 > `LiveOnAirScene` を使わない場合、画像アセットはグローバルアセットでなくとも構いません.
 
-[コード全文](customize.spot.migrate.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/customize.spot.migrate.ts)
 
 左上の `Spot` の画像が変更されました.
 
@@ -166,7 +166,7 @@ title: 訪問先の画像を変更する
         .build();
 ```
 
-[コード全文](customize.default.spot.migrate.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/customize.default.spot.migrate.ts)
 
 2つとも画像が変更されました.
 

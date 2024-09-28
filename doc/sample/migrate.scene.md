@@ -55,7 +55,7 @@ title: 自身で定義した g.Scene に組み込む
   };
 ```
 
-[コード全文](migrate.scene.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/migrate.scene.ts)
 
 > [!NOTE]
 > 独自レイアウトの場合、 `Layer` は不要なので初期化・設定処理を削除してください.

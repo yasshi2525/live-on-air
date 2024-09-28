@@ -27,7 +27,7 @@ title: 訪問先を追加する
   g.game.pushScene(scene);
 ```
 
-[コード全文](add.spot.builtin.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/add.spot.builtin.ts)
 
 ![ゲーム画面](add.spot.builtin.1.png)
 
@@ -49,7 +49,7 @@ title: 訪問先を追加する
     g.game.pushScene(scene);
 ```
 
-[コード全文](add.spot.refer.builtin.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/add.spot.refer.builtin.ts)
 
 ## 独自の `g.Scene` を利用している場合
 
@@ -85,7 +85,7 @@ title: 訪問先を追加する
 +     screen.addSpot(spot2);
 ```
 
-[コード全文](add.spot.migrate.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/add.spot.migrate.ts)
 
 ![ゲーム画面](add.spot.migrate.1.png)
 
@@ -105,4 +105,4 @@ title: 訪問先を追加する
 +    const spot1: Spot = builder.build();
 ```
 
-[コード全文](add.spot.refer.migrate.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/add.spot.refer.migrate.ts)

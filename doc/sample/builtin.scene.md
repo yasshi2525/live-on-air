@@ -50,7 +50,7 @@ scene.onLoad.add(() => {
 });
 ```
 
-[コード全文](builtin.scene.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/builtin.scene.ts)
 
 各コンポーネントの役割は以下の通りです.
 
