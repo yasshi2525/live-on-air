@@ -1,4 +1,7 @@
-# 訪問先の画像を変更する
+---
+layout: page
+title: 訪問先の画像を変更する
+---
 
 訪問先 (`Spot`) の表示画像を変更する方法を説明します.
 
@@ -16,7 +19,7 @@
 
 何も指定しない場合、下記の画像が使われます.
 
-![デフォルト](../image/spot.default.locked.png)
+![デフォルト](image/spot.default.locked.png)
 
 ### 'unvisited' 未訪問状態
 
@@ -25,7 +28,7 @@
 
 何も指定しない場合、下記の画像が使われます.
 
-![デフォルト](../image/spot.default.unvisited.png)
+![デフォルト](image/spot.default.unvisited.png)
 
 ### 'normal' 訪問可能状態
 
@@ -34,7 +37,7 @@
 
 何も指定しない場合、下記の画像が使われます.
 
-![デフォルト](../image/spot.default.normal.png)
+![デフォルト](image/spot.default.normal.png)
 
 ### 'disabled' 訪問操作受付禁止状態
 
@@ -44,7 +47,7 @@
 
 何も指定しない場合、下記の画像が使われます.
 
-![デフォルト](../image/spot.default.disabled.png)
+![デフォルト](image/spot.default.disabled.png)
 
 ## 組み込みの `LiveOnAirScene` を使用している場合
 
@@ -73,7 +76,7 @@
 > [!NOTE]
 > `g.ImageAsset` として指定するために、画像アセットはグローバルアセットにしてください. ([参考](https://akashic-games.github.io/reverse-reference/v3/asset/global-asset.html))
 
-[コード全文](customize.spot.builtin.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/customize.spot.builtin.ts)
 
 左上の `Spot` の画像が変更されました.
 
@@ -101,12 +104,12 @@
 -       normal: g.game.asset.getImageById('spot.custom.normal'),
 -       disabled: g.game.asset.getImageById('spot.custom.disabled')
 -     })
-+    .spot({ x: 100, y: 150 })
-     .spot({ x: 500, y: 350 })
-    .build();
++     .spot({ x: 100, y: 150 })
+      .spot({ x: 500, y: 350 })
+      .build();
 ```
 
-[コード全文](customize.default.spot.builtin.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/customize.default.spot.builtin.ts)
 
 2つとも画像が変更されました.
 
@@ -131,7 +134,7 @@
 > [!NOTE]
 > `LiveOnAirScene` を使わない場合、画像アセットはグローバルアセットでなくとも構いません.
 
-[コード全文](customize.spot.migrate.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/customize.spot.migrate.ts)
 
 左上の `Spot` の画像が変更されました.
 
@@ -161,7 +164,7 @@
         .build();
 ```
 
-[コード全文](customize.default.spot.migrate.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/customize.default.spot.migrate.ts)
 
 2つとも画像が変更されました.
 

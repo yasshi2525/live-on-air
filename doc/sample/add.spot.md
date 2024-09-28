@@ -1,4 +1,7 @@
-# 訪問先を追加する
+---
+layout: page
+title: 訪問先を追加する
+---
 
 訪問先 (`Spot`) は生放送イベントと紐づく個性豊かなスポットです.
 
@@ -22,7 +25,7 @@
   g.game.pushScene(scene);
 ```
 
-[コード全文](add.spot.builtin.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/add.spot.builtin.ts)
 
 ![ゲーム画面](add.spot.builtin.1.png)
 
@@ -44,7 +47,7 @@
     g.game.pushScene(scene);
 ```
 
-[コード全文](add.spot.refer.builtin.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/add.spot.refer.builtin.ts)
 
 ## 独自の `g.Scene` を利用している場合
 
@@ -80,7 +83,7 @@
 +     screen.addSpot(spot2);
 ```
 
-[コード全文](add.spot.migrate.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/add.spot.migrate.ts)
 
 ![ゲーム画面](add.spot.migrate.1.png)
 
@@ -100,4 +103,4 @@
 +    const spot1: Spot = builder.build();
 ```
 
-[コード全文](add.spot.refer.migrate.ts)
+[コード全文](https://github.com/yasshi2525/live-on-air/blob/main/sample/src/add.spot.refer.migrate.ts)

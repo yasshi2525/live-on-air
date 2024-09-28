@@ -1,4 +1,6 @@
 /image
+doc/coverage
+doc/jsdoc
 lib
 node_modules
 tmp
