@@ -61,7 +61,7 @@ jobs:
 
       - name: Install dependencies for sample
         run: npm ci
-        working-directory: sample
+        working-directory: ./sample
         if: steps.sample-node-cache-restore.outputs.cache-hit != 'true'
 
   jsdoc:
@@ -137,7 +137,7 @@ jobs:
 
       - name: Build sample
         run: npm run build
-        working-directory: sample
+        working-directory: ./sample
         if: steps.sample-restore.outputs.cache-hit != 'true'
 
   build:
