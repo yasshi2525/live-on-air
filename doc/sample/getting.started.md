@@ -3,8 +3,6 @@ layout: page
 title: 使ってみる
 ---
 
-# 使ってみる
-
 ## Akashic Engine プロジェクトを構築する
 
 Akashic Engine の公式ページを参考にプロジェクトを作成してください.  

@@ -5,8 +5,6 @@
 layout: home
 ---
 
-# ミニゲーム集向けゲームテンプレート Live on Air
-
 本ライブラリは「複数のミニゲームから構成されるようなゲームの開発」を支援する、[Akashic Engine](https://akashic-games.github.io/)の拡張ライブラリです.
 [ニコ生ゲーム](https://site.live.nicovideo.jp/ichiba.html)のランキングゲームとして投稿できるように作られています.
 
