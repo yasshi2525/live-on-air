@@ -142,8 +142,8 @@ export class RecordSupplier<K extends string, V> implements ValueSupplier<Record
   private readonly store = new Map<K, PrimitiveValueSupplier<V>>()
 
   protected constructor (initial: Record<K, V>, private validator?: ValueValidator<V>) {
-    for (const [key, value] of Object.entries(initial) as [K, V][]) {
-      this.store.set(key, PrimitiveValueSupplier.create(value, validator))
+    for (const key of Object.keys(initial) as K[]) {
+      this.store.set(key, PrimitiveValueSupplier.create(initial[key], validator))
     }
   }
 
@@ -162,14 +162,14 @@ export class RecordSupplier<K extends string, V> implements ValueSupplier<Record
   }
 
   setIf (obj: Partial<Record<K, V>>) {
-    for (const [key, value] of Object.entries(obj) as [K, V][]) {
-      this.store.get(key)?.setIf(value)
+    for (const key of Object.keys(obj) as K[]) {
+      this.store.get(key)?.setIf(obj[key])
     }
   }
 
   defaultIf (obj: Partial<Record<K, V>>) {
-    for (const [key, value] of Object.entries(obj) as [K, V][]) {
-      this.store.get(key)?.defaultIf(value)
+    for (const key of Object.keys(obj) as K[]) {
+      this.store.get(key)?.defaultIf(obj[key])
     }
   }
 

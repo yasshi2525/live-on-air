@@ -178,7 +178,13 @@ export class NumberLabelImpl implements NumberLabel {
   }
 
   private format (): string {
-    return `${this.prefix}${this.value.toString().padStart(this._digit)}${this.suffix}`
+    let payload = ''
+    for (let i = 0; i < this._digit; i++) {
+      payload += ' '
+    }
+    payload += this.value.toString()
+
+    return `${this.prefix}${payload.slice(-this._digit)}${this.suffix}`
   }
 
   private updateTextIf () {
