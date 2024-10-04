@@ -1,5 +1,11 @@
 # 更新履歴 Change Log
 
+## v1.0.1
+
+Bug:
+
+* Akashic Engine 非推奨の ES6以降の構文を削除 #76
+
 ## v1.0.0
 
 Feature:
