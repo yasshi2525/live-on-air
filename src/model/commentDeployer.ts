@@ -151,7 +151,11 @@ export class CommentDeployerImpl implements CommentDeployer {
         return
       }
     }
-    this.onDeploy.fire(this.createView((this.views.at(-1)?.row ?? -1) + 1, text))
+    if (this.views.length > 0) {
+      this.onDeploy.fire(this.createView(this.views[this.views.length - 1].row + 1, text))
+    } else {
+      this.onDeploy.fire(this.createView(0, text))
+    }
   }
 
   private createView (row: number, text: string): g.E {
